@@ -5,8 +5,8 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Post_Scripting
- * @subpackage Post_Scripting/includes
+ * @package    Postscript
+ * @subpackage Postscript/includes
  */
 
 /*
@@ -18,11 +18,11 @@
  * Version: 1.0
  * License: GPL2
  */
- 
+
 if( is_admin() ) {
     new Paulund_Wp_List_Table_Copy();
 }
- 
+
 /**
  * Paulund_Wp_List_Table class will create the page to load the table
  */
@@ -31,13 +31,13 @@ class Paulund_Wp_List_Table_Copy {
      * Constructor will create the menu item
      */
     public function __construct() {
-        
+
 
         add_action( 'admin_menu', array($this, 'add_menu_example_list_table_page' ));
 
 
     }
- 
+
     /**
      * Menu item will allow us to load the page to display the table
      */
@@ -45,7 +45,7 @@ class Paulund_Wp_List_Table_Copy {
     {
         add_menu_page( 'XXX List Table Copy', 'XXX List Table Copy', 'manage_options', 'example-list-table.php', array($this, 'list_table_page') );
     }
- 
+
     /**
      * Display the list table page
      *
@@ -59,8 +59,8 @@ class Paulund_Wp_List_Table_Copy {
             <div class="wrap">
 
                 <h1>XXX List Table Page</h1>
-                <?php // psing_settings_page(); ?>
-                <form id="psing-scripts-filter" method="get">
+                <?php // postscript_settings_page(); ?>
+                <form id="postscript-scripts-filter" method="get">
                     <!-- For plugins, we also need to ensure that the form posts back to our current page -->
                     <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
                     <!-- Now we can render the completed list table -->
@@ -70,35 +70,35 @@ class Paulund_Wp_List_Table_Copy {
         <?php
     }
 }
- 
+
 // WP_List_Table is not loaded automatically so we need to load it in our application
 if( ! class_exists( 'WP_List_Table' ) ) {
     // require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-if( ! class_exists( 'Psing_List_Table' ) ){
-    require_once( plugin_dir_path( __FILE__ ) . 'class-psing-list-table.php' );
+if( ! class_exists( 'Postscript_List_Table' ) ){
+    require_once( plugin_dir_path( __FILE__ ) . 'class-postscript-list-table.php' );
 }
- 
+
 /**
- * Creates new table class using Psing_List_Table (a copy of WP_List_Table).
+ * Creates new table class using Postscript_List_Table (a copy of WP_List_Table).
  */
-class Pser_Scripts_Table extends Psing_List_Table {
+class Pser_Scripts_Table extends Postscript_List_Table {
 
     /** ************************************************************************
-     * REQUIRED. Set up a constructor that references the parent constructor. We 
+     * REQUIRED. Set up a constructor that references the parent constructor. We
      * use the parent reference to set some default configs.
      ***************************************************************************/
     function __construct(){
         global $status, $page;
-                
+
         //Set parent defaults
         parent::__construct( array(
             'singular'  => 'script',     //singular name of the listed records
             'plural'    => 'scripts',    //plural name of the listed records
             'ajax'      => true        //does this table support ajax?
         ) );
-        
+
     }
 
     /**
@@ -111,21 +111,21 @@ class Pser_Scripts_Table extends Psing_List_Table {
         $columns = $this->get_columns();
         $hidden = $this->get_hidden_columns();
         $sortable = $this->get_sortable_columns();
- 
+
         $data = $this->table_data();
         usort( $data, array( &$this, 'sort_data' ) );
- 
+
         $perPage = 20;
         $currentPage = $this->get_pagenum();
         $totalItems = count($data);
- 
+
         $this->set_pagination_args( array(
             'total_items' => $totalItems,
             'per_page'    => $perPage
         ) );
- 
+
         $data = array_slice($data,(($currentPage-1)*$perPage),$perPage);
- 
+
         $this->_column_headers = array($columns, $hidden, $sortable);
         $this->items = $data;
 
@@ -136,7 +136,7 @@ class Pser_Scripts_Table extends Psing_List_Table {
         $this->process_bulk_action();
 
     }
- 
+
     /**
      * Override the parent columns method. Defines the columns to use in your listing table
      *
@@ -151,7 +151,7 @@ class Pser_Scripts_Table extends Psing_List_Table {
             'ver'       => 'Ver',
             'src'       => 'Src',
         );
- 
+
         return $columns;
     }
 
@@ -160,8 +160,8 @@ class Pser_Scripts_Table extends Psing_List_Table {
      * REQUIRED if displaying checkboxes or using bulk actions! The 'cb' column
      * is given special treatment when columns are processed. It ALWAYS needs to
      * have it's own method.
-     * 
-     * @see Psing_List_Table::::single_row_columns()
+     *
+     * @see Postscript_List_Table::::single_row_columns()
      * @param array $item A singular item (one full row's worth of data)
      * @return string Text to be placed inside the column <td> (movie title only)
      **************************************************************************/
@@ -176,27 +176,27 @@ class Pser_Scripts_Table extends Psing_List_Table {
     /** ************************************************************************
      * Recommended. This is a custom column method and is responsible for what
      * is rendered in any column with a name/slug of 'title'. Every time the class
-     * needs to render a column, it first looks for a method named 
+     * needs to render a column, it first looks for a method named
      * column_{$column_title} - if it exists, that method is run. If it doesn't
      * exist, column_default() is called instead.
-     * 
+     *
      * This example also illustrates how to implement rollover actions. Actions
      * should be an associative array formatted as 'slug'=>'link html' - and you
      * will need to generate the URLs yourself. You could even ensure the links
-     * 
-     * 
-     * @see Psing_List_Table::::single_row_columns()
+     *
+     *
+     * @see Postscript_List_Table::::single_row_columns()
      * @param array $item A singular item (one full row's worth of data)
      * @return string Text to be placed inside the column <td> (movie title only)
      **************************************************************************/
     function column_handle($item){
-        
+
         //Build row actions
         $actions = array(
             'view'      => sprintf( '<a href="%s">View</a>', $this->src_url( $item['src'] ) ),
             'remove'    => sprintf( '<a href="?page=%s&action=%s&script=%s">Remove</a>',$_REQUEST['page'],'remove',$item['handle'] ),
         );
-        
+
         //Return the handle contents
         return sprintf('%1$s <span style="color:silver">(id:%2$s)</span>%3$s',
             /*$1%s*/ $item['handle'],
@@ -225,14 +225,14 @@ class Pser_Scripts_Table extends Psing_List_Table {
      * Optional. If you need to include bulk actions in your list table, this is
      * the place to define them. Bulk actions are an associative array in the format
      * 'slug'=>'Visible Title'
-     * 
+     *
      * If this method returns an empty value, no bulk action will be rendered. If
      * you specify any bulk actions, the bulk actions box will be rendered with
      * the table automatically on display().
-     * 
+     *
      * Also note that list tables are not automatically wrapped in <form> elements,
      * so you will need to create those manually in order for bulk actions to function.
-     * 
+     *
      * @return array An associative array containing all the bulk actions: 'slugs'=>'Visible Titles'
      **************************************************************************/
     function get_bulk_actions() {
@@ -246,7 +246,7 @@ class Pser_Scripts_Table extends Psing_List_Table {
      * Optional. You can handle your bulk actions anywhere or anyhow you prefer.
      * For this example package, we will handle it in the class to keep things
      * clean and organized.
-     * 
+     *
      * @see $this->prepare_items()
      **************************************************************************/
     function process_bulk_action() {
@@ -257,26 +257,26 @@ class Pser_Scripts_Table extends Psing_List_Table {
 
             if ( ! wp_verify_nonce( $nonce, $action ) && ! wp_verify_nonce( $nonce, 'psing-nonce' ) ) {
                 // wp_die( 'Paulund: Not allowed.' );
-            }      
+            }
 
             // Setting to remove an item from array of allowed script handles.
             if ( 'remove' === $this->current_action() && isset( $_REQUEST['script'] ) ) {
 
-                $postscript_added_scripts = get_option( 'psing_added_scripts', array() );
+                $postscript_added_scripts = get_option( 'Postscript_added_scripts', array() );
                 $postscript_remove_scripts = $_REQUEST['script'];
                 $postscript_added_scripts = array_diff( $postscript_added_scripts, $postscript_remove_scripts );
-                update_option( 'psing_added_scripts', (array) $postscript_added_scripts );
+                update_option( 'Postscript_added_scripts', (array) $postscript_added_scripts );
 
                 $message = __( 'Items removed: ' . print_r( $_REQUEST['script'], true ), 'post-scripting' );
                 $class = 'updated settings-updated';
 
                 echo "<div class=\"$class\ notice is-dismissible\"><p>$message</p></div>";
-            } 
-            
+            }
+
 
         }
     }
-    
+
 
     /**
      * Define which columns are hidden
@@ -287,7 +287,7 @@ class Pser_Scripts_Table extends Psing_List_Table {
     {
         return array();
     }
- 
+
     /**
      * Define the sortable columns
      *
@@ -297,13 +297,13 @@ class Pser_Scripts_Table extends Psing_List_Table {
     {
         return array( 'handle' => array( 'handle', false ), 'args' => array( 'args', false ) );
     }
- 
+
     /**
      * Define the sortable columns
      *
      * @return Array
      */
-    public function psing_arr_value_keys( $arr_multi, $field, $value ) {
+    public function Postscript_arr_value_keys( $arr_multi, $field, $value ) {
        foreach( $arr_multi as $key => $arr ) {
           if ( $arr[$field] === $value )
              return $arr;
@@ -351,22 +351,22 @@ class Pser_Scripts_Table extends Psing_List_Table {
             ),
         );
 */
-        global $wp_scripts, $wp_styles; $psing_added_script_keys;
+        global $wp_scripts, $wp_styles; $Postscript_added_script_keys;
 
-        $psing_added_scripts = get_option( 'psing_added_scripts' );
+        $Postscript_added_scripts = get_option( 'Postscript_added_scripts' );
 
-        $psing_reg_scripts_arr = psing_object_into_array( $wp_scripts->registered );
-        sort( $psing_reg_scripts_arr );
+        $Postscript_reg_scripts_arr = Postscript_object_into_array( $wp_scripts->registered );
+        sort( $Postscript_reg_scripts_arr );
 
-        foreach ( $psing_added_scripts as $handle) {
-            $psing_added_script_keys[] = $this->psing_arr_value_keys( $psing_reg_scripts_arr, 'handle', $handle );
+        foreach ( $Postscript_added_scripts as $handle) {
+            $Postscript_added_script_keys[] = $this->Postscript_arr_value_keys( $Postscript_reg_scripts_arr, 'handle', $handle );
         }
 
-        $data = $psing_added_script_keys;
- 
+        $data = $Postscript_added_script_keys;
+
         return $data;
     }
- 
+
 
 
     /**
@@ -385,12 +385,12 @@ class Pser_Scripts_Table extends Psing_List_Table {
             case 'ver':
             case 'args':
                 return $item[ $column_name ];
- 
+
             default:
                 return print_r( $item, true ) ;
         }
     }
- 
+
     /**
      * Allows you to sort the data by the variables set in the $_GET
      *
@@ -400,27 +400,27 @@ class Pser_Scripts_Table extends Psing_List_Table {
         // Set defaults
         $orderby = 'handle';
         $order = 'asc';
- 
+
         // If orderby is set, use this as the sort column
         if(!empty($_GET['orderby']))
         {
             $orderby = $_GET['orderby'];
         }
- 
+
         // If order is set use this as the order
         if(!empty($_GET['order']))
         {
             $order = $_GET['order'];
         }
- 
- 
+
+
         $result = strnatcmp( $a[$orderby], $b[$orderby] );
- 
+
         if($order === 'asc')
         {
             return $result;
         }
- 
+
         return -$result;
     }
 

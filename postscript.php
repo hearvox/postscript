@@ -38,8 +38,8 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 
-if( ! class_exists( 'Psing_Scripts_Table' ) ){
-    require_once( plugin_dir_path( __FILE__ ) . 'includes/class-psing-scripts-table.php' );
+if( ! class_exists( 'postscript_Scripts_Table' ) ){
+    require_once( plugin_dir_path( __FILE__ ) . 'includes/class-postscript-scripts-table.php' );
 }
 
 if( ! class_exists( 'Paulund_Wp_List_Table_Copy' ) ){
@@ -62,22 +62,22 @@ function postscript_load_textdomain() {
  * The code that runs during plugin activation.
  * This action is documented in includes/class-post-scripting-activator.php
  */
-function activate_post_scripting() {
+function activate_Postscript() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-post-scripting-activator.php';
-	Post_Scripting_Activator::activate();
+	Postscript_Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-post-scripting-deactivator.php
  */
-function deactivate_post_scripting() {
+function deactivate_Postscript() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-post-scripting-deactivator.php';
-	Post_Scripting_Deactivator::deactivate();
+	Postscript_Deactivator::deactivate();
 }
 
-// register_activation_hook( __FILE__, 'activate_post_scripting' );
-// register_deactivation_hook( __FILE__, 'deactivate_post_scripting' );
+// register_activation_hook( __FILE__, 'activate_Postscript' );
+// register_deactivation_hook( __FILE__, 'deactivate_Postscript' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -94,13 +94,13 @@ function deactivate_post_scripting() {
  *
  * @since    1.0.0
  */
-function run_post_scripting() {
+function run_Postscript() {
 
-	$plugin = new Post_Scripting();
+	$plugin = new Postscript();
 	$plugin->run();
 
 }
-// run_post_scripting();
+// run_Postscript();
 
 /* ------------------------------------------------------------------------ *
  * Required Plugin Files
@@ -122,62 +122,62 @@ require_once( 'includes/meta-box.php' );
  *
  *
  */
-function psing_enqueue_scripts() {
+function postscript_enqueue_scripts() {
     if ( is_singular() && is_main_query() ) {
         global $post;
         $post_id = $post->ID;
-        $psing_style_url = get_post_meta( $post_id, 'psing_style_url', true );
-        $psing_script_url = get_post_meta( $post_id, 'psing_script_url', true );
-        // $psing_style_handles = get_post_meta( $post_id, 'psing_style_handles', true );
-        // $psing_script_handles = get_post_meta( $post_id, 'psing_script_handles', true );
+        $postscript_style_url = get_post_meta( $post_id, 'postscript_style_url', true );
+        $postscript_script_url = get_post_meta( $post_id, 'postscript_script_url', true );
+        // $postscript_style_handles = get_post_meta( $post_id, 'postscript_style_handles', true );
+        // $postscript_script_handles = get_post_meta( $post_id, 'postscript_script_handles', true );
 
-        if ( has_filter( 'psing_post_style' ) ) {
-            $style_handles = apply_filters( 'psing_post_style', $style_handles );
+        if ( has_filter( 'postscript_post_style' ) ) {
+            $style_handles = apply_filters( 'postscript_post_style', $style_handles );
         }
 
-        if ( ! empty( $psing_post_style ) ) {
-            wp_enqueue_style( 'psing-style-' . $post_id, $psing_post_style, false );
+        if ( ! empty( $postscript_post_style ) ) {
+            wp_enqueue_style( 'postscript-style-' . $post_id, $postscript_post_style, false );
         }
 
-        if ( has_filter( 'psing_script_url' ) ) {
-            $psing_script_url = apply_filters( 'psing_script_url', $psing_script_url );
+        if ( has_filter( 'postscript_script_url' ) ) {
+            $postscript_script_url = apply_filters( 'postscript_script_url', $postscript_script_url );
         }
 
-        if ( ! empty( $psing_script_url ) ) {
-            wp_enqueue_script( 'psing-script-url' . $post_id, $psing_script_url );
+        if ( ! empty( $postscript_script_url ) ) {
+            wp_enqueue_script( 'postscript-script-url' . $post_id, $postscript_script_url );
         }
 /*
-        if ( has_filter( 'psing_style_handles' ) ) {
-            $psing_style_handles = apply_filters( 'psing_style_handles', $psing_style_handles );
+        if ( has_filter( 'postscript_style_handles' ) ) {
+            $postscript_style_handles = apply_filters( 'postscript_style_handles', $postscript_style_handles );
         }
 
-        foreach ( $psing_style_handles as $handle ) {
+        foreach ( $postscript_style_handles as $handle ) {
             wp_enqueue_style( $handle );
         }
 
-        if ( has_filter( 'psing_script_handles' ) ) {
-            $url = apply_filters( 'psing_script_handles', $psing_script_handles );
+        if ( has_filter( 'postscript_script_handles' ) ) {
+            $url = apply_filters( 'postscript_script_handles', $postscript_script_handles );
         }
 
-        foreach ( $psing_script_handles as $handle ) {
+        foreach ( $postscript_script_handles as $handle ) {
             wp_enqueue_script( $handle );
         }
 */
     }
 }
-add_action( 'wp_enqueue_scripts', 'psing_enqueue_scripts' );
+add_action( 'wp_enqueue_scripts', 'postscript_enqueue_scripts' );
 
 /**
  * Checks if URL exists.
  */
-function psing_url_exists( $url ) {
+function postscript_url_exists( $url ) {
     // Make absolute URLs for WP core scripts (from their registered relative 'src' URLs)
     if ( substr( $url, 0, 13 ) === '/wp-includes/' || substr( $url, 0, 10 ) === '/wp-admin/' ) {
         $url = get_bloginfo( 'wpurl' ) . $url;
     }
 
-    if ( has_filter( 'psing_url_exists' ) ) {
-        $url = apply_filters( 'psing_url_exists', $url );
+    if ( has_filter( 'postscript_url_exists' ) ) {
+        $url = apply_filters( 'postscript_url_exists', $url );
     }
 
     // Sanitize
@@ -200,11 +200,11 @@ function psing_url_exists( $url ) {
 
 /* Write test data in content of specified post */
 // http://rji.local/?p=1740
-function psing_test_nq( $content ) {
+function postscript_test_nq( $content ) {
     if ( is_single( 1740 ) && is_main_query() ) {
         global $wp_scripts, $wp_styles;
         $data_content = '<h2>$wp_scripts->queue</h2>';
-        $data_content .= psing_get_scripts();
+        $data_content .= postscript_get_scripts();
         $data_content .= '';
 
         return $content . $data_content;
@@ -212,10 +212,10 @@ function psing_test_nq( $content ) {
         return make_clickable( $content ); // Make raw URLs links.
     }
 }
-add_filter('the_content', 'psing_test_nq');
+add_filter('the_content', 'postscript_test_nq');
 
 /* Data for testing */
-function psing_get_scripts() {
+function postscript_get_scripts() {
     global $wp_scripts, $wp_styles;
     $script_data = '';
     $style_arr = array();
@@ -246,13 +246,13 @@ function psing_get_scripts() {
 
     $script_data .= '</ol><h3>Queued scripts</h3><ol>';
     foreach( $wp_scripts->queue as $handle ) {
-        $script_data .= '<li><code>' . $handle . ' (' . psing_url_exists( $wp_scripts->registered[$handle]->src ) . ')<br />';
+        $script_data .= '<li><code>' . $handle . ' (' . postscript_url_exists( $wp_scripts->registered[$handle]->src ) . ')<br />';
         $script_data .= $wp_scripts->registered[$handle]->src . '</code></li>';
     }
 
     $script_data .= '</ol><h3>Queued styles</h3><ol>';
     foreach( $wp_styles->queue as $handle ) {
-        $script_data .= '<li><code>' . $handle . ' (' . psing_url_exists( $wp_styles->registered[$handle]->src ) . ')<br />';
+        $script_data .= '<li><code>' . $handle . ' (' . postscript_url_exists( $wp_styles->registered[$handle]->src ) . ')<br />';
         $script_data .= $wp_styles->registered[$handle]->src . '</code></li>';
     }
 
@@ -268,61 +268,61 @@ function psing_get_scripts() {
 */
 
     // Get settings option; set default values.
-    $psing_allow_script_url = get_option( 'psing_allow_script_url', true );
-    $psing_allow_style_url = get_option( 'psing_allow_style_url', true );
-    $psing_post_types = get_option( 'psing_post_types', array() );
+    $postscript_allow_script_url = get_option( 'postscript_allow_script_url', true );
+    $postscript_allow_style_url = get_option( 'postscript_allow_style_url', true );
+    $postscript_post_types = get_option( 'postscript_post_types', array() );
 
     $array = array();
-    // delete_option( 'psing_added_scripts' );
-    add_option( 'psing_added_scripts', $array );
-    $psing_added_scripts = get_option( 'psing_added_scripts', $array );
+    // delete_option( 'postscript_added_scripts' );
+    add_option( 'postscript_added_scripts', $array );
+    $postscript_added_scripts = get_option( 'postscript_added_scripts', $array );
 
     // array_walk( $test_arr, 'get_handles' )
     $script_data .= phpversion();
-    $psing_reg_scripts_arr = psing_object_into_array( $wp_scripts->registered );
-    sort( $psing_reg_scripts_arr );
+    $postscript_reg_scripts_arr = postscript_object_into_array( $wp_scripts->registered );
+    sort( $postscript_reg_scripts_arr );
 
-    // $psing_reg_script_handles = array_column( $psing_reg_scripts_arr, 'handle' ); // PHP 5.5+
-    $psing_reg_script_handles = array_map( function ( $arr ) { return $arr['handle']; }, $psing_reg_scripts_arr );
+    // $postscript_reg_script_handles = array_column( $postscript_reg_scripts_arr, 'handle' ); // PHP 5.5+
+    $postscript_reg_script_handles = array_map( function ( $arr ) { return $arr['handle']; }, $postscript_reg_scripts_arr );
 
     $script_data .='<pre>';
 
-    $psing_test = array_search( 'admin-widgets', $psing_reg_scripts_arr );
+    $postscript_test = array_search( 'admin-widgets', $postscript_reg_scripts_arr );
 
-    $script_data .= 'psing_test- psing_test:<br />';
-    $script_data .= print_r( $psing_test, true );
-    // echo print_r( $psing_test );
-
-    $script_data .= '</pre><pre>';
-
-    $script_data .= 'psing_reg_script_handles:<br />';
-    $script_data .= print_r( $psing_reg_script_handles, true );
+    $script_data .= 'postscript_test- postscript_test:<br />';
+    $script_data .= print_r( $postscript_test, true );
+    // echo print_r( $postscript_test );
 
     $script_data .= '</pre><pre>';
 
-    $script_data .= 'psing_reg_scripts_arr:<br />';
-    $script_data .= print_r( $psing_reg_scripts_arr, true );
+    $script_data .= 'postscript_reg_script_handles:<br />';
+    $script_data .= print_r( $postscript_reg_script_handles, true );
+
+    $script_data .= '</pre><pre>';
+
+    $script_data .= 'postscript_reg_scripts_arr:<br />';
+    $script_data .= print_r( $postscript_reg_scripts_arr, true );
 
     $script_data .= '</pre><pre>';
 
     $script_data .= '</pre>';
 
-    $script_data .= 'psing_add_script: ';
-    if ( isset( $_POST['psing_add_script'] ) ) {
-        $script_data .= $_POST['psing_add_script'];
+    $script_data .= 'postscript_add_script: ';
+    if ( isset( $_POST['postscript_add_script'] ) ) {
+        $script_data .= $_POST['postscript_add_script'];
     }
     $script_data .= '<br />';
-    $script_data .= 'psing_added_scripts:<br />';
-    print_r( $psing_added_scripts, true );
+    $script_data .= 'postscript_added_scripts:<br />';
+    print_r( $postscript_added_scripts, true );
 
     $script_data .= '<p>';
 
-    foreach ( $psing_added_scripts as $handle ) {
+    foreach ( $postscript_added_scripts as $handle ) {
         // $script_data .= 'handle: ' . $wp_scripts->registered[$handle]->handle . ', src: ' . $wp_scripts->registered[$handle]->src . ', deps: ' . implode( ',', $wp_scripts->registered[$handle]->deps ) . ', ver: ' . $wp_scripts->registered[$handle]->ver . ', args: ' . $wp_scripts->registered[$handle]->args . '<br />';
     }
 
-    // $script_data .= '</p><pre>$wp_scripts->registered[$psing_added_scripts[1]]:';
-    // print_r( $wp_scripts->registered[$psing_added_scripts[1]], true );
+    // $script_data .= '</p><pre>$wp_scripts->registered[$postscript_added_scripts[1]]:';
+    // print_r( $wp_scripts->registered[$postscript_added_scripts[1]], true );
 
     $script_data .= '</pre>';
 

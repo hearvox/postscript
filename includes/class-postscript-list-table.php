@@ -1,18 +1,18 @@
 <?php
 /**
- * Psing_List_Table class (copy of core class: WP_List_Table).
+ * Postscript_List_Table class (copy of core class: WP_List_Table).
  *
  * Copied from WordPress file: /wp-admin/includes/class-wp-list-table.php
  *
  * WP_List_Table class is private, subject to change.
  * Using a copy is recommended.
- * All instances of WP_List_Table changes to Psing_List_Table.
+ * All instances of WP_List_Table changes to Postscript_List_Table.
  *
  * @link       http://rjionline.org
  * @since      1.0.0
  *
- * @package    Post_Scripting
- * @subpackage Post_Scripting/includes
+ * @package    Postscript
+ * @subpackage Postscript/includes
  */
 
 /**
@@ -21,7 +21,7 @@
  * @since 3.1.0
  * @access private
  */
-class Psing_List_Table {
+class Postscript_List_Table {
 
 	/**
 	 * The current list of items.
@@ -258,19 +258,19 @@ class Psing_List_Table {
 	 * @abstract
 	 */
 	public function ajax_user_can() {
-		die( 'function Psing_List_Table::ajax_user_can() must be over-ridden in a sub-class.' );
+		die( 'function Postscript_List_Table::ajax_user_can() must be over-ridden in a sub-class.' );
 	}
 
 	/**
 	 * Prepares the list of items for displaying.
-	 * @uses Psing_List_Table::set_pagination_args()
+	 * @uses Postscript_List_Table::set_pagination_args()
 	 *
 	 * @since 3.1.0
 	 * @access public
 	 * @abstract
 	 */
 	public function prepare_items() {
-		die( 'function Psing_List_Table::prepare_items() must be over-ridden in a sub-class.' );
+		die( 'function Postscript_List_Table::prepare_items() must be over-ridden in a sub-class.' );
 	}
 
 	/**
@@ -878,7 +878,7 @@ class Psing_List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
-		die( 'function Psing_List_Table::get_columns() must be over-ridden in a sub-class.' );
+		die( 'function Postscript_List_Table::get_columns() must be over-ridden in a sub-class.' );
 	}
 
 	/**
@@ -929,7 +929,7 @@ class Psing_List_Table {
 	}
 
 	/**
-	 * Public wrapper for Psing_List_Table::get_default_primary_column_name().
+	 * Public wrapper for Postscript_List_Table::get_default_primary_column_name().
 	 *
 	 * @since 4.4.0
 	 * @access public
@@ -955,7 +955,7 @@ class Psing_List_Table {
 		// If the primary column doesn't exist fall back to the
 		// first non-checkbox column.
 		if ( ! isset( $columns[ $default ] ) ) {
-			$default = Psing_List_Table::get_default_primary_column_name();
+			$default = Postscript_List_Table::get_default_primary_column_name();
 		}
 
 		/**

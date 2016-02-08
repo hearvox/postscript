@@ -6,8 +6,8 @@
  * @link       http://example.com
  * @since      1.0.0
  *
- * @package    Post_Scripting
- * @subpackage Post_Scripting/includes
+ * @package    Postscript
+ * @subpackage Postscript/includes
  */
 
 /* ------------------------------------------------------------------------ *
@@ -17,86 +17,86 @@
 /**
  * Creates an admin menu item under Settings, and a settings page.
  *
- * Var $psing_settings set to Page Hook Suffix -- return value of add_options_page().
- * Var used by psing_load_scripts() (as $hook_suffix value), called by 'admin_enqueue_scripts' action.
+ * Var $postscript_settings set to Page Hook Suffix -- return value of add_options_page().
+ * Var used by postscript_load_scripts() (as $hook_suffix value), called by 'admin_enqueue_scripts' action.
  *
- * @uses psing_admin_page() Called in filter
+ * @uses postscript_admin_page() Called in filter
  */
-function psing_admin_page() {
+function postscript_admin_page() {
 
-    global $psing_settings;
-    $psing_settings = add_options_page( __('Post Scripting: Scripts and Style', 'postscript' ), __( 'Post Scripting', 'postscript' ), 'manage_options', 'psing-settings', 'postscript_load' );
+    global $postscript_settings;
+    $postscript_settings = add_options_page( __('Postscript: Enqueue Scripts and Style', 'postscript' ), __( 'Postscript', 'postscript' ), 'manage_options', 'postscript-settings', 'postscript_load' );
 
-    add_action( 'admin_init', 'psing_register_settings' );
+    add_action( 'admin_init', 'postscript_register_settings' );
 
 }
-add_action( 'admin_menu', 'psing_admin_page' );
+add_action( 'admin_menu', 'postscript_admin_page' );
 
 /**
  * Builds HTML for admin settings page.
  */
-function psing_settings_page() {
+function postscript_settings_page() {
     global $wp_scripts, $wp_styles;
 
     $exampleListTable = new Pser_Scripts_Table();
     $exampleListTable->prepare_items();
 
-    // echo psing_update_settings();
+    // echo postscript_update_settings();
 
     // Get settings option; set default values.
-    $psing_allow_script_url = get_option( 'psing_allow_script_url', true );
-    $psing_allow_style_url = get_option( 'psing_allow_style_url', true );
-    $psing_post_types = get_option( 'psing_post_types', array() );
+    $postscript_allow_script_url = get_option( 'postscript_allow_script_url', true );
+    $postscript_allow_style_url = get_option( 'postscript_allow_style_url', true );
+    $postscript_post_types = get_option( 'postscript_post_types', array() );
 
     $array = array();
-    // delete_option( 'psing_added_scripts' );
-    add_option( 'psing_added_scripts', $array );
-    $psing_added_scripts = get_option( 'psing_added_scripts', $array );
+    // delete_option( 'postscript_added_scripts' );
+    add_option( 'postscript_added_scripts', $array );
+    $postscript_added_scripts = get_option( 'postscript_added_scripts', $array );
 
     ?>
     <div class="wrap">
         <h2><?php _e( 'Post Scripting: Settings', 'postscript'); ?></h2>
-        <div id="psing_settings_boxes" class="postbox-container">
+        <div id="postscript_settings_boxes" class="postbox-container">
             <div class="metabox-holder">
                     <pre><?php // print_r( $_REQUEST['script'] ); ?></pre>
-                    <pre><?php // echo $found = ( in_array( $_REQUEST['script'][0], $psing_added_scripts ) ) ? 'yo' : 'no' ?></pre>
-                <div id="psing-allow-urls" class="postbox">
+                    <pre><?php // echo $found = ( in_array( $_REQUEST['script'][0], $postscript_added_scripts ) ) ? 'yo' : 'no' ?></pre>
+                <div id="postscript-allow-urls" class="postbox">
                     <h3><?php _e( 'Heading level 3', 'postscript' ); ?></h3>
                     <div class="inside">
                         <p>
-                            <?php _e( 'Paragraph text.', 'postscript' ); ?><?php echo " (psing_allow_script_url: $psing_allow_script_url, psing_allow_style_url: $psing_allow_style_url)";
+                            <?php _e( 'Paragraph text.', 'postscript' ); ?><?php echo " (postscript_allow_script_url: $postscript_allow_script_url, postscript_allow_style_url: $postscript_allow_style_url)";
 
-                            // checked( get_option( 'psing_allow_script_url', 'on' ) );
+                            // checked( get_option( 'postscript_allow_script_url', 'on' ) );
                             ?>
                             ?>
                         </p>
-                        <form method="post" action="<?php echo admin_url( 'options-general.php?page=psing-settings' ); ?>">
+                        <form method="post" action="<?php echo admin_url( 'options-general.php?page=postscript-settings' ); ?>">
                             <fieldset>
                                 <legend><?php _e( 'Allow users to enqueue URLs in post meta box:', 'postscript' ); ?></legend>
                                 <ul>
-                                    <li><input type="checkbox" id="psing_allow_script_url" name="psing_allow_script_url" <?php checked( get_option( 'psing_allow_script_url', true ) ); ?> /> <label for="psing_allow_script_url"><?php _e( 'Allow script URL', 'postscript' ); ?></label>
+                                    <li><input type="checkbox" id="postscript_allow_script_url" name="postscript_allow_script_url" <?php checked( get_option( 'postscript_allow_script_url', true ) ); ?> /> <label for="postscript_allow_script_url"><?php _e( 'Allow script URL', 'postscript' ); ?></label>
                                     </li>
-                                    <li><input type="checkbox" id="psing_allow_style_url" name="psing_allow_style_url" <?php checked( get_option( 'psing_allow_style_url', true ) ); ?> /> <label for="psing_allow_style_url"><?php _e( 'Allow style URL', 'postscript' ); ?></label>
+                                    <li><input type="checkbox" id="postscript_allow_style_url" name="postscript_allow_style_url" <?php checked( get_option( 'postscript_allow_style_url', true ) ); ?> /> <label for="postscript_allow_style_url"><?php _e( 'Allow style URL', 'postscript' ); ?></label>
                                     </li>
                                 </ul>
                             </fieldset>
                             <p>
-                                <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'psing-nonce' ); ?>" />
-                                <input type="hidden" name="action" value="psing-allow-urls" />
+                                <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'postscript-nonce' ); ?>" />
+                                <input type="hidden" name="action" value="postscript-allow-urls" />
                             </p>
 
-                            <p><input type="submit" name="psing-allow-urls-submit" class="button-primary" value="<?php _e( 'Update Allowed URLs', 'postscript' ) ?>"/></p>
+                            <p><input type="submit" name="postscript-allow-urls-submit" class="button-primary" value="<?php _e( 'Update Allowed URLs', 'postscript' ) ?>"/></p>
                         </form>
                     </div><!-- .inside -->
                 </div><!-- .postbox -->
 
-                <div id="psing-post-types" class="postbox">
+                <div id="postscript-post-types" class="postbox">
                     <h3><?php _e( 'Allowed Post Types', 'postscript' ); ?></h3>
                     <div class="inside">
                         <p>
-                            <?php _e( 'The Post Scripting box displays on the edit screen for the post types you choose.', 'postscript' ); ?><?php echo '<br />psing_post_types: '; print_r( $psing_post_types ); ?>
+                            <?php _e( 'The Post Scripting box displays on the edit screen for the post types you choose.', 'postscript' ); ?><?php echo '<br />postscript_post_types: '; print_r( $postscript_post_types ); ?>
                         </p>
-                        <form method="post" action="<?php echo admin_url( 'options-general.php?page=psing-settings' ); ?>">
+                        <form method="post" action="<?php echo admin_url( 'options-general.php?page=postscript-settings' ); ?>">
                             <fieldset>
                                 <legend><?php _e( 'Display Post Scripting box for these post types:', 'postscript' ); ?></legend>
                                 <ul>
@@ -107,57 +107,57 @@ function psing_settings_page() {
                                        'public'     => true,
                                     );
                                     $post_types = get_post_types( $args, 'objects' );
-                                    // $psing_post_types = isset( $_POST['psing_post_types'] ) ? $_POST[ 'psing_post_types' ] : array(); // Initialize
+                                    // $postscript_post_types = isset( $_POST['postscript_post_types'] ) ? $_POST[ 'postscript_post_types' ] : array(); // Initialize
 
                                     foreach ( $post_types as $post_type ) {
                                         $post_type_name = $post_type->labels->name;
                                         $post_type = $post_type->name;
                                     ?>
-                                    <li><input type="checkbox" id="cb-<?php echo $post_type; ?>" value="<?php echo $post_type; ?>" name="psing_post_types[]" <?php checked( in_array( $post_type, $psing_post_types ) ); ?> /> <label for="cb-<?php echo $post_type; ?>"><?php echo $post_type_name; ?></label></li>
-                                    <?php // replace with:  <?php checked( isset( $psing_post_types[$post_type] ) ); ?>
+                                    <li><input type="checkbox" id="cb-<?php echo $post_type; ?>" value="<?php echo $post_type; ?>" name="postscript_post_types[]" <?php checked( in_array( $post_type, $postscript_post_types ) ); ?> /> <label for="cb-<?php echo $post_type; ?>"><?php echo $post_type_name; ?></label></li>
+                                    <?php // replace with:  <?php checked( isset( $postscript_post_types[$post_type] ) ); ?>
                                     <?php } ?>
                                 </ul>
                             </fieldset>
                             <p>
-                                <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'psing-nonce' ); ?>" />
-                                <input type="hidden" name="action" value="psing-post-types" />
+                                <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'postscript-nonce' ); ?>" />
+                                <input type="hidden" name="action" value="postscript-post-types" />
                             </p>
 
-                            <p><input type="submit" name="psing-post-types-submit" class="button-primary" value="<?php _e( 'Update Allowed Post Types', 'postscript' ) ?>"/></p>
+                            <p><input type="submit" name="postscript-post-types-submit" class="button-primary" value="<?php _e( 'Update Allowed Post Types', 'postscript' ) ?>"/></p>
                         </form>
                     </div><!-- .inside -->
                 </div><!-- .postbox -->
 
-                <div id="psing-add-script" class="postbox">
+                <div id="postscript-add-script" class="postbox">
                     <h3><?php _e( 'Add a Registered Script', 'postscript' ); ?></h3>
                     <div class="inside">
                         <p>
-                            <?php _e( 'You can only add scripts that are already registered (using the <code><a href="https://developer.wordpress.org/reference/functions/wp_register_script/">wp_register_script()</a></code> function).', 'postscript' ); ?><?php echo '<br />psing_added_scripts: '; print_r( $psing_added_scripts ); ?>
+                            <?php _e( 'You can only add scripts that are already registered (using the <code><a href="https://developer.wordpress.org/reference/functions/wp_register_script/">wp_register_script()</a></code> function).', 'postscript' ); ?><?php echo '<br />postscript_added_scripts: '; print_r( $postscript_added_scripts ); ?>
                         </p>
-                        <form method="post" action="<?php echo admin_url( 'options-general.php?page=psing-settings' ); ?>">
-                                <label for="psing_add_script"><?php _e( 'Add a registered script', 'postscript' ); ?></label>
-                                <select name='psing_add_script' id='psing_add_script'>
+                        <form method="post" action="<?php echo admin_url( 'options-general.php?page=postscript-settings' ); ?>">
+                                <label for="postscript_add_script"><?php _e( 'Add a registered script', 'postscript' ); ?></label>
+                                <select name='postscript_add_script' id='postscript_add_script'>
                                     <option value=''><?php _e( 'Select script', 'postscript' ); ?></option>
                                     <?php
-                                    $script_handles = psing_reg_scripts_arr();
+                                    $script_handles = postscript_reg_scripts_arr();
                                     foreach( $script_handles as $handle ) {
                                         echo "<option value=\"$handle\">$handle</option>";
                                     }
                                     ?>
                                 </select>
                             <p>
-                                <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'psing-nonce' ); ?>" />
-                                <input type="hidden" name="action" value="psing-add-script" />
+                                <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'postscript-nonce' ); ?>" />
+                                <input type="hidden" name="action" value="postscript-add-script" />
                             </p>
-                            <p><input type="submit" name="psing-add-script" class="button-primary" value="<?php _e( 'Add script', 'postscript' ) ?>"/></p>
+                            <p><input type="submit" name="postscript-add-script" class="button-primary" value="<?php _e( 'Add script', 'postscript' ) ?>"/></p>
                         </form>
                         <?php
-                        $psing_reg_scripts_arr = psing_object_into_array( $wp_scripts->registered );
-                        sort( $psing_reg_scripts_arr );
+                        $postscript_reg_scripts_arr = postscript_object_into_array( $wp_scripts->registered );
+                        sort( $postscript_reg_scripts_arr );
 
-                        $psing_added_script_keys = array();
+                        $postscript_added_script_keys = array();
 
-                        function psing_arr_value_keys( $arr_multi, $field, $value ) {
+                        function postscript_arr_value_keys( $arr_multi, $field, $value ) {
                            foreach( $arr_multi as $key => $arr ) {
                               if ( $arr[$field] === $value )
                                  return $arr;
@@ -165,8 +165,8 @@ function psing_settings_page() {
                            return false;
                         }
 
-                        foreach ( $psing_added_scripts as $handle) {
-                            $psing_added_script_keys[] = psing_arr_value_keys( $psing_reg_scripts_arr, 'handle', $handle );
+                        foreach ( $postscript_added_scripts as $handle) {
+                            $postscript_added_script_keys[] = postscript_arr_value_keys( $postscript_reg_scripts_arr, 'handle', $handle );
                         }
 
                         /**
@@ -174,25 +174,25 @@ function psing_settings_page() {
                          *
                          * @return Array
                          */
-                        function psing_table_data() {
-                            global $wp_scripts, $wp_styles; $psing_added_script_keys;
+                        function postscript_table_data() {
+                            global $wp_scripts, $wp_styles; $postscript_added_script_keys;
 
-                            $psing_added_scripts = get_option( 'psing_added_scripts' );
+                            $postscript_added_scripts = get_option( 'postscript_added_scripts' );
 
-                            $psing_reg_scripts_arr = psing_object_into_array( $wp_scripts->registered );
-                            sort( $psing_reg_scripts_arr );
+                            $postscript_reg_scripts_arr = postscript_object_into_array( $wp_scripts->registered );
+                            sort( $postscript_reg_scripts_arr );
 
-                            foreach ( $psing_added_scripts as $handle) {
-                                $psing_added_script_keys[] = psing_arr_value_keys( $psing_reg_scripts_arr, 'handle', $handle );
+                            foreach ( $postscript_added_scripts as $handle) {
+                                $postscript_added_script_keys[] = postscript_arr_value_keys( $postscript_reg_scripts_arr, 'handle', $handle );
                             }
 
-                            return $psing_added_script_keys;
+                            return $postscript_added_script_keys;
                         }
 
 
 
-                        // echo '<p>psing_added_script_keys:<br />';
-                        // print_r( $psing_added_script_keys );
+                        // echo '<p>postscript_added_script_keys:<br />';
+                        // print_r( $postscript_added_script_keys );
                         echo '</pre>';
                         ?>
 
@@ -207,73 +207,73 @@ function psing_settings_page() {
         </div><!-- .postbox-container -->
 
         <section class="clear">
-        <div id="psing-added-scripts-table" class="icon32"><br/></div>
+        <div id="postscript-added-scripts-table" class="icon32"><br/></div>
             <h2>Selected scripts</h2>
 
-            <form method="get" action="<?php echo admin_url( 'options-general.php?page=psing-settings' ); ?>">
+            <form method="get" action="<?php echo admin_url( 'options-general.php?page=postscript-settings' ); ?>">
                 <!-- For plugins, we also need to ensure that the form posts back to our current page -->
                 <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
                 <!-- Now we can render the completed list table -->
                 <?php $exampleListTable->display(); ?>
             </form>
-            <?php // psing_render_script_list_form(); ?>
+            <?php // postscript_render_script_list_form(); ?>
         </section>
     </div><!-- .wrap -->
 
     <aside class="clear">
-        <?php // echo psing_get_scripts(); ?>
+        <?php // echo postscript_get_scripts(); ?>
         <p><?php echo get_num_queries(); ?> queries in <?php timer_stop( 1 ); ?> seconds uses <?php echo round( memory_get_peak_usage() / 1024 / 1024, 3 ); ?> MB peak memory.</p>
     </aside>
 
-    <!-- form id="psing-form" method="POST" action="">
+    <!-- form id="postscript-form" method="POST" action="">
         <p>
-            <input type="text" name="psing-handle" id="psing_handle" value="<?php _e('Get Results', 'postscript'); ?>"/>
-            <input type="submit" name="psing-submit" id="psing_submit" class="button-primary" value="<?php _e('Get Results', 'postscript'); ?>"/>
-            <img src="<?php echo admin_url( '/images/wpspin_light.gif' ); ?>" class="waiting" id="psing_loading" style="display:none;" />
+            <input type="text" name="postscript-handle" id="postscript_handle" value="<?php _e('Get Results', 'postscript'); ?>"/>
+            <input type="submit" name="postscript-submit" id="postscript_submit" class="button-primary" value="<?php _e('Get Results', 'postscript'); ?>"/>
+            <img src="<?php echo admin_url( '/images/wpspin_light.gif' ); ?>" class="waiting" id="postscript_loading" style="display:none;" />
         </p>
     </form>
-    <div id="psing_results"></div -->
+    <div id="postscript_results"></div -->
     <?php
 
 }
 
-function psing_update_settings() {
+function postscript_update_settings() {
 
     if ( ! empty( $_POST ) ) {
 
         $nonce = $_REQUEST['_wpnonce'];
-        if ( ! wp_verify_nonce( $nonce, 'psing-nonce' ) ) {
+        if ( ! wp_verify_nonce( $nonce, 'postscript-nonce' ) ) {
             // die( "Psing: Security check failed." );
         }
 
         // Settings to allow post editor field for users to enter script/style URLs (defualt: true).
-        if ( isset( $_POST['action'] ) && $_POST['action'] == 'psing-allow-urls' ) {
-            $psing_allow_script_url = ( isset( $_POST['psing_allow_script_url'] ) ) ? true : false;
-            $psing_allow_style_url = ( isset( $_POST['psing_allow_style_url'] ) ) ? true : false;
-            update_option( 'psing_allow_script_url', (bool) $psing_allow_script_url );
-            update_option( 'psing_allow_style_url', (bool) $psing_allow_style_url );
+        if ( isset( $_POST['action'] ) && $_POST['action'] == 'postscript-allow-urls' ) {
+            $postscript_allow_script_url = ( isset( $_POST['postscript_allow_script_url'] ) ) ? true : false;
+            $postscript_allow_style_url = ( isset( $_POST['postscript_allow_style_url'] ) ) ? true : false;
+            update_option( 'postscript_allow_script_url', (bool) $postscript_allow_script_url );
+            update_option( 'postscript_allow_style_url', (bool) $postscript_allow_style_url );
             $message = __( "Allow URLs settings updated.", 'postscript' );
 
             return "<div class='updated'><p>" . $message . "</p></div>";
         }
 
         // Settings for user to chose the post type(s) (to display meta box on editor screen).
-        if ( isset( $_POST['action'] ) && $_POST['action'] == 'psing-post-types' ) {
-            $psing_post_types = ( isset( $_POST['psing_post_types'] ) ) ? $_POST['psing_post_types'] : array();
-            update_option( 'psing_post_types', (array) $psing_post_types );
+        if ( isset( $_POST['action'] ) && $_POST['action'] == 'postscript-post-types' ) {
+            $postscript_post_types = ( isset( $_POST['postscript_post_types'] ) ) ? $_POST['postscript_post_types'] : array();
+            update_option( 'postscript_post_types', (array) $postscript_post_types );
             $message = __( "Post type settings updated.", 'postscript' );
 
             return "<div class='updated'><p>" . $message . "</p></div>";
         }
 
         // Setting that builds array of allowed script handles.
-        if ( isset( $_POST['action'] ) && $_POST['action'] == 'psing-add-script' ) {
-            $psing_add_script = sanitize_text_field( $_POST['psing_add_script'] );
-            $psing_added_scripts = get_option( 'psing_added_scripts' );
+        if ( isset( $_POST['action'] ) && $_POST['action'] == 'postscript-add-script' ) {
+            $postscript_add_script = sanitize_text_field( $_POST['postscript_add_script'] );
+            $postscript_added_scripts = get_option( 'postscript_added_scripts' );
 
-            if ( is_array( $psing_added_scripts ) && ! in_array( $psing_add_script, $psing_added_scripts ) ) {
-                $psing_added_scripts[] = $psing_add_script;
-                update_option( 'psing_added_scripts', (array) $psing_added_scripts );
+            if ( is_array( $postscript_added_scripts ) && ! in_array( $postscript_add_script, $postscript_added_scripts ) ) {
+                $postscript_added_scripts[] = $postscript_add_script;
+                update_option( 'postscript_added_scripts', (array) $postscript_added_scripts );
                 $message = __( "Script added to list.", 'postscript' );
                 $class = 'updated';
             } else {
@@ -297,7 +297,7 @@ function psing_update_settings() {
 /**
  * Makes an alphabetized array of registered script handles.
  */
-function psing_reg_scripts_arr() {
+function postscript_reg_scripts_arr() {
     global $wp_scripts;
     $script_handles = array();
 
@@ -314,7 +314,7 @@ function psing_reg_scripts_arr() {
 /**
  * Return only matching array elements..
  */
-function psing_filter_array() {
+function postscript_filter_array() {
 
     global $wp_scripts;
     $script_handles = array();
@@ -335,7 +335,7 @@ function psing_filter_array() {
  *
  * https://coderwall.com/p/8mmicq/php-convert-mixed-array-objects-recursively
  */
-function psing_object_into_array( $obj ) {
+function postscript_object_into_array( $obj ) {
     if (is_object( $obj ) )
         $obj = get_object_vars( $obj );
 
@@ -375,24 +375,24 @@ function postscript_admin_notice() {
 /**
  * Creates settings fields via WordPress Settings API.
  */
-function psing_register_settings() {
+function postscript_register_settings() {
 
-    // $psing_added_scripts[] = 'yo2';
+    // $postscript_added_scripts[] = 'yo2';
 
 
-    register_setting( 'psing-settings-url-group', 'psing_options', 'sanitize_text_field' );
-    register_setting( 'psing-settings-url-group', 'psing_options', 'sanitize_text_field' );
-    register_setting( 'psing-settings-scripts-group', 'psing_options', 'sanitize_text_field' );
-    register_setting( 'psing-settings-styles-group', 'psing_options', 'sanitize_text_field' );
-    // add_settings_section('psing_settings_section', 'Post Scripting Settings', 'psing_section_callback', 'psing-settings');
-    // add_settings_field('psing_scripts_field', sprintf( __( '%1$sAdd a Registered Script%2$s', 'postscript' ), '<label for"psing_scripts_field">', '</label>' ), 'psing_scripts_field_callback', 'psing-settings', 'psing_settings_section');
+    register_setting( 'postscript-settings-url-group', 'postscript_options', 'sanitize_text_field' );
+    register_setting( 'postscript-settings-url-group', 'postscript_options', 'sanitize_text_field' );
+    register_setting( 'postscript-settings-scripts-group', 'postscript_options', 'sanitize_text_field' );
+    register_setting( 'postscript-settings-styles-group', 'postscript_options', 'sanitize_text_field' );
+    // add_settings_section('postscript_settings_section', 'Post Scripting Settings', 'postscript_section_callback', 'postscript-settings');
+    // add_settings_field('postscript_scripts_field', sprintf( __( '%1$sAdd a Registered Script%2$s', 'postscript' ), '<label for"postscript_scripts_field">', '</label>' ), 'postscript_scripts_field_callback', 'postscript-settings', 'postscript_settings_section');
 
 }
-// add_action('admin_init', 'psing_register_settings');
+// add_action('admin_init', 'postscript_register_settings');
 
-function psing_section_callback() {
-    echo '<p>psing_section_text()</p>';
-    settings_fields( 'psing-settings-scripts-group' );
+function postscript_section_callback() {
+    echo '<p>postscript_section_text()</p>';
+    settings_fields( 'postscript-settings-scripts-group' );
 }
 
 
@@ -400,7 +400,7 @@ function psing_section_callback() {
 /**
  * Outputs HTML select element populated with registered script handles (alphabetized).
  */
-function psing_scripts_field_callback() {
+function postscript_scripts_field_callback() {
     global $wp_scripts;
     $scripts_data = '';
     $scripts_arr = array();
@@ -411,9 +411,9 @@ function psing_scripts_field_callback() {
     }
     sort( $scripts_arr );
 
-    // $options = get_option( 'psing_scripts_option' );
+    // $options = get_option( 'postscript_scripts_option' );
     ?>
-    <select id="psing_scripts_field" name="psing_options[psing_scripts_option]">
+    <select id="postscript_scripts_field" name="postscript_options[postscript_scripts_option]">
         <option value=''><?php _e( 'Select a script:', 'postscript' ); ?></option>
         <?php
         foreach( $scripts_arr as $script_handle ) {
@@ -424,7 +424,7 @@ function psing_scripts_field_callback() {
     <?php
 }
 
-function psing_styles_field_callback() {
+function postscript_styles_field_callback() {
     global $wp_styles;
     $styles_data = '';
     $styles_arr = array();
@@ -435,9 +435,9 @@ function psing_styles_field_callback() {
     }
     sort( $styles_arr );
 
-    $options = get_option( 'psing_styles_option' );
+    $options = get_option( 'postscript_styles_option' );
     ?>
-    <select id="psing_styles_field" name="psing_options[psing_styles_option]">
+    <select id="postscript_styles_field" name="postscript_options[postscript_styles_option]">
         <option value=''><?php _e( 'Select a style:', 'postscript' ); ?></option>
         <?php
         foreach( $styles_arr as $style_handle ) {
@@ -451,28 +451,28 @@ function psing_styles_field_callback() {
 /**
  * Loads AJAX scripts for processing admin settings page form.
  */
-function psing_load_scripts( $hook_suffix ) {
+function postscript_load_scripts( $hook_suffix ) {
 
-    global $psing_settings;
+    global $postscript_settings;
 
-    if( $hook_suffix != $psing_settings )
+    if( $hook_suffix != $postscript_settings )
         return;
 
-    wp_enqueue_script( 'psing-ajax', plugin_dir_url( __FILE__ ) . 'psing-ajax.js', array( 'jquery' ) );
-    wp_localize_script( 'psing-ajax', 'psing_vars', array(
-            'psing_nonce' => wp_create_nonce( 'psing-nonce' )
+    wp_enqueue_script( 'postscript-ajax', plugin_dir_url( __FILE__ ) . 'postscript-ajax.js', array( 'jquery' ) );
+    wp_localize_script( 'postscript-ajax', 'postscript_vars', array(
+            'postscript_nonce' => wp_create_nonce( 'postscript-nonce' )
         )
     );
 
 }
-// add_action( 'admin_enqueue_scripts', 'psing_load_scripts' );
+// add_action( 'admin_enqueue_scripts', 'postscript_load_scripts' );
 
 /**
  * Check for script registration.
  */
-function psing_process_ajax() {
+function postscript_process_ajax() {
 
-    if( ! isset( $_POST['psing_nonce'] ) || ! wp_verify_nonce( $_POST['psing_nonce'], 'psing-nonce' ) ) {
+    if( ! isset( $_POST['postscript_nonce'] ) || ! wp_verify_nonce( $_POST['postscript_nonce'], 'postscript-nonce' ) ) {
         die( 'Permissions check failed' );
     }
 
@@ -491,7 +491,7 @@ function psing_process_ajax() {
     die();
 
 }
-// add_action( 'wp_ajax_psing_get_results', 'psing_process_ajax' );
+// add_action( 'wp_ajax_postscript_get_results', 'postscript_process_ajax' );
 
 
 
