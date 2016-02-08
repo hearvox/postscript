@@ -25,7 +25,7 @@
 function postscript_admin_page() {
 
     global $postscript_settings;
-    $postscript_settings = add_options_page( __('Postscript: Enqueue Scripts and Style', 'postscript' ), __( 'Postscript', 'postscript' ), 'manage_options', 'postscript-settings', 'postscript_load' );
+    $postscript_settings = add_options_page( __('Postscript: Enqueue Scripts and Style', 'postscript' ), __( 'Postscripting', 'postscript' ), 'manage_options', 'postscript-settings', 'postscript_load' );
 
     add_action( 'admin_init', 'postscript_register_settings' );
 
@@ -369,8 +369,14 @@ function postscript_admin_notice() {
 
 
 
+/*
+http://ottopress.com/2009/wordpress-settings-api-tutorial/
+https://codex.wordpress.org/Settings_API
 
 
+http://code.tutsplus.com/tutorials/the-complete-guide-to-the-wordpress-settings-api-part-4-on-theme-options--wp-24902
+
+*/
 
 /**
  * Creates settings fields via WordPress Settings API.
@@ -380,20 +386,117 @@ function postscript_register_settings() {
     // $postscript_added_scripts[] = 'yo2';
 
 
-    register_setting( 'postscript-settings-url-group', 'postscript_options', 'sanitize_text_field' );
-    register_setting( 'postscript-settings-url-group', 'postscript_options', 'sanitize_text_field' );
-    register_setting( 'postscript-settings-scripts-group', 'postscript_options', 'sanitize_text_field' );
-    register_setting( 'postscript-settings-styles-group', 'postscript_options', 'sanitize_text_field' );
-    // add_settings_section('postscript_settings_section', 'Post Scripting Settings', 'postscript_section_callback', 'postscript-settings');
-    // add_settings_field('postscript_scripts_field', sprintf( __( '%1$sAdd a Registered Script%2$s', 'postscript' ), '<label for"postscript_scripts_field">', '</label>' ), 'postscript_scripts_field_callback', 'postscript-settings', 'postscript_settings_section');
+    // register_setting( 'postscript-settings-url-group', 'postscript_options', 'sanitize_text_field' );
+    // register_setting( 'postscript-settings-url-group', 'postscript_options', 'sanitize_text_field' );
+    // register_setting( 'postscript-settings-scripts-group', 'postscript_options', 'sanitize_text_field' );
+    // register_setting( 'postscript-settings-styles-group', 'postscript_options', 'sanitize_text_field' );
+
+     // add_settings_field('postscript_scripts_field', sprintf( __( '%1$sAdd a Registered Script%2$s', 'postscript' ), '<label for"postscript_scripts_field">', '</label>' ), 'postscript_scripts_field_callback', 'general', 'postscript_settings_section');
+
+
+    add_settings_section(
+        'postscript_settings_section',
+        'Postscript Settings',
+        'postscript_section_callback',
+        'general'
+    );
+
+    add_settings_field(
+        'postscript_allow_style_url_field',
+        sprintf( __( '%1$sAllow Style URL%2$s', 'postscript' ), '<label for"postscript_allow_script_url_field">', '</label>' ),
+        'postscript_allow_style_url_field_callback',
+        'general',
+        'postscript_settings_section'
+    );
+
+    add_settings_field(
+        'postscript_allow_script_url_field',
+        sprintf( __( '%1$sAllow Script URL%2$s', 'postscript' ), '<label for"postscript_allow_script_url_field">', '</label>' ),
+        'postscript_allow_script_url_field_callback',
+        'general',
+        'postscript_settings_section'
+    );
+
+    register_setting(
+        'general',
+        'postscript_allow_style_url_field'
+    );
+
+    register_setting(
+        'general',
+        'postscript_allow_script_url_field'
+    );
+
+
 
 }
-// add_action('admin_init', 'postscript_register_settings');
+add_action('admin_init', 'postscript_register_settings');
 
 function postscript_section_callback() {
     echo '<p>postscript_section_text()</p>';
-    settings_fields( 'postscript-settings-scripts-group' );
+    // settings_fields( 'postscript-settings-scripts-group' );
 }
+
+/**
+ * Outputs HTML checkbox.
+ */
+function postscript_allow_style_url_field_callback() {
+    ?>
+    <input type="checkbox" id="postscript_allow_style_url_field" name="postscript_allow_style_url_field" value="1" <?php checked( 1, get_option( 'postscript_allow_style_url_field' ) ); ?>/>
+    <?php
+}
+
+/**
+ * Outputs HTML checkbox.
+ */
+function postscript_allow_script_url_field_callback() {
+    ?>
+    <input type="checkbox" id="postscript_allow_script_url_field" name="postscript_allow_script_url_field" value="1" <?php checked( 1, get_option( 'postscript_allow_script_url_field' ) ); ?>/>
+    <?php
+}
+
+
+
+function sandbox_example_plugin_menu() {
+    add_options_page(
+        __('Postscript: Enqueue Scripts and Style', 'postscript' ),
+        __( 'Postscript', 'postscript' ),
+        'manage_options',
+        'postscript-settings-page',
+        'sandbox_options_display' );
+
+}
+add_action('admin_menu', 'sandbox_example_plugin_menu');
+
+function sandbox_options_display() {
+
+    // Create a header in the default WordPress 'wrap' container
+    $html = '<div class="wrap">';
+        $html .= '<h2>Sandbox Plugin Options</h2>';
+        $html .= '<p class="description">There are currently no options. This is just for demo purposes.</p>';
+    $html .= '</div>';
+
+    // Send the markup to the browser
+    echo $html;
+
+} // end sandbox_plugin_display
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
