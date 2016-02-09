@@ -27,7 +27,7 @@ function postscript_admin_page() {
     global $postscript_settings;
     $postscript_settings = add_options_page( __('Postscript: Enqueue Scripts and Style', 'postscript' ), __( 'Postscripting', 'postscript' ), 'manage_options', 'postscript-settings', 'postscript_load' );
 
-    add_action( 'admin_init', 'postscript_register_settings' );
+    add_action( 'admin_init', 'postscript_display_options_init' );
 
 }
 add_action( 'admin_menu', 'postscript_admin_page' );
@@ -376,12 +376,67 @@ https://codex.wordpress.org/Settings_API
 
 http://code.tutsplus.com/tutorials/the-complete-guide-to-the-wordpress-settings-api-part-4-on-theme-options--wp-24902
 
+Options to remove:
+postscript_allow_style_url_field
+postscript_allow_script_url_field
+
 */
+
+/* ------------------------------------------------------------------------ *
+ * Wordpress Settings API
+ * ------------------------------------------------------------------------ */
+
+/**
+ * Adds submenu item to Settings dashboard menu.
+ *
+ */
+function postscript_settings_menu() {
+    add_options_page(
+        __('Postscript: Enqueue Scripts and Style', 'postscript' ),
+        __( 'Postscript', 'postscript' ),
+        'manage_options',
+        'postscript_display_options',
+        'postscript_settings_display' );
+
+}
+add_action('admin_menu', 'postscript_settings_menu');
+
+/**
+ * Renders settings menu page.
+ */
+function postscript_settings_display() {
+?>
+    <!-- Create a header in the default WordPress 'wrap' container -->
+    <div class="wrap">
+
+        <!-- Add the icon to the page -->
+        <h2><?php _e('Postscript settings', 'postscript' ); ?></h2>
+
+        <!-- Make a call to the WordPress function for rendering errors when settings are saved. -->
+        <?php settings_errors(); ?>
+
+        <!-- Create the form that will be used to render our options -->
+        <form method="post" action="options.php">
+            <?php settings_fields( 'postscript_display_options' ); ?>
+            <?php do_settings_sections( 'postscript_display_options' ); ?>
+            <?php submit_button(); ?>
+        </form>
+
+        <pre>
+            <?php print_r( get_option( 'postscript_display_options' ) ); ?>
+        </pre>
+    </div><!-- /.wrap -->
+<?php
+}
+
+/* ------------------------------------------------------------------------ *
+ * Setting Registration
+ * ------------------------------------------------------------------------ */
 
 /**
  * Creates settings fields via WordPress Settings API.
  */
-function postscript_register_settings() {
+function postscript_display_options_init() {
 
     // $postscript_added_scripts[] = 'yo2';
 
@@ -390,96 +445,80 @@ function postscript_register_settings() {
     // register_setting( 'postscript-settings-url-group', 'postscript_options', 'sanitize_text_field' );
     // register_setting( 'postscript-settings-scripts-group', 'postscript_options', 'sanitize_text_field' );
     // register_setting( 'postscript-settings-styles-group', 'postscript_options', 'sanitize_text_field' );
+    // add_settings_field('postscript_scripts_field', sprintf( __( '%1$sAdd a Registered Script%2$s', 'postscript' ), '<label for"postscript_scripts_field">', '</label>' ), 'postscript_scripts_field_callback', 'general', 'postscript_settings_section');
 
-     // add_settings_field('postscript_scripts_field', sprintf( __( '%1$sAdd a Registered Script%2$s', 'postscript' ), '<label for"postscript_scripts_field">', '</label>' ), 'postscript_scripts_field_callback', 'general', 'postscript_settings_section');
-
+    if ( false == get_option( 'postscript_display_options' ) ) {
+        add_option( 'postscript_display_options' );
+    }
 
     add_settings_section(
         'postscript_settings_section',
-        'Postscript Settings',
+        __( 'Allow URLs', 'postscript' ),
         'postscript_section_callback',
-        'general'
+        'postscript_display_options'
     );
 
     add_settings_field(
-        'postscript_allow_style_url_field',
-        sprintf( __( '%1$sAllow Style URL%2$s', 'postscript' ), '<label for"postscript_allow_script_url_field">', '</label>' ),
-        'postscript_allow_style_url_field_callback',
-        'general',
+        'postscript_style_url',
+        sprintf( __( '%1$sStyle URL%2$s', 'postscript' ), '<label for"postscript_script_url">', '</label>' ),
+        'postscript_style_url_callback',
+        'postscript_display_options',
         'postscript_settings_section'
     );
 
     add_settings_field(
-        'postscript_allow_script_url_field',
-        sprintf( __( '%1$sAllow Script URL%2$s', 'postscript' ), '<label for"postscript_allow_script_url_field">', '</label>' ),
-        'postscript_allow_script_url_field_callback',
-        'general',
+        'postscript_script_url',
+        sprintf( __( '%1$sScript URL%2$s', 'postscript' ), '<label for"postscript_script_url">', '</label>' ),
+        'postscript_script_url_callback',
+        'postscript_display_options',
         'postscript_settings_section'
     );
 
     register_setting(
-        'general',
-        'postscript_allow_style_url_field'
+        'postscript_display_options',
+        'postscript_display_options'
     );
-
-    register_setting(
-        'general',
-        'postscript_allow_script_url_field'
-    );
-
-
 
 }
-add_action('admin_init', 'postscript_register_settings');
+add_action('admin_init', 'postscript_display_options_init');
+
+/* ------------------------------------------------------------------------ *
+ * Section Callback
+ * ------------------------------------------------------------------------ */
 
 function postscript_section_callback() {
-    echo '<p>postscript_section_text()</p>';
-    // settings_fields( 'postscript-settings-scripts-group' );
+?>
+    <p><?php _e('Display text fields in Edit Post meta box to allow enqueuing by URL.', 'postscript' ); ?></p>
+<?php
+}
+
+/* ------------------------------------------------------------------------ *
+ * Field Callbacks
+ * ------------------------------------------------------------------------ */
+
+/**
+ * Outputs HTML checkbox.
+ */
+function postscript_style_url_callback() {
+    $options = get_option( 'postscript_display_options' );
+?>
+    <input type="checkbox" id="postscript_style_url" name="postscript_display_options[postscript_style_url]" value="1" <?php checked( 1, isset( $options['postscript_style_url'] ) ? $options['postscript_style_url'] : 0 ); ?>/>
+<?php
 }
 
 /**
  * Outputs HTML checkbox.
  */
-function postscript_allow_style_url_field_callback() {
-    ?>
-    <input type="checkbox" id="postscript_allow_style_url_field" name="postscript_allow_style_url_field" value="1" <?php checked( 1, get_option( 'postscript_allow_style_url_field' ) ); ?>/>
-    <?php
-}
-
-/**
- * Outputs HTML checkbox.
- */
-function postscript_allow_script_url_field_callback() {
-    ?>
-    <input type="checkbox" id="postscript_allow_script_url_field" name="postscript_allow_script_url_field" value="1" <?php checked( 1, get_option( 'postscript_allow_script_url_field' ) ); ?>/>
-    <?php
+function postscript_script_url_callback() {
+    $options = get_option( 'postscript_display_options' );
+?>
+    <input type="checkbox" id="postscript_script_url" name="postscript_display_options[postscript_script_url]" value="1" <?php checked( 1, isset( $options['postscript_script_url'] ) ? $options['postscript_script_url'] : 0 ); ?>/>
+<?php
 }
 
 
 
-function sandbox_example_plugin_menu() {
-    add_options_page(
-        __('Postscript: Enqueue Scripts and Style', 'postscript' ),
-        __( 'Postscript', 'postscript' ),
-        'manage_options',
-        'postscript-settings-page',
-        'sandbox_options_display' );
 
-}
-add_action('admin_menu', 'sandbox_example_plugin_menu');
-
-function sandbox_options_display() {
-
-    // Create a header in the default WordPress 'wrap' container
-    $html = '<div class="wrap">';
-        $html .= '<h2>Sandbox Plugin Options</h2>';
-        $html .= '<p class="description">There are currently no options. This is just for demo purposes.</p>';
-    $html .= '</div>';
-
-    // Send the markup to the browser
-    echo $html;
-
-} // end sandbox_plugin_display
 
 
 
