@@ -11,387 +11,8 @@
  */
 
 /* ------------------------------------------------------------------------ *
- * Admin Settings Page (Dashboard> Settings> Post Scripting)
+ * Admin Settings Page (Dashboard> Settings> Postscript)
  * ------------------------------------------------------------------------ */
-
-/**
- * Creates an admin menu item under Settings, and a settings page.
- *
- * Var $postscript_settings set to Page Hook Suffix -- return value of add_options_page().
- * Var used by postscript_load_scripts() (as $hook_suffix value), called by 'admin_enqueue_scripts' action.
- *
- * @uses postscript_admin_page() Called in filter
- */
-function postscript_admin_page() {
-
-    global $postscript_settings;
-    $postscript_settings = add_options_page( __('Postscript: Enqueue Scripts and Style', 'postscript' ), __( 'Postscripting', 'postscript' ), 'manage_options', 'postscript-settings', 'postscript_load' );
-
-    add_action( 'admin_init', 'postscript_display_options_init' );
-
-}
-add_action( 'admin_menu', 'postscript_admin_page' );
-
-/**
- * Builds HTML for admin settings page.
- */
-function postscript_settings_page() {
-    global $wp_scripts, $wp_styles;
-
-    $exampleListTable = new Pser_Scripts_Table();
-    $exampleListTable->prepare_items();
-
-    // echo postscript_update_settings();
-
-    // Get settings option; set default values.
-    $postscript_allow_script_url = get_option( 'postscript_allow_script_url', true );
-    $postscript_allow_style_url = get_option( 'postscript_allow_style_url', true );
-    $postscript_post_types = get_option( 'postscript_post_types', array() );
-
-    $array = array();
-    // delete_option( 'postscript_added_scripts' );
-    add_option( 'postscript_added_scripts', $array );
-    $postscript_added_scripts = get_option( 'postscript_added_scripts', $array );
-
-    ?>
-    <div class="wrap">
-        <h2><?php _e( 'Post Scripting: Settings', 'postscript'); ?></h2>
-        <div id="postscript_settings_boxes" class="postbox-container">
-            <div class="metabox-holder">
-                    <pre><?php // print_r( $_REQUEST['script'] ); ?></pre>
-                    <pre><?php // echo $found = ( in_array( $_REQUEST['script'][0], $postscript_added_scripts ) ) ? 'yo' : 'no' ?></pre>
-                <div id="postscript-allow-urls" class="postbox">
-                    <h3><?php _e( 'Heading level 3', 'postscript' ); ?></h3>
-                    <div class="inside">
-                        <p>
-                            <?php _e( 'Paragraph text.', 'postscript' ); ?><?php echo " (postscript_allow_script_url: $postscript_allow_script_url, postscript_allow_style_url: $postscript_allow_style_url)";
-
-                            // checked( get_option( 'postscript_allow_script_url', 'on' ) );
-                            ?>
-                            ?>
-                        </p>
-                        <form method="post" action="<?php echo admin_url( 'options-general.php?page=postscript-settings' ); ?>">
-                            <fieldset>
-                                <legend><?php _e( 'Allow users to enqueue URLs in post meta box:', 'postscript' ); ?></legend>
-                                <ul>
-                                    <li><input type="checkbox" id="postscript_allow_script_url" name="postscript_allow_script_url" <?php checked( get_option( 'postscript_allow_script_url', true ) ); ?> /> <label for="postscript_allow_script_url"><?php _e( 'Allow script URL', 'postscript' ); ?></label>
-                                    </li>
-                                    <li><input type="checkbox" id="postscript_allow_style_url" name="postscript_allow_style_url" <?php checked( get_option( 'postscript_allow_style_url', true ) ); ?> /> <label for="postscript_allow_style_url"><?php _e( 'Allow style URL', 'postscript' ); ?></label>
-                                    </li>
-                                </ul>
-                            </fieldset>
-                            <p>
-                                <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'postscript-nonce' ); ?>" />
-                                <input type="hidden" name="action" value="postscript-allow-urls" />
-                            </p>
-
-                            <p><input type="submit" name="postscript-allow-urls-submit" class="button-primary" value="<?php _e( 'Update Allowed URLs', 'postscript' ) ?>"/></p>
-                        </form>
-                    </div><!-- .inside -->
-                </div><!-- .postbox -->
-
-                <div id="postscript-post-types" class="postbox">
-                    <h3><?php _e( 'Allowed Post Types', 'postscript' ); ?></h3>
-                    <div class="inside">
-                        <p>
-                            <?php _e( 'The Post Scripting box displays on the edit screen for the post types you choose.', 'postscript' ); ?><?php echo '<br />postscript_post_types: '; print_r( $postscript_post_types ); ?>
-                        </p>
-                        <form method="post" action="<?php echo admin_url( 'options-general.php?page=postscript-settings' ); ?>">
-                            <fieldset>
-                                <legend><?php _e( 'Display Post Scripting box for these post types:', 'postscript' ); ?></legend>
-                                <ul>
-                                    <?php
-                                    // Gets post types explicitly set 'public' (but not registered only with individual public options):
-                                    // https://codex.wordpress.org/Function_Reference/get_post_types
-                                    $args = array(
-                                       'public'     => true,
-                                    );
-                                    $post_types = get_post_types( $args, 'objects' );
-                                    // $postscript_post_types = isset( $_POST['postscript_post_types'] ) ? $_POST[ 'postscript_post_types' ] : array(); // Initialize
-
-                                    foreach ( $post_types as $post_type ) {
-                                        $post_type_name = $post_type->labels->name;
-                                        $post_type = $post_type->name;
-                                    ?>
-                                    <li><input type="checkbox" id="cb-<?php echo $post_type; ?>" value="<?php echo $post_type; ?>" name="postscript_post_types[]" <?php checked( in_array( $post_type, $postscript_post_types ) ); ?> /> <label for="cb-<?php echo $post_type; ?>"><?php echo $post_type_name; ?></label></li>
-                                    <?php // replace with:  <?php checked( isset( $postscript_post_types[$post_type] ) ); ?>
-                                    <?php } ?>
-                                </ul>
-                            </fieldset>
-                            <p>
-                                <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'postscript-nonce' ); ?>" />
-                                <input type="hidden" name="action" value="postscript-post-types" />
-                            </p>
-
-                            <p><input type="submit" name="postscript-post-types-submit" class="button-primary" value="<?php _e( 'Update Allowed Post Types', 'postscript' ) ?>"/></p>
-                        </form>
-                    </div><!-- .inside -->
-                </div><!-- .postbox -->
-
-                <div id="postscript-add-script" class="postbox">
-                    <h3><?php _e( 'Add a Registered Script', 'postscript' ); ?></h3>
-                    <div class="inside">
-                        <p>
-                            <?php _e( 'You can only add scripts that are already registered (using the <code><a href="https://developer.wordpress.org/reference/functions/wp_register_script/">wp_register_script()</a></code> function).', 'postscript' ); ?><?php echo '<br />postscript_added_scripts: '; print_r( $postscript_added_scripts ); ?>
-                        </p>
-                        <form method="post" action="<?php echo admin_url( 'options-general.php?page=postscript-settings' ); ?>">
-                                <label for="postscript_add_script"><?php _e( 'Add a registered script', 'postscript' ); ?></label>
-                                <select name='postscript_add_script' id='postscript_add_script'>
-                                    <option value=''><?php _e( 'Select script', 'postscript' ); ?></option>
-                                    <?php
-                                    $script_handles = postscript_reg_scripts_arr();
-                                    foreach( $script_handles as $handle ) {
-                                        echo "<option value=\"$handle\">$handle</option>";
-                                    }
-                                    ?>
-                                </select>
-                            <p>
-                                <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'postscript-nonce' ); ?>" />
-                                <input type="hidden" name="action" value="postscript-add-script" />
-                            </p>
-                            <p><input type="submit" name="postscript-add-script" class="button-primary" value="<?php _e( 'Add script', 'postscript' ) ?>"/></p>
-                        </form>
-                        <?php
-                        $postscript_reg_scripts_arr = postscript_object_into_array( $wp_scripts->registered );
-                        sort( $postscript_reg_scripts_arr );
-
-                        $postscript_added_script_keys = array();
-
-                        function postscript_arr_value_keys( $arr_multi, $field, $value ) {
-                           foreach( $arr_multi as $key => $arr ) {
-                              if ( $arr[$field] === $value )
-                                 return $arr;
-                           }
-                           return false;
-                        }
-
-                        foreach ( $postscript_added_scripts as $handle) {
-                            $postscript_added_script_keys[] = postscript_arr_value_keys( $postscript_reg_scripts_arr, 'handle', $handle );
-                        }
-
-                        /**
-                         * Get the table data
-                         *
-                         * @return Array
-                         */
-                        function postscript_table_data() {
-                            global $wp_scripts, $wp_styles; $postscript_added_script_keys;
-
-                            $postscript_added_scripts = get_option( 'postscript_added_scripts' );
-
-                            $postscript_reg_scripts_arr = postscript_object_into_array( $wp_scripts->registered );
-                            sort( $postscript_reg_scripts_arr );
-
-                            foreach ( $postscript_added_scripts as $handle) {
-                                $postscript_added_script_keys[] = postscript_arr_value_keys( $postscript_reg_scripts_arr, 'handle', $handle );
-                            }
-
-                            return $postscript_added_script_keys;
-                        }
-
-
-
-                        // echo '<p>postscript_added_script_keys:<br />';
-                        // print_r( $postscript_added_script_keys );
-                        echo '</pre>';
-                        ?>
-
-
-                    </div><!-- .inside -->
-                </div><!-- .postbox -->
-
-                <?php postscript_load(); ?>
-
-
-            </div><!-- .metabox-holder -->
-        </div><!-- .postbox-container -->
-
-        <section class="clear">
-        <div id="postscript-added-scripts-table" class="icon32"><br/></div>
-            <h2>Selected scripts</h2>
-
-            <form method="get" action="<?php echo admin_url( 'options-general.php?page=postscript-settings' ); ?>">
-                <!-- For plugins, we also need to ensure that the form posts back to our current page -->
-                <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
-                <!-- Now we can render the completed list table -->
-                <?php $exampleListTable->display(); ?>
-            </form>
-            <?php // postscript_render_script_list_form(); ?>
-        </section>
-    </div><!-- .wrap -->
-
-    <aside class="clear">
-        <?php // echo postscript_get_scripts(); ?>
-        <p><?php echo get_num_queries(); ?> queries in <?php timer_stop( 1 ); ?> seconds uses <?php echo round( memory_get_peak_usage() / 1024 / 1024, 3 ); ?> MB peak memory.</p>
-    </aside>
-
-    <!-- form id="postscript-form" method="POST" action="">
-        <p>
-            <input type="text" name="postscript-handle" id="postscript_handle" value="<?php _e('Get Results', 'postscript'); ?>"/>
-            <input type="submit" name="postscript-submit" id="postscript_submit" class="button-primary" value="<?php _e('Get Results', 'postscript'); ?>"/>
-            <img src="<?php echo admin_url( '/images/wpspin_light.gif' ); ?>" class="waiting" id="postscript_loading" style="display:none;" />
-        </p>
-    </form>
-    <div id="postscript_results"></div -->
-    <?php
-
-}
-
-function postscript_update_settings() {
-
-    if ( ! empty( $_POST ) ) {
-
-        $nonce = $_REQUEST['_wpnonce'];
-        if ( ! wp_verify_nonce( $nonce, 'postscript-nonce' ) ) {
-            // die( "Psing: Security check failed." );
-        }
-
-        // Settings to allow post editor field for users to enter script/style URLs (defualt: true).
-        if ( isset( $_POST['action'] ) && $_POST['action'] == 'postscript-allow-urls' ) {
-            $postscript_allow_script_url = ( isset( $_POST['postscript_allow_script_url'] ) ) ? true : false;
-            $postscript_allow_style_url = ( isset( $_POST['postscript_allow_style_url'] ) ) ? true : false;
-            update_option( 'postscript_allow_script_url', (bool) $postscript_allow_script_url );
-            update_option( 'postscript_allow_style_url', (bool) $postscript_allow_style_url );
-            $message = __( "Allow URLs settings updated.", 'postscript' );
-
-            return "<div class='updated'><p>" . $message . "</p></div>";
-        }
-
-        // Settings for user to chose the post type(s) (to display meta box on editor screen).
-        if ( isset( $_POST['action'] ) && $_POST['action'] == 'postscript-post-types' ) {
-            $postscript_post_types = ( isset( $_POST['postscript_post_types'] ) ) ? $_POST['postscript_post_types'] : array();
-            update_option( 'postscript_post_types', (array) $postscript_post_types );
-            $message = __( "Post type settings updated.", 'postscript' );
-
-            return "<div class='updated'><p>" . $message . "</p></div>";
-        }
-
-        // Setting that builds array of allowed script handles.
-        if ( isset( $_POST['action'] ) && $_POST['action'] == 'postscript-add-script' ) {
-            $postscript_add_script = sanitize_text_field( $_POST['postscript_add_script'] );
-            $postscript_added_scripts = get_option( 'postscript_added_scripts' );
-
-            if ( is_array( $postscript_added_scripts ) && ! in_array( $postscript_add_script, $postscript_added_scripts ) ) {
-                $postscript_added_scripts[] = $postscript_add_script;
-                update_option( 'postscript_added_scripts', (array) $postscript_added_scripts );
-                $message = __( "Script added to list.", 'postscript' );
-                $class = 'updated';
-            } else {
-                $message = __( "Error: Script already in list.", 'postscript' );
-                $class = 'error';
-            }
-
-            return "<div class=\"$class\"><p>$message</p></div>";
-        }
-
-        return "<div class=\"$class\"><p>$message</p></div>";
-
-    } else {
-
-        return;
-
-    }
-
-}
-
-/**
- * Makes an alphabetized array of registered script handles.
- */
-function postscript_reg_scripts_arr() {
-    global $wp_scripts;
-    $script_handles = array();
-
-    // Make array to sort registered scripts by handle (from $wp_scripts object).
-    foreach( $wp_scripts->registered as $script_reg ) {
-        $script_handles[] = $script_reg->handle;
-    }
-
-    sort( $script_handles ); // Alphabetize.
-
-    return $script_handles;
-}
-
-/**
- * Return only matching array elements..
- */
-function postscript_filter_array() {
-
-    global $wp_scripts;
-    $script_handles = array();
-
-    // Make array to sort registered scripts by handle (from $wp_scripts object).
-    foreach( $wp_scripts->registered as $script_reg ) {
-        $script_handles[] = $script_reg->handle;
-    }
-
-    sort( $script_handles ); // Alphabetize.
-
-    return $script_handles;
-
-}
-
-/**
- * Convert an object to an array, recursively.
- *
- * https://coderwall.com/p/8mmicq/php-convert-mixed-array-objects-recursively
- */
-function postscript_object_into_array( $obj ) {
-    if (is_object( $obj ) )
-        $obj = get_object_vars( $obj );
-
-    return is_array( $obj ) ? array_map( __FUNCTION__, $obj ) : $obj;
-}
-
-function postscript_admin_notice() {
-    if ( isset( $_GET['action'] ) && $_GET['action'] == 'remove' ) {
-        if ( isset( $_GET['script'] ) ) {
-                $message = __( 'Items to be removed: ' . print_r( $_GET['script'], true ), 'postscript' );
-                $class = 'updated settings-updated';
-        ?>
-        <div class="<?php echo $class; ?> is-dismissible"><p><?php echo $message; ?> / action: <?php echo $_GET['action']; ?></p></div>
-        <?php
-        }
-    }
-}
-// add_action( 'admin_notices', 'postscript_admin_notice' );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-    // $postscript_added_scripts[] = 'yo2';
-
-
-    // register_setting( 'postscript-settings-url-group', 'postscript_options', 'sanitize_text_field' );
-    // register_setting( 'postscript-settings-url-group', 'postscript_options', 'sanitize_text_field' );
-    // register_setting( 'postscript-settings-scripts-group', 'postscript_options', 'sanitize_text_field' );
-    // register_setting( 'postscript-settings-styles-group', 'postscript_options', 'sanitize_text_field' );
-    // add_settings_field('postscript_scripts_field', sprintf( __( '%1$sAdd a Registered Script%2$s', 'postscript' ), '<label for"postscript_scripts_field">', '</label>' ), 'postscript_scripts_field_callback', 'general', 'postscript_settings_section');
-
-
-http://ottopress.com/2009/wordpress-settings-api-tutorial/
-https://codex.wordpress.org/Settings_API
-
-
-http://code.tutsplus.com/tutorials/the-complete-guide-to-the-wordpress-settings-api-part-4-on-theme-options--wp-24902
-
-Options to remove:
-postscript_allow_style_url_field
-postscript_allow_script_url_field
-
-*/
 
 /* ------------------------------------------------------------------------ *
  * Wordpress Settings API
@@ -431,12 +52,26 @@ function postscript_settings_display() {
             <?php settings_fields( 'postscript_display_options' ); ?>
             <?php do_settings_sections( 'postscript_display_options' ); ?>
             <?php submit_button(); ?>
+
+            <?php postscript_reg_scripts_select(); ?>
+            <?php postscript_render_script_list_form(); ?>
+
         </form>
 
-        <pre>
-            <?php print_r( get_option( 'postscript_display_options' ) ); ?>
-        </pre>
-    </div><!-- /.wrap -->
+        <aside class="clear">
+            <hr />
+            <h2>Test items</h2>
+            <pre>
+                <?php print_r( get_option( 'postscript_display_options' ) ); ?>
+                <?php global $wp_scripts; ?>
+                <?php print_r( $wp_scripts->registered ); ?>
+
+                <?php // print_r( wp_load_alloptions() ); ?>
+            </pre>
+            <p><?php echo get_num_queries(); ?> queries in <?php timer_stop( 1 ); ?> seconds uses <?php echo round( memory_get_peak_usage() / 1024 / 1024, 3 ); ?> MB peak memory.</p>
+        </aside>
+
+    </div><!-- .wrap -->
 <?php
 }
 
@@ -535,7 +170,6 @@ function postscript_allow_urls_callback() {
 <?php
 }
 
-
 /**
  * Outputs HTML checkboxes of user roles.
  */
@@ -587,6 +221,67 @@ function postscript_post_types_callback() {
     </fieldset>
 <?php
 }
+
+/* ------------------------------------------------------------------------ *
+ * Extending WP_List_Table class
+ * ------------------------------------------------------------------------ */
+
+
+
+
+/**
+ * Outputs HTML select element populated with registered script handles (alphabetized).
+ */
+function postscript_reg_scripts_select() {
+    global $wp_scripts;
+    $scripts_data = '';
+    $scripts_arr = array();
+
+    // Make array to sort registered scripts by handle (from $wp_scripts object).
+    foreach( $wp_scripts->registered as $script_reg ) {
+        $scripts_arr[] = $script_reg->handle;
+    }
+    sort( $scripts_arr );
+
+    // $options = get_option( 'postscript_scripts_option' );
+    ?>
+    <select id="postscript_scripts_field" name="postscript_options[postscript_scripts_option]">
+        <option value=''><?php _e( 'Select a script:', 'postscript' ); ?></option>
+        <?php
+        foreach( $scripts_arr as $script_handle ) {
+            echo "<option value=\"{$script_handle}\">{$script_handle}</option>";
+        }
+        ?>
+    </select>
+    <?php
+}
+
+/*
+@TODO
+Add/set version in options:
+$new_options['version'] = POSTSCRIPT_VERSION;
+
+<?php print_r( wp_load_alloptions() ); ?>
+depecated: get_alloptions
+
+rm:
+psing_allow_script_url
+psing_allow_style_url
+psing_added_scripts
+psing_post_types
+postscript_options
+postscript_allow_style_url_field
+postscript_allow_script_url_field
+postscript_settings
+
+
+Keep:
+postscript_display_options
+postscript_scripts
+postscript_styles
+
+ */
+
 
 
 
@@ -969,6 +664,7 @@ function postscript_configuration_screen() {
                 </ul>
             </fieldset>
             <p class="submit"><input type='submit' class='button-primary' value='<?php echo esc_attr( __( 'Save configuration', 'postscript' ) ); ?>' /></p>
+            <?php postscript_render_script_list_form(); ?>
         </form>
         <pre>
             <?php
@@ -1035,3 +731,349 @@ function postscript_esc_html_deep( $value ) {
 
     return $value;
 }
+
+
+/* ------------------------------------------------------------------------ *
+ * Admin Settings Page (Dashboard> Settings> Postscripting)
+ * ------------------------------------------------------------------------ */
+
+/**
+ * Creates an admin menu item under Settings, and a settings page.
+ *
+ * Var $postscript_settings set to Page Hook Suffix -- return value of add_options_page().
+ * Var used by postscript_load_scripts() (as $hook_suffix value), called by 'admin_enqueue_scripts' action.
+ *
+ * @uses postscript_admin_page() Called in filter
+ */
+function postscript_admin_page() {
+
+    global $postscript_settings;
+    // $postscript_settings = add_options_page( __('Postscripting: Enqueue Scripts and Style', 'postscript' ), __( 'Postscripting', 'postscript' ), 'manage_options', 'postscript-settings', 'postscript_load' );
+
+    add_action( 'admin_init', 'postscript_display_options_init' );
+
+}
+add_action( 'admin_menu', 'postscript_admin_page' );
+
+/**
+ * Builds HTML for admin settings page.
+ */
+function postscript_settings_page() {
+    global $wp_scripts, $wp_styles;
+
+    $exampleListTable = new Pser_Scripts_Table();
+    $exampleListTable->prepare_items();
+
+    // echo postscript_update_settings();
+
+    // Get settings option; set default values.
+    $postscript_allow_script_url = get_option( 'postscript_allow_script_url', true );
+    $postscript_allow_style_url = get_option( 'postscript_allow_style_url', true );
+    $postscript_post_types = get_option( 'postscript_post_types', array() );
+
+    $array = array();
+    // delete_option( 'postscript_added_scripts' );
+    add_option( 'postscript_added_scripts', $array );
+    $postscript_added_scripts = get_option( 'postscript_added_scripts', $array );
+
+    ?>
+    <div class="wrap">
+        <h2><?php _e( 'Post Scripting: Settings', 'postscript'); ?></h2>
+        <div id="postscript_settings_boxes" class="postbox-container">
+            <div class="metabox-holder">
+                    <pre><?php // print_r( $_REQUEST['script'] ); ?></pre>
+                    <pre><?php // echo $found = ( in_array( $_REQUEST['script'][0], $postscript_added_scripts ) ) ? 'yo' : 'no' ?></pre>
+                <div id="postscript-allow-urls" class="postbox">
+                    <h3><?php _e( 'Heading level 3', 'postscript' ); ?></h3>
+                    <div class="inside">
+                        <p>
+                            <?php _e( 'Paragraph text.', 'postscript' ); ?><?php echo " (postscript_allow_script_url: $postscript_allow_script_url, postscript_allow_style_url: $postscript_allow_style_url)";
+
+                            // checked( get_option( 'postscript_allow_script_url', 'on' ) );
+                            ?>
+                            ?>
+                        </p>
+                        <form method="post" action="<?php echo admin_url( 'options-general.php?page=postscript-settings' ); ?>">
+                            <fieldset>
+                                <legend><?php _e( 'Allow users to enqueue URLs in post meta box:', 'postscript' ); ?></legend>
+                                <ul>
+                                    <li><input type="checkbox" id="postscript_allow_script_url" name="postscript_allow_script_url" <?php checked( get_option( 'postscript_allow_script_url', true ) ); ?> /> <label for="postscript_allow_script_url"><?php _e( 'Allow script URL', 'postscript' ); ?></label>
+                                    </li>
+                                    <li><input type="checkbox" id="postscript_allow_style_url" name="postscript_allow_style_url" <?php checked( get_option( 'postscript_allow_style_url', true ) ); ?> /> <label for="postscript_allow_style_url"><?php _e( 'Allow style URL', 'postscript' ); ?></label>
+                                    </li>
+                                </ul>
+                            </fieldset>
+                            <p>
+                                <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'postscript-nonce' ); ?>" />
+                                <input type="hidden" name="action" value="postscript-allow-urls" />
+                            </p>
+
+                            <p><input type="submit" name="postscript-allow-urls-submit" class="button-primary" value="<?php _e( 'Update Allowed URLs', 'postscript' ) ?>"/></p>
+                        </form>
+                    </div><!-- .inside -->
+                </div><!-- .postbox -->
+
+                <div id="postscript-post-types" class="postbox">
+                    <h3><?php _e( 'Allowed Post Types', 'postscript' ); ?></h3>
+                    <div class="inside">
+                        <p>
+                            <?php _e( 'The Post Scripting box displays on the edit screen for the post types you choose.', 'postscript' ); ?><?php echo '<br />postscript_post_types: '; print_r( $postscript_post_types ); ?>
+                        </p>
+                        <form method="post" action="<?php echo admin_url( 'options-general.php?page=postscript-settings' ); ?>">
+                            <fieldset>
+                                <legend><?php _e( 'Display Post Scripting box for these post types:', 'postscript' ); ?></legend>
+                                <ul>
+                                    <?php
+                                    // Gets post types explicitly set 'public' (but not registered only with individual public options):
+                                    // https://codex.wordpress.org/Function_Reference/get_post_types
+                                    $args = array(
+                                       'public'     => true,
+                                    );
+                                    $post_types = get_post_types( $args, 'objects' );
+                                    // $postscript_post_types = isset( $_POST['postscript_post_types'] ) ? $_POST[ 'postscript_post_types' ] : array(); // Initialize
+
+                                    foreach ( $post_types as $post_type ) {
+                                        $post_type_name = $post_type->labels->name;
+                                        $post_type = $post_type->name;
+                                    ?>
+                                    <li><input type="checkbox" id="cb-<?php echo $post_type; ?>" value="<?php echo $post_type; ?>" name="postscript_post_types[]" <?php checked( in_array( $post_type, $postscript_post_types ) ); ?> /> <label for="cb-<?php echo $post_type; ?>"><?php echo $post_type_name; ?></label></li>
+                                    <?php // replace with:  <?php checked( isset( $postscript_post_types[$post_type] ) ); ?>
+                                    <?php } ?>
+                                </ul>
+                            </fieldset>
+                            <p>
+                                <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'postscript-nonce' ); ?>" />
+                                <input type="hidden" name="action" value="postscript-post-types" />
+                            </p>
+
+                            <p><input type="submit" name="postscript-post-types-submit" class="button-primary" value="<?php _e( 'Update Allowed Post Types', 'postscript' ) ?>"/></p>
+                        </form>
+                    </div><!-- .inside -->
+                </div><!-- .postbox -->
+
+                <div id="postscript-add-script" class="postbox">
+                    <h3><?php _e( 'Add a Registered Script', 'postscript' ); ?></h3>
+                    <div class="inside">
+                        <p>
+                            <?php _e( 'You can only add scripts that are already registered (using the <code><a href="https://developer.wordpress.org/reference/functions/wp_register_script/">wp_register_script()</a></code> function).', 'postscript' ); ?><?php echo '<br />postscript_added_scripts: '; print_r( $postscript_added_scripts ); ?>
+                        </p>
+                        <form method="post" action="<?php echo admin_url( 'options-general.php?page=postscript-settings' ); ?>">
+                                <label for="postscript_add_script"><?php _e( 'Add a registered script', 'postscript' ); ?></label>
+                                <select name='postscript_add_script' id='postscript_add_script'>
+                                    <option value=''><?php _e( 'Select script', 'postscript' ); ?></option>
+                                    <?php
+                                    $script_handles = postscript_reg_scripts_arr();
+                                    foreach( $script_handles as $handle ) {
+                                        echo "<option value=\"$handle\">$handle</option>";
+                                    }
+                                    ?>
+                                </select>
+                            <p>
+                                <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'postscript-nonce' ); ?>" />
+                                <input type="hidden" name="action" value="postscript-add-script" />
+                            </p>
+                            <p><input type="submit" name="postscript-add-script" class="button-primary" value="<?php _e( 'Add script', 'postscript' ) ?>"/></p>
+                        </form>
+                        <?php
+                        $postscript_reg_scripts_arr = postscript_object_into_array( $wp_scripts->registered );
+                        sort( $postscript_reg_scripts_arr );
+
+                        $postscript_added_script_keys = array();
+
+                        function postscript_arr_value_keys( $arr_multi, $field, $value ) {
+                           foreach( $arr_multi as $key => $arr ) {
+                              if ( $arr[$field] === $value )
+                                 return $arr;
+                           }
+                           return false;
+                        }
+
+                        foreach ( $postscript_added_scripts as $handle) {
+                            $postscript_added_script_keys[] = postscript_arr_value_keys( $postscript_reg_scripts_arr, 'handle', $handle );
+                        }
+
+                        /**
+                         * Get the table data
+                         *
+                         * @return Array
+                         */
+                        function postscript_table_data() {
+                            global $wp_scripts, $wp_styles; $postscript_added_script_keys;
+
+                            $postscript_added_scripts = get_option( 'postscript_added_scripts' );
+
+                            $postscript_reg_scripts_arr = postscript_object_into_array( $wp_scripts->registered );
+                            sort( $postscript_reg_scripts_arr );
+
+                            foreach ( $postscript_added_scripts as $handle) {
+                                $postscript_added_script_keys[] = postscript_arr_value_keys( $postscript_reg_scripts_arr, 'handle', $handle );
+                            }
+
+                            return $postscript_added_script_keys;
+                        }
+
+
+
+                        // echo '<p>postscript_added_script_keys:<br />';
+                        // print_r( $postscript_added_script_keys );
+                        echo '</pre>';
+                        ?>
+
+
+                    </div><!-- .inside -->
+                </div><!-- .postbox -->
+
+                <?php postscript_load(); ?>
+
+
+            </div><!-- .metabox-holder -->
+        </div><!-- .postbox-container -->
+
+        <section class="clear">
+        <div id="postscript-added-scripts-table" class="icon32"><br/></div>
+            <h2>Selected scripts</h2>
+
+            <form method="get" action="<?php echo admin_url( 'options-general.php?page=postscript-settings' ); ?>">
+                <!-- For plugins, we also need to ensure that the form posts back to our current page -->
+                <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
+                <!-- Now we can render the completed list table -->
+                <?php $exampleListTable->display(); ?>
+            </form>
+            <?php postscript_render_script_list_form(); ?>
+        </section>
+    </div><!-- .wrap -->
+
+    <aside class="clear">
+        <?php // echo postscript_get_scripts(); ?>
+        <p><?php echo get_num_queries(); ?> queries in <?php timer_stop( 1 ); ?> seconds uses <?php echo round( memory_get_peak_usage() / 1024 / 1024, 3 ); ?> MB peak memory.</p>
+    </aside>
+
+    <!-- form id="postscript-form" method="POST" action="">
+        <p>
+            <input type="text" name="postscript-handle" id="postscript_handle" value="<?php _e('Get Results', 'postscript'); ?>"/>
+            <input type="submit" name="postscript-submit" id="postscript_submit" class="button-primary" value="<?php _e('Get Results', 'postscript'); ?>"/>
+            <img src="<?php echo admin_url( '/images/wpspin_light.gif' ); ?>" class="waiting" id="postscript_loading" style="display:none;" />
+        </p>
+    </form>
+    <div id="postscript_results"></div -->
+    <?php
+
+}
+
+function postscript_update_settings() {
+
+    if ( ! empty( $_POST ) ) {
+
+        $nonce = $_REQUEST['_wpnonce'];
+        if ( ! wp_verify_nonce( $nonce, 'postscript-nonce' ) ) {
+            // die( "Psing: Security check failed." );
+        }
+
+        // Settings to allow post editor field for users to enter script/style URLs (defualt: true).
+        if ( isset( $_POST['action'] ) && $_POST['action'] == 'postscript-allow-urls' ) {
+            $postscript_allow_script_url = ( isset( $_POST['postscript_allow_script_url'] ) ) ? true : false;
+            $postscript_allow_style_url = ( isset( $_POST['postscript_allow_style_url'] ) ) ? true : false;
+            update_option( 'postscript_allow_script_url', (bool) $postscript_allow_script_url );
+            update_option( 'postscript_allow_style_url', (bool) $postscript_allow_style_url );
+            $message = __( "Allow URLs settings updated.", 'postscript' );
+
+            return "<div class='updated'><p>" . $message . "</p></div>";
+        }
+
+        // Settings for user to chose the post type(s) (to display meta box on editor screen).
+        if ( isset( $_POST['action'] ) && $_POST['action'] == 'postscript-post-types' ) {
+            $postscript_post_types = ( isset( $_POST['postscript_post_types'] ) ) ? $_POST['postscript_post_types'] : array();
+            update_option( 'postscript_post_types', (array) $postscript_post_types );
+            $message = __( "Post type settings updated.", 'postscript' );
+
+            return "<div class='updated'><p>" . $message . "</p></div>";
+        }
+
+        // Setting that builds array of allowed script handles.
+        if ( isset( $_POST['action'] ) && $_POST['action'] == 'postscript-add-script' ) {
+            $postscript_add_script = sanitize_text_field( $_POST['postscript_add_script'] );
+            $postscript_added_scripts = get_option( 'postscript_added_scripts' );
+
+            if ( is_array( $postscript_added_scripts ) && ! in_array( $postscript_add_script, $postscript_added_scripts ) ) {
+                $postscript_added_scripts[] = $postscript_add_script;
+                update_option( 'postscript_added_scripts', (array) $postscript_added_scripts );
+                $message = __( "Script added to list.", 'postscript' );
+                $class = 'updated';
+            } else {
+                $message = __( "Error: Script already in list.", 'postscript' );
+                $class = 'error';
+            }
+
+            return "<div class=\"$class\"><p>$message</p></div>";
+        }
+
+        return "<div class=\"$class\"><p>$message</p></div>";
+
+    } else {
+
+        return;
+
+    }
+
+}
+
+/**
+ * Makes an alphabetized array of registered script handles.
+ */
+function postscript_reg_scripts_arr() {
+    global $wp_scripts;
+    $script_handles = array();
+
+    // Make array to sort registered scripts by handle (from $wp_scripts object).
+    foreach( $wp_scripts->registered as $script_reg ) {
+        $script_handles[] = $script_reg->handle;
+    }
+
+    sort( $script_handles ); // Alphabetize.
+
+    return $script_handles;
+}
+
+/**
+ * Return only matching array elements..
+ */
+function postscript_filter_array() {
+
+    global $wp_scripts;
+    $script_handles = array();
+
+    // Make array to sort registered scripts by handle (from $wp_scripts object).
+    foreach( $wp_scripts->registered as $script_reg ) {
+        $script_handles[] = $script_reg->handle;
+    }
+
+    sort( $script_handles ); // Alphabetize.
+
+    return $script_handles;
+
+}
+
+/**
+ * Convert an object to an array, recursively.
+ *
+ * https://coderwall.com/p/8mmicq/php-convert-mixed-array-objects-recursively
+ */
+function postscript_object_into_array( $obj ) {
+    if (is_object( $obj ) )
+        $obj = get_object_vars( $obj );
+
+    return is_array( $obj ) ? array_map( __FUNCTION__, $obj ) : $obj;
+}
+
+function postscript_admin_notice() {
+    if ( isset( $_GET['action'] ) && $_GET['action'] == 'remove' ) {
+        if ( isset( $_GET['script'] ) ) {
+                $message = __( 'Items to be removed: ' . print_r( $_GET['script'], true ), 'postscript' );
+                $class = 'updated settings-updated';
+        ?>
+        <div class="<?php echo $class; ?> is-dismissible"><p><?php echo $message; ?> / action: <?php echo $_GET['action']; ?></p></div>
+        <?php
+        }
+    }
+}
+// add_action( 'admin_notices', 'postscript_admin_notice' );

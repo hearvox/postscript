@@ -39,7 +39,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 
 if( ! class_exists( 'postscript_Scripts_Table' ) ){
-    require_once( plugin_dir_path( __FILE__ ) . 'includes/class-postscript-scripts-table.php' );
+    require_once( plugin_dir_path( __FILE__ ) . 'includes/class-postscript-admin-table.php' );
 }
 
 if( ! class_exists( 'Paulund_Wp_List_Table_Copy' ) ){
