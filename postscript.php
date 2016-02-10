@@ -56,13 +56,13 @@ if( ! class_exists( 'Paulund_Wp_List_Table_Copy' ) ){
 function postscript_load_textdomain() {
     load_plugin_textdomain( 'postscript', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
-// add_action( 'plugins_loaded', 'postscript_load_textdomain' );
+add_action( 'plugins_loaded', 'postscript_load_textdomain' );
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-post-scripting-activator.php
  */
-function activate_Postscript() {
+function activate_postscript() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-post-scripting-activator.php';
 	Postscript_Activator::activate();
 }
@@ -71,7 +71,7 @@ function activate_Postscript() {
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-post-scripting-deactivator.php
  */
-function deactivate_Postscript() {
+function deactivate_postscript() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-post-scripting-deactivator.php';
 	Postscript_Deactivator::deactivate();
 }
@@ -94,13 +94,13 @@ function deactivate_Postscript() {
  *
  * @since    1.0.0
  */
-function run_Postscript() {
+function run_postscript() {
 
 	$plugin = new Postscript();
 	$plugin->run();
 
 }
-// run_Postscript();
+// run_postscript();
 
 /* ------------------------------------------------------------------------ *
  * Required Plugin Files
@@ -108,13 +108,10 @@ function run_Postscript() {
 
 require_once( 'includes/admin-options.php' );
 require_once( 'includes/meta-box.php' );
-// require_once( 'includes/functions.php' );
-
-
 
 
 /* ------------------------------------------------------------------------ *
- * Enqueue Srripts and Styles
+ * Enqueue Scripts and Styles
  * ------------------------------------------------------------------------ */
 
 /**

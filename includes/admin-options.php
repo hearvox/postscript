@@ -858,16 +858,16 @@ function postscript_settings_page() {
                             <?php _e( 'You can only add scripts that are already registered (using the <code><a href="https://developer.wordpress.org/reference/functions/wp_register_script/">wp_register_script()</a></code> function).', 'postscript' ); ?><?php echo '<br />postscript_added_scripts: '; print_r( $postscript_added_scripts ); ?>
                         </p>
                         <form method="post" action="<?php echo admin_url( 'options-general.php?page=postscript-settings' ); ?>">
-                                <label for="postscript_add_script"><?php _e( 'Add a registered script', 'postscript' ); ?></label>
-                                <select name='postscript_add_script' id='postscript_add_script'>
-                                    <option value=''><?php _e( 'Select script', 'postscript' ); ?></option>
-                                    <?php
-                                    $script_handles = postscript_reg_scripts_arr();
-                                    foreach( $script_handles as $handle ) {
-                                        echo "<option value=\"$handle\">$handle</option>";
-                                    }
-                                    ?>
-                                </select>
+                            <label for="postscript_add_script"><?php _e( 'Add a registered script', 'postscript' ); ?></label>
+                            <select name='postscript_add_script' id='postscript_add_script'>
+                                <option value=''><?php _e( 'Select script', 'postscript' ); ?></option>
+                                <?php
+                                $script_handles = postscript_reg_scripts_arr();
+                                foreach( $script_handles as $handle ) {
+                                    echo "<option value=\"$handle\">$handle</option>";
+                                }
+                                ?>
+                            </select>
                             <p>
                                 <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce( 'postscript-nonce' ); ?>" />
                                 <input type="hidden" name="action" value="postscript-add-script" />
