@@ -370,6 +370,17 @@ function postscript_admin_notice() {
 
 
 /*
+
+    // $postscript_added_scripts[] = 'yo2';
+
+
+    // register_setting( 'postscript-settings-url-group', 'postscript_options', 'sanitize_text_field' );
+    // register_setting( 'postscript-settings-url-group', 'postscript_options', 'sanitize_text_field' );
+    // register_setting( 'postscript-settings-scripts-group', 'postscript_options', 'sanitize_text_field' );
+    // register_setting( 'postscript-settings-styles-group', 'postscript_options', 'sanitize_text_field' );
+    // add_settings_field('postscript_scripts_field', sprintf( __( '%1$sAdd a Registered Script%2$s', 'postscript' ), '<label for"postscript_scripts_field">', '</label>' ), 'postscript_scripts_field_callback', 'general', 'postscript_settings_section');
+
+
 http://ottopress.com/2009/wordpress-settings-api-tutorial/
 https://codex.wordpress.org/Settings_API
 
@@ -438,15 +449,6 @@ function postscript_settings_display() {
  */
 function postscript_display_options_init() {
 
-    // $postscript_added_scripts[] = 'yo2';
-
-
-    // register_setting( 'postscript-settings-url-group', 'postscript_options', 'sanitize_text_field' );
-    // register_setting( 'postscript-settings-url-group', 'postscript_options', 'sanitize_text_field' );
-    // register_setting( 'postscript-settings-scripts-group', 'postscript_options', 'sanitize_text_field' );
-    // register_setting( 'postscript-settings-styles-group', 'postscript_options', 'sanitize_text_field' );
-    // add_settings_field('postscript_scripts_field', sprintf( __( '%1$sAdd a Registered Script%2$s', 'postscript' ), '<label for"postscript_scripts_field">', '</label>' ), 'postscript_scripts_field_callback', 'general', 'postscript_settings_section');
-
     if ( false == get_option( 'postscript_display_options' ) ) {
         add_option( 'postscript_display_options' );
     }
@@ -454,6 +456,13 @@ function postscript_display_options_init() {
     add_settings_section(
         'postscript_settings_section',
         __( 'Allow URLs', 'postscript' ),
+        'postscript_section_callback',
+        'postscript_display_options'
+    );
+
+    add_settings_section(
+        'postscript_settings_section2',
+        __( 'xxx', 'postscript' ),
         'postscript_section_callback',
         'postscript_display_options'
     );
@@ -474,6 +483,30 @@ function postscript_display_options_init() {
         'postscript_settings_section'
     );
 
+    add_settings_field(
+        'postscript_allow_urls',
+        __( 'Allow URLs', 'postscript' ),
+        'postscript_allow_urls_callback',
+        'postscript_display_options',
+        'postscript_settings_section'
+    );
+
+    add_settings_field(
+        'postscript_user_roles',
+        __( 'User Roles', 'postscript' ),
+        'postscript_user_roles_callback',
+        'postscript_display_options',
+        'postscript_settings_section'
+    );
+
+    add_settings_field(
+        'postscript_post_types',
+        __( 'Post Types', 'postscript' ),
+        'postscript_post_types_callback',
+        'postscript_display_options',
+        'postscript_settings_section'
+    );
+
     register_setting(
         'postscript_display_options',
         'postscript_display_options'
@@ -488,7 +521,7 @@ add_action('admin_init', 'postscript_display_options_init');
 
 function postscript_section_callback() {
 ?>
-    <p><?php _e('Display text fields in Edit Post meta box to allow enqueuing by URL.', 'postscript' ); ?></p>
+    <p><?php _e('Display seetings for the Postscript meta box (in Edit Post screen).', 'postscript' ); ?></p>
 <?php
 }
 
@@ -516,12 +549,80 @@ function postscript_script_url_callback() {
 <?php
 }
 
+/**
+ * Outputs HTML checkbox.
+ */
+function postscript_allow_urls_callback() {
+
+    $options = get_option( 'postscript_display_options' );
+    $options['postscript_allow_urls'] = array();
+?>
+    <fieldset>
+        <legend><?php _e( 'Allow URL fields in Postscript box:', 'postscript' ); ?></legend>
+        <ul class="inside">
+        <?php
+
+        $postscript_roles = postscript_get_option( 'roles' );
+        ?>
+            <li><label><input type="checkbox" id="" name="postscript_display_options[postscript_allow_style]" value="1" <?php checked( 1, isset( $options['postscript_allow_style'] ) ? $options['postscript_allow_style'] : 0 ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript_display_options[postscript_allow_script]" value="1" <?php checked( 1, isset( $options['postscript_allow_script'] ) ? $options['postscript_allow_script'] : 0 ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
+        </ul>
+    </fieldset>
+<?php
+}
 
 
+/**
+ * Outputs HTML checkboxes of user roles.
+ */
+function postscript_user_roles_callback() {
+    $options = get_option( 'postscript_display_options' );
 
+    if ( ! function_exists( 'get_editable_roles' ) ) { // Need WP_User class.
+        require_once( ABSPATH . 'wp-admin/includes/user.php' );
+    }
+?>
+    <fieldset>
+        <legend><?php _e( 'Select users roles allowed to use Postscript box:', 'postscript' ); ?></legend>
+        <ul class="inside">
+        <?php
+        foreach ( get_editable_roles() as $role => $details ) {
+            $role_option = 'role_' . $role;
+            $options['role_administrator'] = 1;
+        ?>
+            <li><label><input type="checkbox" id="<?php echo $role_option; ?>" value="1" name="postscript_display_options[<?php echo $role_option; ?>]"<?php checked( 1, isset( $options[$role_option] ) ? $options[$role_option] : 0 ); ?><?php disabled( 'administrator', $role ); ?> /> <?php echo translate_user_role( $details['name'] ); ?></label></li>
+        <?php
+        }
+        ?>
+            <input type="hidden" value="1" name="postscript_display_options[role_administrator]" />
+        </ul>
+    </fieldset>
+<?php
+}
 
-
-
+/**
+ * Outputs HTML checkboxes of user roles.
+ */
+function postscript_post_types_callback() {
+    $options = get_option( 'postscript_display_options' );
+?>
+    <fieldset>
+        <legend><?php _e( 'Select post types that display Postscript box:', 'postscript' ); ?></legend>
+        <ul class="inside">
+        <?php
+        // Gets post types explicitly set 'public' (not those registered only with individual public options):
+        // https://codex.wordpress.org/Function_Reference/get_post_types
+        foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type ) {
+            $post_type_option = 'post_type_' . $post_type->name;
+        ?>
+            <li><label><input type="checkbox" id="<?php echo $post_type_option; ?>" value="1" name="postscript_display_options[<?php echo $post_type_option; ?>]"<?php checked( 1, isset( $options[$post_type_option] ) ? $options[$post_type_option] : 0 ); ?> /> <?php echo $post_type->labels->name; ?></label></li>
+        <?php
+        }
+        ?>
+        </ul>
+    </fieldset>
+<?php
+}
 
 
 
@@ -634,19 +735,6 @@ function postscript_process_ajax() {
 
 }
 // add_action( 'wp_ajax_postscript_get_results', 'postscript_process_ajax' );
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
