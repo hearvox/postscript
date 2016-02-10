@@ -54,7 +54,7 @@ function postscript_settings_display() {
             <?php submit_button(); ?>
 
             <?php postscript_reg_scripts_select(); ?>
-            <?php postscript_render_script_list_form(); ?>
+            <?php // postscript_render_script_list_form(); ?>
 
         </form>
 
@@ -63,10 +63,14 @@ function postscript_settings_display() {
             <h2>Test items</h2>
             <pre>
                 <?php print_r( get_option( 'postscript_display_options' ) ); ?>
-                <?php global $wp_scripts; ?>
-                <?php print_r( $wp_scripts->registered ); ?>
+                <?php $option = get_option( 'postscript_display_options' ); ?>
+                <?php print_r( array_keys( $option['postscript_allow_url'] ) ); ?>
+                <?php // global $wp_scripts; ?>
+                <?php // print_r( $wp_scripts->registered ); ?>
 
                 <?php // print_r( wp_load_alloptions() ); ?>
+
+
             </pre>
             <p><?php echo get_num_queries(); ?> queries in <?php timer_stop( 1 ); ?> seconds uses <?php echo round( memory_get_peak_usage() / 1024 / 1024, 3 ); ?> MB peak memory.</p>
         </aside>
@@ -163,12 +167,17 @@ function postscript_allow_urls_callback() {
 
         $postscript_roles = postscript_get_option( 'roles' );
         ?>
-            <li><label><input type="checkbox" id="" name="postscript_display_options[postscript_allow_style]" value="1" <?php checked( 1, isset( $options['postscript_allow_style'] ) ? $options['postscript_allow_style'] : 0 ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript_display_options[postscript_allow_script]" value="1" <?php checked( 1, isset( $options['postscript_allow_script'] ) ? $options['postscript_allow_script'] : 0 ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript_display_options[postscript_allow_url][style]" value="on"<?php checked( 'on', isset( $options['postscript_allow_url']['style'] ) ? $options['postscript_allow_url']['style'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript_display_options[postscript_allow_url][script]" value="on"<?php checked( 'on', isset( $options['postscript_allow_url']['script'] ) ? $options['postscript_allow_url']['script'] : 'off' ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
         </ul>
     </fieldset>
 <?php
 }
+
+/*
+            <li><label><input type="checkbox" id="" name="postscript_display_options[postscript_allow_style][]" value="1" <?php checked( 1, isset( $options['postscript_allow_style'] ) ? $options['postscript_allow_style'] : 0 ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript_display_options[postscript_allow_script]" value="1" <?php checked( 1, isset( $options['postscript_allow_script'] ) ? $options['postscript_allow_script'] : 0 ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
+ */
 
 /**
  * Outputs HTML checkboxes of user roles.
