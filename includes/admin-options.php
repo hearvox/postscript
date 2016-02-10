@@ -468,22 +468,6 @@ function postscript_display_options_init() {
     );
 
     add_settings_field(
-        'postscript_style_url',
-        sprintf( __( '%1$sStyle URL%2$s', 'postscript' ), '<label for"postscript_script_url">', '</label>' ),
-        'postscript_style_url_callback',
-        'postscript_display_options',
-        'postscript_settings_section'
-    );
-
-    add_settings_field(
-        'postscript_script_url',
-        sprintf( __( '%1$sScript URL%2$s', 'postscript' ), '<label for"postscript_script_url">', '</label>' ),
-        'postscript_script_url_callback',
-        'postscript_display_options',
-        'postscript_settings_section'
-    );
-
-    add_settings_field(
         'postscript_allow_urls',
         __( 'Allow URLs', 'postscript' ),
         'postscript_allow_urls_callback',
@@ -530,27 +514,7 @@ function postscript_section_callback() {
  * ------------------------------------------------------------------------ */
 
 /**
- * Outputs HTML checkbox.
- */
-function postscript_style_url_callback() {
-    $options = get_option( 'postscript_display_options' );
-?>
-    <input type="checkbox" id="postscript_style_url" name="postscript_display_options[postscript_style_url]" value="1" <?php checked( 1, isset( $options['postscript_style_url'] ) ? $options['postscript_style_url'] : 0 ); ?>/>
-<?php
-}
-
-/**
- * Outputs HTML checkbox.
- */
-function postscript_script_url_callback() {
-    $options = get_option( 'postscript_display_options' );
-?>
-    <input type="checkbox" id="postscript_script_url" name="postscript_display_options[postscript_script_url]" value="1" <?php checked( 1, isset( $options['postscript_script_url'] ) ? $options['postscript_script_url'] : 0 ); ?>/>
-<?php
-}
-
-/**
- * Outputs HTML checkbox.
+ * Outputs HTML checkboxes.
  */
 function postscript_allow_urls_callback() {
 
@@ -601,7 +565,7 @@ function postscript_user_roles_callback() {
 }
 
 /**
- * Outputs HTML checkboxes of user roles.
+ * Outputs HTML checkboxes of post types.
  */
 function postscript_post_types_callback() {
     $options = get_option( 'postscript_display_options' );
