@@ -132,6 +132,22 @@ function postscript_options_init() {
         'postscript_scripts_styles_section'
     );
 
+    add_settings_field(
+        'postscript_style_add',
+        __( 'Add a Style', 'postscript' ),
+        'postscript_style_add_callback',
+        'postscript',
+        'postscript_scripts_styles_section'
+    );
+
+    add_settings_field(
+        'postscript_styles',
+        __( 'Allowed Styles', 'postscript' ),
+        'postscript_styles_callback',
+        'postscript',
+        'postscript_scripts_styles_section'
+    );
+
     register_setting(
         'postscript',
         'postscript'
@@ -235,17 +251,8 @@ function postscript_allow_urls_callback() {
 function postscript_script_add_callback() {
     $options = get_option( 'postscript' );
 
-    global $wp_scripts;
-    $scripts_data = '';
-    $scripts_arr = array();
-
-    // Make sorted array of registered script handles (from $wp_scripts object).
-    foreach( $wp_scripts->registered as $script_reg ) {
-        $scripts_arr[] = $script_reg->handle;
-    }
-    sort( $scripts_arr );
-
-
+    global $scripts_arr;
+    $scripts_arr = postscript_reg_script_handles();
 
     // Output select menu of (sorted) registered script handles.
 ?>
@@ -266,15 +273,7 @@ function postscript_script_add_callback() {
 function postscript_scripts_callback() {
     $options = get_option( 'postscript' );
 
-    global $wp_scripts;
-    $scripts_data = '';
-    $scripts_arr = array();
-
-    // Make sorted array of registered script handles (from $wp_scripts object).
-    foreach( $wp_scripts->registered as $script_reg ) {
-        $scripts_arr[] = $script_reg->handle;
-    }
-    sort( $scripts_arr );
+    global $scripts_arr;
 
     // Add script chosen with select menu.
     if ( isset( $options['script_add'] ) && in_array( $options['script_add'], $scripts_arr )  ) {
@@ -302,6 +301,66 @@ function postscript_scripts_callback() {
     } else {
 ?>
     <p><?php _e( 'No scripts added yet.', 'postscript' ); ?></p>
+<?php
+    }
+}
+
+/**
+ * Outputs HTML select menu of all registered styles.
+ */
+function postscript_style_add_callback() {
+    $options = get_option( 'postscript' );
+
+    global $styles_arr;
+    $styles_arr = postscript_reg_style_handles();
+
+    // Output select menu of (sorted) registered style handles.
+?>
+    <select id="postscript_styles_field" name="postscript[style_add]">
+        <option value=''><?php _e( 'Select a style:', 'postscript' ); ?></option>
+        <?php
+        foreach( $styles_arr as $style_handle ) {
+            echo "<option value=\"{$style_handle}\">{$style_handle}</option>";
+        }
+        ?>
+    </select>
+<?php
+}
+
+/**
+ * Outputs HTML checkboxes of allowed styles.
+ */
+function postscript_styles_callback() {
+    $options = get_option( 'postscript' );
+
+    global $styles_arr;
+
+    // Add script chosen with select menu.
+    if ( isset( $options['style_add'] ) && in_array( $options['style_add'], $styles_arr )  ) {
+        $options['style'][] = $options['style_add'];
+    }
+
+    // Output select menu of (sorted) registered script handles.
+    if ( isset( $options['style'] ) ) {
+        $styles_added = array_unique( $options['style'] );
+        sort( $styles_added );
+?>
+    <fieldset>
+        <legend><?php _e( 'Uncheck to remove styles:', 'postscript' ); ?></legend>
+        <ul class="inside">
+        <?php
+        foreach ( $styles_added as $style ) {
+        ?>
+            <li><label><input type="checkbox" id="<?php echo $style; ?>" value="<?php echo $style; ?>" name="postscript[style][]" checked="checked" /> <?php echo $style; ?></label></li>
+        <?php
+        }
+        ?>
+        </ul>
+    </fieldset>
+<?php
+    } else {
+?>
+    <p><?php _e( 'No styles added yet.', 'postscript' ); ?></p>
 <?php
     }
 }
@@ -497,6 +556,7 @@ function print_test_data() {
             print_r( array_keys( $options['postscript_allow_url'] ) ); } ?>
         <?php // global $wp_scripts; ?>
         <?php // print_r( $wp_scripts->registered ); ?>
+
 
         <?php // print_r( wp_load_alloptions() ); ?>
     </pre>
