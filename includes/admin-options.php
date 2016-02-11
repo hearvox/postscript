@@ -27,7 +27,7 @@ function postscript_settings_menu() {
         __('Postscript: Enqueue Scripts and Style', 'postscript' ),
         __( 'Postscript', 'postscript' ),
         'manage_options',
-        'postscript_display_options',
+        'postscript',
         'postscript_settings_display' );
 
 }
@@ -49,31 +49,17 @@ function postscript_settings_display() {
 
         <!-- Create the form that will be used to render our options -->
         <form method="post" action="options.php">
-            <?php settings_fields( 'postscript_display_options' ); ?>
-            <?php do_settings_sections( 'postscript_display_options' ); ?>
+            <?php settings_fields( 'postscript' ); ?>
+            <?php do_settings_sections( 'postscript' ); ?>
             <?php submit_button(); ?>
 
-            <?php postscript_reg_scripts_select(); ?>
+            <?php // postscript_reg_scripts_select(); ?>
+
             <?php // postscript_render_script_list_form(); ?>
 
         </form>
 
-        <aside class="clear">
-            <hr />
-            <h2>Test items</h2>
-            <pre>
-                <?php print_r( get_option( 'postscript_display_options' ) ); ?>
-                <?php $option = get_option( 'postscript_display_options' ); ?>
-                <?php print_r( array_keys( $option['postscript_allow_url'] ) ); ?>
-                <?php // global $wp_scripts; ?>
-                <?php // print_r( $wp_scripts->registered ); ?>
-
-                <?php // print_r( wp_load_alloptions() ); ?>
-
-
-            </pre>
-            <p><?php echo get_num_queries(); ?> queries in <?php timer_stop( 1 ); ?> seconds uses <?php echo round( memory_get_peak_usage() / 1024 / 1024, 3 ); ?> MB peak memory.</p>
-        </aside>
+        <?php print_test_data(); ?>
 
     </div><!-- .wrap -->
 <?php
@@ -86,39 +72,31 @@ function postscript_settings_display() {
 /**
  * Creates settings fields via WordPress Settings API.
  */
-function postscript_display_options_init() {
+function postscript_options_init() {
 
-    if ( false == get_option( 'postscript_display_options' ) ) {
-        add_option( 'postscript_display_options' );
+    if ( false == get_option( 'postscript' ) ) {
+        add_option( 'postscript' );
     }
 
     add_settings_section(
         'postscript_settings_section',
-        __( 'Allow URLs', 'postscript' ),
+        __( 'Postcript box visibility', 'postscript' ),
         'postscript_section_callback',
-        'postscript_display_options'
+        'postscript'
     );
 
     add_settings_section(
-        'postscript_settings_section2',
-        __( 'xxx', 'postscript' ),
-        'postscript_section_callback',
-        'postscript_display_options'
-    );
-
-    add_settings_field(
-        'postscript_allow_urls',
-        __( 'Allow URLs', 'postscript' ),
-        'postscript_allow_urls_callback',
-        'postscript_display_options',
-        'postscript_settings_section'
+        'postscript_scripts_styles_section',
+        __( 'Allow Scripts and Styles', 'postscript' ),
+        'postscript_scripts_styles_section_callback',
+        'postscript'
     );
 
     add_settings_field(
         'postscript_user_roles',
         __( 'User Roles', 'postscript' ),
         'postscript_user_roles_callback',
-        'postscript_display_options',
+        'postscript',
         'postscript_settings_section'
     );
 
@@ -126,25 +104,48 @@ function postscript_display_options_init() {
         'postscript_post_types',
         __( 'Post Types', 'postscript' ),
         'postscript_post_types_callback',
-        'postscript_display_options',
+        'postscript',
         'postscript_settings_section'
     );
 
+    add_settings_field(
+        'postscript_allow_urls',
+        __( 'Allow URLs', 'postscript' ),
+        'postscript_allow_urls_callback',
+        'postscript',
+        'postscript_settings_section'
+    );
+
+    add_settings_field(
+        'postscript_scripts',
+        __( 'Allowed Scripts', 'postscript' ),
+        'postscript_scripts_callback',
+        'postscript',
+        'postscript_scripts_styles_section'
+    );
+
     register_setting(
-        'postscript_display_options',
-        'postscript_display_options'
+        'postscript',
+        'postscript'
     );
 
 }
-add_action('admin_init', 'postscript_display_options_init');
+add_action('admin_init', 'postscript_options_init');
 
 /* ------------------------------------------------------------------------ *
- * Section Callback
+ * Section Callbacks
  * ------------------------------------------------------------------------ */
 
 function postscript_section_callback() {
 ?>
-    <p><?php _e('Display seetings for the Postscript meta box (in Edit Post screen).', 'postscript' ); ?></p>
+    <p><?php _e('The Postscript meta box (in the Edit Post screen) lets users enqueue scripts and styles for a single post.', 'postscript' ); ?></p>
+    <p><?php _e('Choose which post-types and user-roles display the Postscript box.', 'postscript' ); ?></p>
+<?php
+}
+
+function postscript_scripts_styles_section_callback() {
+?>
+    <p><?php _e('Add (or remove) the registered scripts and styles listed in the Postscript box.', 'postscript' ); ?></p>
 <?php
 }
 
@@ -153,55 +154,27 @@ function postscript_section_callback() {
  * ------------------------------------------------------------------------ */
 
 /**
- * Outputs HTML checkboxes.
- */
-function postscript_allow_urls_callback() {
-
-    $options = get_option( 'postscript_display_options' );
-    $options['postscript_allow_urls'] = array();
-?>
-    <fieldset>
-        <legend><?php _e( 'Allow URL fields in Postscript box:', 'postscript' ); ?></legend>
-        <ul class="inside">
-        <?php
-
-        $postscript_roles = postscript_get_option( 'roles' );
-        ?>
-            <li><label><input type="checkbox" id="" name="postscript_display_options[postscript_allow_url][style]" value="on"<?php checked( 'on', isset( $options['postscript_allow_url']['style'] ) ? $options['postscript_allow_url']['style'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript_display_options[postscript_allow_url][script]" value="on"<?php checked( 'on', isset( $options['postscript_allow_url']['script'] ) ? $options['postscript_allow_url']['script'] : 'off' ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
-        </ul>
-    </fieldset>
-<?php
-}
-
-/*
-            <li><label><input type="checkbox" id="" name="postscript_display_options[postscript_allow_style][]" value="1" <?php checked( 1, isset( $options['postscript_allow_style'] ) ? $options['postscript_allow_style'] : 0 ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript_display_options[postscript_allow_script]" value="1" <?php checked( 1, isset( $options['postscript_allow_script'] ) ? $options['postscript_allow_script'] : 0 ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
- */
-
-/**
  * Outputs HTML checkboxes of user roles.
  */
 function postscript_user_roles_callback() {
-    $options = get_option( 'postscript_display_options' );
+    $options = get_option( 'postscript' );
 
     if ( ! function_exists( 'get_editable_roles' ) ) { // Need WP_User class.
         require_once( ABSPATH . 'wp-admin/includes/user.php' );
     }
 ?>
     <fieldset>
-        <legend><?php _e( 'Select users roles allowed to use Postscript box:', 'postscript' ); ?></legend>
+        <legend><?php _e( 'Select the roles allowed to use Postscript box:', 'postscript' ); ?></legend>
         <ul class="inside">
         <?php
         foreach ( get_editable_roles() as $role => $details ) {
-            $role_option = 'role_' . $role;
-            $options['role_administrator'] = 1;
+            $options['user_role']['administrator'] = 'on';
         ?>
-            <li><label><input type="checkbox" id="<?php echo $role_option; ?>" value="1" name="postscript_display_options[<?php echo $role_option; ?>]"<?php checked( 1, isset( $options[$role_option] ) ? $options[$role_option] : 0 ); ?><?php disabled( 'administrator', $role ); ?> /> <?php echo translate_user_role( $details['name'] ); ?></label></li>
+            <li><label><input type="checkbox" id="<?php echo $role; ?>" value="on" name="postscript[user_role][<?php echo $role; ?>]"<?php checked( 'on', isset( $options['user_role'][$role] ) ? $options['user_role'][$role] : 'off' ); ?><?php disabled( 'administrator', $role ); ?> /> <?php echo translate_user_role( $details['name'] ); ?></label></li>
         <?php
         }
         ?>
-            <input type="hidden" value="1" name="postscript_display_options[role_administrator]" />
+            <input type="hidden" value="on" name="postscript[user_role][administrator]" />
         </ul>
     </fieldset>
 <?php
@@ -211,18 +184,18 @@ function postscript_user_roles_callback() {
  * Outputs HTML checkboxes of post types.
  */
 function postscript_post_types_callback() {
-    $options = get_option( 'postscript_display_options' );
+    $options = get_option( 'postscript' );
 ?>
     <fieldset>
-        <legend><?php _e( 'Select post types that display Postscript box:', 'postscript' ); ?></legend>
+        <legend><?php _e( 'Select which post types display Postscript box:', 'postscript' ); ?></legend>
         <ul class="inside">
         <?php
         // Gets post types explicitly set 'public' (not those registered only with individual public options):
         // https://codex.wordpress.org/Function_Reference/get_post_types
-        foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type ) {
-            $post_type_option = 'post_type_' . $post_type->name;
+        foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type_arr ) {
+            $post_type = $post_type_arr->name;
         ?>
-            <li><label><input type="checkbox" id="<?php echo $post_type_option; ?>" value="1" name="postscript_display_options[<?php echo $post_type_option; ?>]"<?php checked( 1, isset( $options[$post_type_option] ) ? $options[$post_type_option] : 0 ); ?> /> <?php echo $post_type->labels->name; ?></label></li>
+            <li><label><input type="checkbox" id="<?php echo $post_type; ?>" value="on" name="postscript[post_type][<?php echo $post_type; ?>]"<?php checked( 'on', isset( $options['post_type'][$post_type] ) ? $options['post_type'][$post_type] : 'off' ); ?> /> <?php echo $post_type_arr->labels->name; ?></label></li>
         <?php
         }
         ?>
@@ -231,12 +204,60 @@ function postscript_post_types_callback() {
 <?php
 }
 
+/**
+ * Outputs HTML checkboxes.
+ */
+function postscript_allow_urls_callback() {
+
+    $options = get_option( 'postscript' );
+    $options['postscript_allow_urls'] = array();
+?>
+    <fieldset>
+        <legend><?php _e( 'Add a text field in Postscript box for:', 'postscript' ); ?></legend>
+        <ul class="inside">
+        <?php
+
+        $postscript_roles = postscript_get_option( 'roles' );
+        ?>
+            <li><label><input type="checkbox" id="" name="postscript[allow_url][style]" value="on"<?php checked( 'on', isset( $options['allow_url']['style'] ) ? $options['allow_url']['style'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript[allow_url][script]" value="on"<?php checked( 'on', isset( $options['allow_url']['script'] ) ? $options['allow_url']['script'] : 'off' ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
+        </ul>
+    </fieldset>
+<?php
+}
+
+/**
+ * Outputs HTML select menu of all registered scripts and checkboxes of allowed scripts.
+ */
+function postscript_scripts_callback() {
+    $options = get_option( 'postscript_scripts_option' );
+    $option  = $options['postscript_scripts'];
+
+    global $wp_scripts;
+    $scripts_data = '';
+    $scripts_arr = array();
+
+    // Make array to sort registered scripts by handle (from $wp_scripts object).
+    foreach( $wp_scripts->registered as $script_reg ) {
+        $scripts_arr[] = $script_reg->handle;
+    }
+    sort( $scripts_arr );
+
+    ?>
+    <select id="postscript_scripts_field" name="postscript_options[postscript_scripts_option]">
+        <option value=''><?php _e( 'Select a script:', 'postscript' ); ?></option>
+        <?php
+        foreach( $scripts_arr as $script_handle ) {
+            echo "<option value=\"{$script_handle}\">{$script_handle}</option>";
+        }
+        ?>
+    </select>
+    <?php
+}
+
 /* ------------------------------------------------------------------------ *
  * Extending WP_List_Table class
  * ------------------------------------------------------------------------ */
-
-
-
 
 /**
  * Outputs HTML select element populated with registered script handles (alphabetized).
@@ -254,7 +275,7 @@ function postscript_reg_scripts_select() {
 
     // $options = get_option( 'postscript_scripts_option' );
     ?>
-    <select id="postscript_scripts_field" name="postscript_options[postscript_scripts_option]">
+    <select id="postscript_scripts" name="postscript[scripts]">
         <option value=''><?php _e( 'Select a script:', 'postscript' ); ?></option>
         <?php
         foreach( $scripts_arr as $script_handle ) {
@@ -273,6 +294,8 @@ $new_options['version'] = POSTSCRIPT_VERSION;
 <?php print_r( wp_load_alloptions() ); ?>
 depecated: get_alloptions
 
+Options:
+http://rji.local/wp-admin/options.php
 rm:
 psing_allow_script_url
 psing_allow_style_url
@@ -282,17 +305,65 @@ postscript_options
 postscript_allow_style_url_field
 postscript_allow_script_url_field
 postscript_settings
-
-
-Keep:
 postscript_display_options
 postscript_scripts
 postscript_styles
 
+sandbox_*
+
+Keep:
+postscript
+
  */
 
 
+function print_test_data() {
+?>
+<hr class="clear" />
+<aside>
 
+    <h2>Test items</h2>
+    <pre>
+        <?php
+        $options = get_option( 'postscript' );
+        echo '<br><code>$options = get_option( \'postscript\' )</code>:<br />';
+        print_r( $options );
+        if ( isset( $options['postscript_allow_url'] ) && is_array( $options['postscript_allow_url'] ) ) {
+            echo '<br><code>array_keys( $options[\'postscript_allow_url\'] )</code>:<br />';
+            print_r( array_keys( $options['postscript_allow_url'] ) ); } ?>
+        <?php // global $wp_scripts; ?>
+        <?php // print_r( $wp_scripts->registered ); ?>
+
+        <?php // print_r( wp_load_alloptions() ); ?>
+    </pre>
+    <p><?php echo get_num_queries(); ?> queries in <?php timer_stop( 1 ); ?> seconds uses <?php echo round( memory_get_peak_usage() / 1024 / 1024, 3 ); ?> MB peak memory.</p>
+
+    <?php scripts_table(); ?>
+
+
+</aside>
+<?php
+}
+
+function scripts_table() {
+?>
+<table class="wp-list-table widefat fixed striped scripts">
+    <thead>
+    <tr>
+        <td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-1">Select All</label><input id="cb-select-all-1" type="checkbox"></td><th scope="col" id="handle" class="manage-column column-handle column-primary sortable desc"><a href="http://rji.local/wp-admin/options-general.php?page=postscript_display_options&amp;orderby=handle&amp;order=asc"><span>Handle</span><span class="sorting-indicator"></span></a></th><th scope="col" id="deps" class="manage-column column-deps sortable desc"><a href="http://rji.local/wp-admin/options-general.php?page=postscript_display_options&amp;orderby=deps&amp;order=asc"><span>Deps</span><span class="sorting-indicator"></span></a></th><th scope="col" id="args" class="manage-column column-args sortable desc"><a href="http://rji.local/wp-admin/options-general.php?page=postscript_display_options&amp;orderby=args&amp;order=asc"><span>Args</span><span class="sorting-indicator"></span></a></th><th scope="col" id="ver" class="manage-column column-ver">Ver</th><th scope="col" id="src" class="manage-column column-src">Src</th>   </tr>
+    </thead>
+
+    <tbody id="the-list" data-wp-lists="list:script">
+        <tr><th scope="row" class="check-column"><input type="checkbox" name="script[]" value="a8c-developer"></th><td class="handle column-handle has-row-actions column-primary" data-colname="Handle">a8c-developer <span style="color:silver">(id:)</span><div class="row-actions"><span class="edit"><a href="?page=postscript_display_options&amp;action=edit&amp;script=a8c-developer">Edit</a> | </span><span class="delete"><a href="?page=postscript_display_options&amp;action=delete&amp;script=a8c-developer">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class="deps column-deps" data-colname="Deps">jquery</td><td class="args column-args" data-colname="Args"></td><td class="ver column-ver" data-colname="Ver">1.2.6</td><td class="src column-src" data-colname="Src">http://rji.local/wp-content/plugins/developer/developer.js</td></tr><tr><th scope="row" class="check-column"><input type="checkbox" name="script[]" value="accordion"></th><td class="handle column-handle has-row-actions column-primary" data-colname="Handle">accordion <span style="color:silver">(id:1)</span><div class="row-actions"><span class="edit"><a href="?page=postscript_display_options&amp;action=edit&amp;script=accordion">Edit</a> | </span><span class="delete"><a href="?page=postscript_display_options&amp;action=delete&amp;script=accordion">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class="deps column-deps" data-colname="Deps">jquery</td><td class="args column-args" data-colname="Args">1</td><td class="ver column-ver" data-colname="Ver"></td><td class="src column-src" data-colname="Src">/wp-admin/js/accordion.min.js</td></tr><tr><th scope="row" class="check-column"><input type="checkbox" name="script[]" value="admin-comments"></th><td class="handle column-handle has-row-actions column-primary" data-colname="Handle">admin-comments <span style="color:silver">(id:1)</span><div class="row-actions"><span class="edit"><a href="?page=postscript_display_options&amp;action=edit&amp;script=admin-comments">Edit</a> | </span><span class="delete"><a href="?page=postscript_display_options&amp;action=delete&amp;script=admin-comments">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class="deps column-deps" data-colname="Deps">wp-lists, quicktags, jquery-query</td><td class="args column-args" data-colname="Args">1</td><td class="ver column-ver" data-colname="Ver"></td><td class="src column-src" data-colname="Src">/wp-admin/js/edit-comments.min.js</td></tr><tr><th scope="row" class="check-column"><input type="checkbox" name="script[]" value="colorpicker"></th><td class="handle column-handle has-row-actions column-primary" data-colname="Handle">colorpicker <span style="color:silver">(id:)</span><div class="row-actions"><span class="edit"><a href="?page=postscript_display_options&amp;action=edit&amp;script=colorpicker">Edit</a> | </span><span class="delete"><a href="?page=postscript_display_options&amp;action=delete&amp;script=colorpicker">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class="deps column-deps" data-colname="Deps">prototype</td><td class="args column-args" data-colname="Args"></td><td class="ver column-ver" data-colname="Ver">3517m</td><td class="src column-src" data-colname="Src">/wp-includes/js/colorpicker.min.js</td></tr>  </tbody>
+
+    <tfoot>
+    <tr>
+        <td class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-2">Select All</label><input id="cb-select-all-2" type="checkbox"></td><th scope="col" class="manage-column column-handle column-primary sortable desc"><a href="http://rji.local/wp-admin/options-general.php?page=postscript_display_options&amp;orderby=handle&amp;order=asc"><span>Handle</span><span class="sorting-indicator"></span></a></th><th scope="col" class="manage-column column-deps sortable desc"><a href="http://rji.local/wp-admin/options-general.php?page=postscript_display_options&amp;orderby=deps&amp;order=asc"><span>Deps</span><span class="sorting-indicator"></span></a></th><th scope="col" class="manage-column column-args sortable desc"><a href="http://rji.local/wp-admin/options-general.php?page=postscript_display_options&amp;orderby=args&amp;order=asc"><span>Args</span><span class="sorting-indicator"></span></a></th><th scope="col" class="manage-column column-ver">Ver</th><th scope="col" class="manage-column column-src">Src</th> </tr>
+    </tfoot>
+
+</table>
+<?php
+}
 
 
 
@@ -759,7 +830,7 @@ function postscript_admin_page() {
     global $postscript_settings;
     // $postscript_settings = add_options_page( __('Postscripting: Enqueue Scripts and Style', 'postscript' ), __( 'Postscripting', 'postscript' ), 'manage_options', 'postscript-settings', 'postscript_load' );
 
-    add_action( 'admin_init', 'postscript_display_options_init' );
+    add_action( 'admin_init', 'postscript_options_init' );
 
 }
 add_action( 'admin_menu', 'postscript_admin_page' );
