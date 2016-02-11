@@ -117,6 +117,14 @@ function postscript_options_init() {
     );
 
     add_settings_field(
+        'postscript_script_add',
+        __( 'Add a Script', 'postscript' ),
+        'postscript_script_add_callback',
+        'postscript',
+        'postscript_scripts_styles_section'
+    );
+
+    add_settings_field(
         'postscript_scripts',
         __( 'Allowed Scripts', 'postscript' ),
         'postscript_scripts_callback',
@@ -158,8 +166,10 @@ function postscript_scripts_styles_section_callback() {
  */
 function postscript_user_roles_callback() {
     $options = get_option( 'postscript' );
+    $options['user_role']['administrator'] = 'on';
 
-    if ( ! function_exists( 'get_editable_roles' ) ) { // Need WP_User class.
+    // Need WP_User class.
+    if ( ! function_exists( 'get_editable_roles' ) ) {
         require_once( ABSPATH . 'wp-admin/includes/user.php' );
     }
 ?>
@@ -168,7 +178,6 @@ function postscript_user_roles_callback() {
         <ul class="inside">
         <?php
         foreach ( get_editable_roles() as $role => $details ) {
-            $options['user_role']['administrator'] = 'on';
         ?>
             <li><label><input type="checkbox" id="<?php echo $role; ?>" value="on" name="postscript[user_role][<?php echo $role; ?>]"<?php checked( 'on', isset( $options['user_role'][$role] ) ? $options['user_role'][$role] : 'off' ); ?><?php disabled( 'administrator', $role ); ?> /> <?php echo translate_user_role( $details['name'] ); ?></label></li>
         <?php
@@ -208,17 +217,11 @@ function postscript_post_types_callback() {
  * Outputs HTML checkboxes.
  */
 function postscript_allow_urls_callback() {
-
     $options = get_option( 'postscript' );
-    $options['postscript_allow_urls'] = array();
 ?>
     <fieldset>
         <legend><?php _e( 'Add a text field in Postscript box for:', 'postscript' ); ?></legend>
         <ul class="inside">
-        <?php
-
-        $postscript_roles = postscript_get_option( 'roles' );
-        ?>
             <li><label><input type="checkbox" id="" name="postscript[allow_url][style]" value="on"<?php checked( 'on', isset( $options['allow_url']['style'] ) ? $options['allow_url']['style'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
             <li><label><input type="checkbox" id="" name="postscript[allow_url][script]" value="on"<?php checked( 'on', isset( $options['allow_url']['script'] ) ? $options['allow_url']['script'] : 'off' ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
         </ul>
@@ -227,24 +230,26 @@ function postscript_allow_urls_callback() {
 }
 
 /**
- * Outputs HTML select menu of all registered scripts and checkboxes of allowed scripts.
+ * Outputs HTML select menu of all registered scripts.
  */
-function postscript_scripts_callback() {
-    $options = get_option( 'postscript_scripts_option' );
-    $option  = $options['postscript_scripts'];
+function postscript_script_add_callback() {
+    $options = get_option( 'postscript' );
 
     global $wp_scripts;
     $scripts_data = '';
     $scripts_arr = array();
 
-    // Make array to sort registered scripts by handle (from $wp_scripts object).
+    // Make sorted array of registered script handles (from $wp_scripts object).
     foreach( $wp_scripts->registered as $script_reg ) {
         $scripts_arr[] = $script_reg->handle;
     }
     sort( $scripts_arr );
 
-    ?>
-    <select id="postscript_scripts_field" name="postscript_options[postscript_scripts_option]">
+
+
+    // Output select menu of (sorted) registered script handles.
+?>
+    <select id="postscript_scripts_field" name="postscript[script_add]">
         <option value=''><?php _e( 'Select a script:', 'postscript' ); ?></option>
         <?php
         foreach( $scripts_arr as $script_handle ) {
@@ -252,12 +257,128 @@ function postscript_scripts_callback() {
         }
         ?>
     </select>
-    <?php
+<?php
+}
+
+/**
+ * Outputs HTML checkboxes of allowed scripts.
+ */
+function postscript_scripts_callback() {
+    $options = get_option( 'postscript' );
+
+    global $wp_scripts;
+    $scripts_data = '';
+    $scripts_arr = array();
+
+    // Make sorted array of registered script handles (from $wp_scripts object).
+    foreach( $wp_scripts->registered as $script_reg ) {
+        $scripts_arr[] = $script_reg->handle;
+    }
+    sort( $scripts_arr );
+
+    // Add script chosen with select menu.
+    if ( isset( $options['script_add'] ) && in_array( $options['script_add'], $scripts_arr )  ) {
+        $options['script'][] = $options['script_add'];
+    }
+
+    // Output select menu of (sorted) registered script handles.
+    if ( isset( $options['script'] ) ) {
+        $scripts_added = array_unique( $options['script'] );
+        sort( $scripts_added );
+?>
+    <fieldset>
+        <legend><?php _e( 'Uncheck to remove scripts:', 'postscript' ); ?></legend>
+        <ul class="inside">
+        <?php
+        foreach ( $scripts_added as $script ) {
+        ?>
+            <li><label><input type="checkbox" id="<?php echo $script; ?>" value="<?php echo $script; ?>" name="postscript[script][]" checked="checked" /> <?php echo $script; ?></label></li>
+        <?php
+        }
+        ?>
+        </ul>
+    </fieldset>
+<?php
+    } else {
+?>
+    <p><?php _e( 'No scripts added yet.', 'postscript' ); ?></p>
+<?php
+    }
 }
 
 /* ------------------------------------------------------------------------ *
- * Extending WP_List_Table class
+ * Utility functions scripts and styles
  * ------------------------------------------------------------------------ */
+
+/**
+ * Makes an alphabetized array of registered script handles.
+ */
+function postscript_reg_script_handles() {
+    global $wp_scripts;
+    $script_handles = array();
+
+    // Make array to sort registered scripts by handle (from $wp_scripts object).
+    foreach( $wp_scripts->registered as $script_reg ) {
+        $script_handles[] = $script_reg->handle;
+    }
+
+    sort( $script_handles ); // Alphabetize.
+
+    return $script_handles;
+}
+
+/**
+ * Makes an alphabetized array of registered style handles.
+ */
+function postscript_reg_style_handles() {
+    global $wp_styles;
+    $style_handles = array();
+
+    // Make array to sort registered styles by handle (from $wp_styles object).
+    foreach( $wp_styles->registered as $style_reg ) {
+        $style_handles[] = $style_reg->handle;
+    }
+
+    sort( $style_handles ); // Alphabetize.
+
+    return $style_handles;
+}
+
+/**
+ * Makes an alphabetized array of registered script handles.
+ */
+function postscript_reg_scripts_arr() {
+    global $wp_scripts;
+    $script_handles = array();
+
+    // Make array to sort registered scripts by handle (from $wp_scripts object).
+    foreach( $wp_scripts->registered as $script_reg ) {
+        $script_handles[] = $script_reg->handle;
+    }
+
+    sort( $script_handles ); // Alphabetize.
+
+    return $script_handles;
+}
+
+/**
+ * Return only matching array elements..
+ */
+function postscript_filter_array() {
+
+    global $wp_scripts;
+    $script_handles = array();
+
+    // Make array to sort registered scripts by handle (from $wp_scripts object).
+    foreach( $wp_scripts->registered as $script_reg ) {
+        $script_handles[] = $script_reg->handle;
+    }
+
+    sort( $script_handles ); // Alphabetize.
+
+    return $script_handles;
+
+}
 
 /**
  * Outputs HTML select element populated with registered script handles (alphabetized).
@@ -285,6 +406,49 @@ function postscript_reg_scripts_select() {
     </select>
     <?php
 }
+
+/* ------------------------------------------------------------------------ *
+ * Utility functions for arrays and objects.
+ * ------------------------------------------------------------------------ */
+
+/**
+ * Sanitizes array, object, or string values (from Jetpack Stats module).
+ *
+ * @since 1.0.0
+ *
+ * @param array|object|string $value value to be sanitized
+ * @return array|object|string $value sanitized value
+ */
+function postscript_esc_html_deep( $value ) {
+    if ( is_array( $value ) ) {
+        $value = array_map( 'stats_esc_html_deep', $value );
+    } elseif ( is_object( $value ) ) {
+        $vars = get_object_vars( $value );
+        foreach ( $vars as $key => $data ) {
+            $value->{$key} = postscript_esc_html_deep( $data );
+        }
+    } elseif ( is_string( $value ) ) {
+        $value = esc_html( $value );
+    }
+
+    return $value;
+}
+
+/**
+ * Convert an object to an array, recursively.
+ *
+ * https://coderwall.com/p/8mmicq/php-convert-mixed-array-objects-recursively
+ */
+function postscript_object_into_array( $obj ) {
+    if (is_object( $obj ) )
+        $obj = get_object_vars( $obj );
+
+    return is_array( $obj ) ? array_map( __FUNCTION__, $obj ) : $obj;
+}
+
+
+
+
 
 /*
 @TODO
@@ -364,6 +528,13 @@ function scripts_table() {
 </table>
 <?php
 }
+
+
+
+
+
+
+
 
 
 
@@ -755,63 +926,6 @@ function postscript_configuration_screen() {
     <?php
 }
 
-/**
- * Makes an alphabetized array of registered script handles.
- */
-function postscript_reg_script_handles() {
-    global $wp_scripts;
-    $script_handles = array();
-
-    // Make array to sort registered scripts by handle (from $wp_scripts object).
-    foreach( $wp_scripts->registered as $script_reg ) {
-        $script_handles[] = $script_reg->handle;
-    }
-
-    sort( $script_handles ); // Alphabetize.
-
-    return $script_handles;
-}
-
-/**
- * Makes an alphabetized array of registered style handles.
- */
-function postscript_reg_style_handles() {
-    global $wp_styles;
-    $style_handles = array();
-
-    // Make array to sort registered styles by handle (from $wp_styles object).
-    foreach( $wp_styles->registered as $style_reg ) {
-        $style_handles[] = $style_reg->handle;
-    }
-
-    sort( $style_handles ); // Alphabetize.
-
-    return $style_handles;
-}
-
-/**
- * Sanitizes array, object, or string values (from Jetpack Stats module).
- *
- * @since 1.0.0
- *
- * @param array|object|string $value value to be sanitized
- * @return array|object|string $value sanitized value
- */
-function postscript_esc_html_deep( $value ) {
-    if ( is_array( $value ) ) {
-        $value = array_map( 'stats_esc_html_deep', $value );
-    } elseif ( is_object( $value ) ) {
-        $vars = get_object_vars( $value );
-        foreach ( $vars as $key => $data ) {
-            $value->{$key} = postscript_esc_html_deep( $data );
-        }
-    } elseif ( is_string( $value ) ) {
-        $value = esc_html( $value );
-    }
-
-    return $value;
-}
-
 
 /* ------------------------------------------------------------------------ *
  * Admin Settings Page (Dashboard> Settings> Postscripting)
@@ -1095,54 +1209,6 @@ function postscript_update_settings() {
 
     }
 
-}
-
-/**
- * Makes an alphabetized array of registered script handles.
- */
-function postscript_reg_scripts_arr() {
-    global $wp_scripts;
-    $script_handles = array();
-
-    // Make array to sort registered scripts by handle (from $wp_scripts object).
-    foreach( $wp_scripts->registered as $script_reg ) {
-        $script_handles[] = $script_reg->handle;
-    }
-
-    sort( $script_handles ); // Alphabetize.
-
-    return $script_handles;
-}
-
-/**
- * Return only matching array elements..
- */
-function postscript_filter_array() {
-
-    global $wp_scripts;
-    $script_handles = array();
-
-    // Make array to sort registered scripts by handle (from $wp_scripts object).
-    foreach( $wp_scripts->registered as $script_reg ) {
-        $script_handles[] = $script_reg->handle;
-    }
-
-    sort( $script_handles ); // Alphabetize.
-
-    return $script_handles;
-
-}
-
-/**
- * Convert an object to an array, recursively.
- *
- * https://coderwall.com/p/8mmicq/php-convert-mixed-array-objects-recursively
- */
-function postscript_object_into_array( $obj ) {
-    if (is_object( $obj ) )
-        $obj = get_object_vars( $obj );
-
-    return is_array( $obj ) ? array_map( __FUNCTION__, $obj ) : $obj;
 }
 
 function postscript_admin_notice() {
