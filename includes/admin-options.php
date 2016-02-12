@@ -825,7 +825,7 @@ function print_test_data() {
         <hr />
         <?php $screen = get_current_screen(); ?>
         <?php echo "{$screen->id}\n"; ?>
-        <?php print_r( $screen ); ?>
+        <?php // print_r( $screen ); ?>
         <hr />
         <?php // global $wp_scripts; ?>
         <?php // print_r( $wp_scripts->registered ); ?>
@@ -835,28 +835,6 @@ function print_test_data() {
     </pre>
     <p><?php echo get_num_queries(); ?> queries in <?php timer_stop( 1 ); ?> seconds uses <?php echo round( memory_get_peak_usage() / 1024 / 1024, 3 ); ?> MB peak memory.</p>
 
-    <?php scripts_table(); ?>
-
 </aside>
-<?php
-}
-
-function scripts_table() {
-?>
-<table class="wp-list-table widefat fixed striped scripts">
-    <thead>
-    <tr>
-        <td id="cb" class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-1">Select All</label><input id="cb-select-all-1" type="checkbox"></td><th scope="col" id="handle" class="manage-column column-handle column-primary sortable desc"><a href="http://rji.local/wp-admin/options-general.php?page=postscript_display_options&amp;orderby=handle&amp;order=asc"><span>Handle</span><span class="sorting-indicator"></span></a></th><th scope="col" id="deps" class="manage-column column-deps sortable desc"><a href="http://rji.local/wp-admin/options-general.php?page=postscript_display_options&amp;orderby=deps&amp;order=asc"><span>Deps</span><span class="sorting-indicator"></span></a></th><th scope="col" id="args" class="manage-column column-args sortable desc"><a href="http://rji.local/wp-admin/options-general.php?page=postscript_display_options&amp;orderby=args&amp;order=asc"><span>Args</span><span class="sorting-indicator"></span></a></th><th scope="col" id="ver" class="manage-column column-ver">Ver</th><th scope="col" id="src" class="manage-column column-src">Src</th>   </tr>
-    </thead>
-
-    <tbody id="the-list" data-wp-lists="list:script">
-        <tr><th scope="row" class="check-column"><input type="checkbox" name="script[]" value="a8c-developer"></th><td class="handle column-handle has-row-actions column-primary" data-colname="Handle">a8c-developer <span style="color:silver">(id:)</span><div class="row-actions"><span class="edit"><a href="?page=postscript_display_options&amp;action=edit&amp;script=a8c-developer">Edit</a> | </span><span class="delete"><a href="?page=postscript_display_options&amp;action=delete&amp;script=a8c-developer">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class="deps column-deps" data-colname="Deps">jquery</td><td class="args column-args" data-colname="Args"></td><td class="ver column-ver" data-colname="Ver">1.2.6</td><td class="src column-src" data-colname="Src">http://rji.local/wp-content/plugins/developer/developer.js</td></tr><tr><th scope="row" class="check-column"><input type="checkbox" name="script[]" value="accordion"></th><td class="handle column-handle has-row-actions column-primary" data-colname="Handle">accordion <span style="color:silver">(id:1)</span><div class="row-actions"><span class="edit"><a href="?page=postscript_display_options&amp;action=edit&amp;script=accordion">Edit</a> | </span><span class="delete"><a href="?page=postscript_display_options&amp;action=delete&amp;script=accordion">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class="deps column-deps" data-colname="Deps">jquery</td><td class="args column-args" data-colname="Args">1</td><td class="ver column-ver" data-colname="Ver"></td><td class="src column-src" data-colname="Src">/wp-admin/js/accordion.min.js</td></tr><tr><th scope="row" class="check-column"><input type="checkbox" name="script[]" value="admin-comments"></th><td class="handle column-handle has-row-actions column-primary" data-colname="Handle">admin-comments <span style="color:silver">(id:1)</span><div class="row-actions"><span class="edit"><a href="?page=postscript_display_options&amp;action=edit&amp;script=admin-comments">Edit</a> | </span><span class="delete"><a href="?page=postscript_display_options&amp;action=delete&amp;script=admin-comments">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class="deps column-deps" data-colname="Deps">wp-lists, quicktags, jquery-query</td><td class="args column-args" data-colname="Args">1</td><td class="ver column-ver" data-colname="Ver"></td><td class="src column-src" data-colname="Src">/wp-admin/js/edit-comments.min.js</td></tr><tr><th scope="row" class="check-column"><input type="checkbox" name="script[]" value="colorpicker"></th><td class="handle column-handle has-row-actions column-primary" data-colname="Handle">colorpicker <span style="color:silver">(id:)</span><div class="row-actions"><span class="edit"><a href="?page=postscript_display_options&amp;action=edit&amp;script=colorpicker">Edit</a> | </span><span class="delete"><a href="?page=postscript_display_options&amp;action=delete&amp;script=colorpicker">Delete</a></span></div><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button><button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button></td><td class="deps column-deps" data-colname="Deps">prototype</td><td class="args column-args" data-colname="Args"></td><td class="ver column-ver" data-colname="Ver">3517m</td><td class="src column-src" data-colname="Src">/wp-includes/js/colorpicker.min.js</td></tr>  </tbody>
-
-    <tfoot>
-    <tr>
-        <td class="manage-column column-cb check-column"><label class="screen-reader-text" for="cb-select-all-2">Select All</label><input id="cb-select-all-2" type="checkbox"></td><th scope="col" class="manage-column column-handle column-primary sortable desc"><a href="http://rji.local/wp-admin/options-general.php?page=postscript_display_options&amp;orderby=handle&amp;order=asc"><span>Handle</span><span class="sorting-indicator"></span></a></th><th scope="col" class="manage-column column-deps sortable desc"><a href="http://rji.local/wp-admin/options-general.php?page=postscript_display_options&amp;orderby=deps&amp;order=asc"><span>Deps</span><span class="sorting-indicator"></span></a></th><th scope="col" class="manage-column column-args sortable desc"><a href="http://rji.local/wp-admin/options-general.php?page=postscript_display_options&amp;orderby=args&amp;order=asc"><span>Args</span><span class="sorting-indicator"></span></a></th><th scope="col" class="manage-column column-ver">Ver</th><th scope="col" class="manage-column column-src">Src</th> </tr>
-    </tfoot>
-
-</table>
 <?php
 }
