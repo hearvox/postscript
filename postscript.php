@@ -37,17 +37,6 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-
-if( ! class_exists( 'postscript_Scripts_Table' ) ){
-    require_once( plugin_dir_path( __FILE__ ) . 'includes/class-postscript-admin-table.php' );
-}
-
-if( ! class_exists( 'Paulund_Wp_List_Table_Copy' ) ){
-    require_once( plugin_dir_path( __FILE__ ) . 'includes/paulund-wp-list-table-copy-copy.php' );
-}
-
-
-
 /**
  * Load the plugin text domain for translation.
  *
@@ -105,9 +94,13 @@ function run_postscript() {
 /* ------------------------------------------------------------------------ *
  * Required Plugin Files
  * ------------------------------------------------------------------------ */
+if ( is_admin() ) {
+    require_once( plugin_dir_path( __FILE__ ) . 'includes/admin-options.php' );
+    require_once( plugin_dir_path( __FILE__ ) . 'includes/meta-box.php' );
+} else {
+    // require_once( 'includes/front-end-functions.php' );
+}
 
-require_once( 'includes/admin-options.php' );
-require_once( 'includes/meta-box.php' );
 
 
 /* ------------------------------------------------------------------------ *
@@ -194,6 +187,19 @@ function postscript_url_exists( $url ) {
 /* ------------------------------------------------------------------------ *
  * Tests and Notes
  * ------------------------------------------------------------------------ */
+
+function ps_log_me($message) {
+    if (WP_DEBUG === true) {
+        if (is_array($message) || is_object($message)) {
+            error_log(print_r($message, true));
+        } else {
+            error_log($message);
+        }
+    }
+}
+
+// ps_log_me( array( 'This is a message in an array' => 'for debugging purposes' ));
+// ps_log_me( 'This is a message for debugging purposes' );
 
 /* Write test data in content of specified post */
 // http://rji.local/?p=1740
