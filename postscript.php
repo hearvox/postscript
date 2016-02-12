@@ -37,6 +37,8 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+define( 'POSTSCRIPT_VERSION', '1.0.0' );
+
 /**
  * Load the plugin text domain for translation.
  *
@@ -95,10 +97,10 @@ function run_postscript() {
  * Required Plugin Files
  * ------------------------------------------------------------------------ */
 if ( is_admin() ) {
-    require_once( plugin_dir_path( __FILE__ ) . 'includes/admin-options.php' );
-    require_once( plugin_dir_path( __FILE__ ) . 'includes/meta-box.php' );
+    include_once( plugin_dir_path( __FILE__ ) . 'includes/admin-options.php' );
+    include_once( plugin_dir_path( __FILE__ ) . 'includes/meta-box.php' );
 } else {
-    // require_once( 'includes/front-end-functions.php' );
+    // include_once( 'includes/front-end-functions.php' );
 }
 
 
@@ -160,7 +162,7 @@ add_action( 'wp_enqueue_scripts', 'postscript_enqueue_scripts' );
 /**
  * Checks if URL exists.
  */
-function postscript_url_exists( $url ) {
+function postscript_url_exists( $url = '' ) {
     // Make absolute URLs for WP core scripts (from their registered relative 'src' URLs)
     if ( substr( $url, 0, 13 ) === '/wp-includes/' || substr( $url, 0, 10 ) === '/wp-admin/' ) {
         $url = get_bloginfo( 'wpurl' ) . $url;
@@ -183,23 +185,39 @@ function postscript_url_exists( $url ) {
     return wp_remote_retrieve_response_code( $response );
 }
 
+/**
+ * Makes full URL from relative /wp-includes and /wp-admin URLs.
+ */
+function postscript_core_full_urls( $url ) {
+    // Make absolute URLs for WP core scripts (from their registered relative 'src' URLs)
+    if ( substr( $url, 0, 13 ) === '/wp-includes/' || substr( $url, 0, 10 ) === '/wp-admin/' ) {
+        $url = get_bloginfo( 'wpurl' ) . $url;
+    }
+
+    return $url;
+}
+
+
 
 /* ------------------------------------------------------------------------ *
  * Tests and Notes
  * ------------------------------------------------------------------------ */
 
-function ps_log_me($message) {
-    if (WP_DEBUG === true) {
-        if (is_array($message) || is_object($message)) {
-            error_log(print_r($message, true));
+/**
+ * Write to wp-content/debub.log
+ */
+function ps_log( $message ) {
+    if ( WP_DEBUG === true ) {
+        if ( is_array($message ) || is_object( $message ) ) {
+            error_log( print_r( $message, true ) );
         } else {
-            error_log($message);
+            error_log( $message );
         }
     }
 }
 
-// ps_log_me( array( 'This is a message in an array' => 'for debugging purposes' ));
-// ps_log_me( 'This is a message for debugging purposes' );
+// ps_log( array( 'This is a message in an array' => 'for debugging purposes' ));
+// ps_log( 'This is a message for debugging purposes' );
 
 /* Write test data in content of specified post */
 // http://rji.local/?p=1740
