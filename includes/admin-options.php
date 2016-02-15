@@ -54,6 +54,19 @@ function postscript_settings_display() {
 
         </form>
 
+<div id="postbox-container-1" class="postbox-container">
+    <div id="categorydiv" class="postbox ">
+        <h2 class="hndle"><span>Categories</span></h2>
+        <div class="inside">
+            <div id="taxonomy-category" class="categorydiv">
+                <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
+                    <?php wp_terms_checklist( -1, array( 'taxonomy' => 'category' ) ); ?>
+                </ul>
+            </div><!-- .categorydiv -->
+        </div><!-- .inside -->
+    </div><!-- .postbox -->
+</div><!-- .postbox-container -->
+
         <?php print_test_data(); ?>
 
     </div><!-- .wrap -->
@@ -285,11 +298,11 @@ function postscript_scripts_callback() {
         <table class="wp-list-table widefat striped">
             <thead>
                 <tr>
-                    <th scope="col" class="th-full">Handle</th>
-                    <th scope="col" class="th-full">Ver</th>
-                    <th scope="col" class="th-full">Deps</th>
-                    <th scope="col" class="th-full">Footer</th>
-                    <th scope="col" class="th-full">Src*</th>
+                    <th scope="col" class="th-full" style="padding: 0.5em;">Handle</th>
+                    <th scope="col" class="th-full" style="padding: 0.5em;">Ver</th>
+                    <th scope="col" class="th-full" style="padding: 0.5em;">Deps</th>
+                    <th scope="col" class="th-full" style="padding: 0.5em;">Footer</th>
+                    <th scope="col" class="th-full" style="padding: 0.5em;">Src*</th>
                 </tr>
             </thead>
             <tbody>
@@ -304,7 +317,7 @@ function postscript_scripts_callback() {
                 $status_code = postscript_url_exists( $src );
             ?>
                 <tr>
-                    <th scope="row" class="th-full"><label><input type="checkbox" id="<?php echo $script; ?>" value="<?php echo $script; ?>" name="postscript[script][]" checked="checked" /> <?php echo $script; ?></label></th>
+                    <th scope="row" class="th-full" style="padding: 0.5em;"><label><input type="checkbox" id="<?php echo $script; ?>" value="<?php echo $script; ?>" name="postscript[script][]" checked="checked" /> <?php echo $script; ?></label></th>
                     <td><?php echo $ps_script_arr->ver; ?></td>
                     <td><?php echo $deps; ?></td>
                     <td><?php echo $ps_script_arr->args; ?></td>
@@ -314,13 +327,9 @@ function postscript_scripts_callback() {
             }
             ?>
             </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="5"><p class="wp-ui-text-icon alignright">(* "Src" is URL status response code; link goes to file.)</p></td>
-                </tr>
-            </tfoot>
         </table>
     </fieldset>
+    <p class="wp-ui-text-icon textright">(* "Src" is URL status response code; link goes to file.)
 <?php
     } else {
 ?>
