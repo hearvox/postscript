@@ -67,8 +67,8 @@ function deactivate_postscript() {
 	Postscript_Deactivator::deactivate();
 }
 
-// register_activation_hook( __FILE__, 'activate_Postscript' );
-// register_deactivation_hook( __FILE__, 'deactivate_Postscript' );
+// register_activation_hook( __FILE__, 'activate_postscript' );
+// register_deactivation_hook( __FILE__, 'deactivate_postscript' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -199,6 +199,77 @@ function postscript_core_full_urls( $url ) {
 
 
 
+// Create private custom taxonomy for the post type "Postscript"
+function postscript_create_taxonomy() {
+    // Add new taxonomy, make it hierarchical (like categories)
+    $labels = array(
+        'name'              => _x( 'Postscripts', 'taxonomy general name' ),
+        'singular_name'     => _x( 'Postscript', 'taxonomy singular name' ),
+        'search_items'      => __( 'Search Postscripts' ),
+        'all_items'         => __( 'All Postscripts' ),
+        'parent_item'       => __( 'Parent Postscript' ),
+        'parent_item_colon' => __( 'Parent Postscript:' ),
+        'edit_item'         => __( 'Edit Postscript' ),
+        'update_item'       => __( 'Update Postscript' ),
+        'add_new_item'      => __( 'Add New Postscript' ),
+        'new_item_name'     => __( 'New Postscript Name' ),
+        'menu_name'         => __( 'Postscript' ),
+    );
+
+    $args = array(
+        'hierarchical'      => true,
+        'labels'            => $labels,
+        'public'            => false,
+        'query_var'         => true,
+        'rewrite'           => array( 'slug' => 'postscript' ),
+    );
+
+    register_taxonomy( 'postscript', array( 'post' ), $args );
+}
+
+// Hook into the init action and call postscript_create_taxonomy() when it fires
+add_action( 'init', 'postscript_create_taxonomy', 0 );
+
+
+function postscript_populate_taxonomy() {
+    wp_insert_term('Scripts','postscript');
+    wp_insert_term('Styles','postscript');
+}
+add_action( 'registered_taxonomy', 'postscript_populate_taxonomy', 0 );
+
+
+
+
+
+/*
+
+$x = wp_insert_term('Scripts','postscript');
+print_r( $x->error_data['term_exists'] );
+
+Array ( [term_id] => 193 [term_taxonomy_id] => 193 )
+WP_Error Object ( [errors] => Array ( [term_exists] => Array ( [0] => A term with the name provided already exists with this parent. ) ) [error_data] => Array ( [term_exists] => 193 ) )
+
+http://rji.local/wp-admin/edit.php?postscript=scripts
+
+function postscript_delete_terms() {
+     if ( is_admin() ) {
+          $terms = get_terms( 'postscript', array( 'fields' => 'ids', 'hide_empty' => false ) );
+          foreach ( $terms as $value ) {
+               wp_delete_term( $value, 'postscript' );
+          }
+     }
+}
+register_uninstall_hook( __FILE__, 'postscript_delete_terms')
+
+https://codex.wordpress.org/Function_Reference/register_uninstall_hook
+
+ */
+
+
+
+
+
+
 /* ------------------------------------------------------------------------ *
  * Tests and Notes
  * ------------------------------------------------------------------------ */
@@ -225,7 +296,7 @@ function postscript_test_nq( $content ) {
     if ( is_single( 1740 ) && is_main_query() ) {
         global $wp_scripts, $wp_styles;
         $data_content = '<h2>$wp_scripts->queue</h2>';
-        $data_content .= postscript_get_scripts();
+        // $data_content .= postscript_get_scripts();
         $data_content .= '';
 
         return $content . $data_content;

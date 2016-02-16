@@ -56,16 +56,32 @@ function postscript_settings_display() {
 
 <div id="postbox-container-1" class="postbox-container">
     <div id="categorydiv" class="postbox ">
-        <h2 class="hndle"><span>Categories</span></h2>
+        <h2 class="hndle"><span><?php _e('Postscript Styles and Scripts', 'postscript' ); ?></span></h2>
         <div class="inside">
             <div id="taxonomy-category" class="categorydiv">
                 <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-                    <?php wp_terms_checklist( -1, array( 'taxonomy' => 'category' ) ); ?>
+                    <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript' ) ); ?>
                 </ul>
             </div><!-- .categorydiv -->
         </div><!-- .inside -->
     </div><!-- .postbox -->
 </div><!-- .postbox-container -->
+
+<?php
+$args = array(
+  'taxonomy'     => 'postscript',
+  'show_count'   => 1,
+  'pad_counts'   => 1,
+  'hierarchical' => 1,
+  'hide_empty '  => 0,
+  'title_li'     => 'Postscript Styles and Scripts: List'
+);
+?>
+
+<ul class="clear">
+<?php wp_list_categories( $args ); ?>
+</ul>
+
 
         <?php print_test_data(); ?>
 
