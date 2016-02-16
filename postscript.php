@@ -199,41 +199,69 @@ function postscript_core_full_urls( $url ) {
 
 
 
-// Create private custom taxonomy for the post type "Postscript"
-function postscript_create_taxonomy() {
-    // Add new taxonomy, make it hierarchical (like categories)
-    $labels = array(
-        'name'              => _x( 'Postscripts', 'taxonomy general name' ),
-        'singular_name'     => _x( 'Postscript', 'taxonomy singular name' ),
-        'search_items'      => __( 'Search Postscripts' ),
-        'all_items'         => __( 'All Postscripts' ),
-        'parent_item'       => __( 'Parent Postscript' ),
-        'parent_item_colon' => __( 'Parent Postscript:' ),
-        'edit_item'         => __( 'Edit Postscript' ),
-        'update_item'       => __( 'Update Postscript' ),
-        'add_new_item'      => __( 'Add New Postscript' ),
-        'new_item_name'     => __( 'New Postscript Name' ),
-        'menu_name'         => __( 'Postscript' ),
+
+
+/**
+ * Adds new hierarchical, private taxonomies (for Scripts and Styles).
+ */
+function postscript_create_taxonomies() {
+    $labels_postscript_scripts = array(
+        'name'              => _x( 'Scripts', 'taxonomy general name' ),
+        'singular_name'     => _x( 'Script', 'taxonomy singular name' ),
+        'search_items'      => __( 'Search Scripts' ),
+        'all_items'         => __( 'All Scripts' ),
+        'parent_item'       => __( 'Parent Script' ),
+        'parent_item_colon' => __( 'Parent Script:' ),
+        'edit_item'         => __( 'Edit Script' ),
+        'update_item'       => __( 'Update Script' ),
+        'add_new_item'      => __( 'Add New Script' ),
+        'new_item_name'     => __( 'New Scripts Name' ),
+        'menu_name'         => __( 'Scripts' ),
     );
 
-    $args = array(
+    $args_postscript_scripts = array(
         'hierarchical'      => true,
-        'labels'            => $labels,
+        'labels'            => $labels_postscript_scripts,
         'public'            => true,
         'query_var'         => true,
-        'rewrite'           => array( 'slug' => 'postscript' ),
+        'rewrite'           => array( 'slug' => 'postscript_scripts' ),
     );
 
-    register_taxonomy( 'postscript', array( 'post' ), $args );
+    register_taxonomy( 'postscript_scripts', array( 'post' ), $args_postscript_scripts );
+
+    $labels_postscript_styles = array(
+        'name'              => _x( 'Styles', 'taxonomy general name' ),
+        'singular_name'     => _x( 'Style', 'taxonomy singular name' ),
+        'search_items'      => __( 'Search Styles' ),
+        'all_items'         => __( 'All Styles' ),
+        'parent_item'       => __( 'Parent Style' ),
+        'parent_item_colon' => __( 'Parent Style:' ),
+        'edit_item'         => __( 'Edit Style' ),
+        'update_item'       => __( 'Update Style' ),
+        'add_new_item'      => __( 'Add New Style' ),
+        'new_item_name'     => __( 'New Style Name' ),
+        'menu_name'         => __( 'Styles' ),
+    );
+
+    $args_postscript_styles = array(
+        'hierarchical'      => true,
+        'labels'            => $labels_postscript_styles,
+        'public'            => true,
+        'query_var'         => true,
+        'rewrite'           => array( 'slug' => 'postscript_styles' ),
+    );
+
+    register_taxonomy( 'postscript_styles', array( 'post' ), $args_postscript_styles );
 }
 
+
 // Hook into the init action and call postscript_create_taxonomy() when it fires
-add_action( 'init', 'postscript_create_taxonomy', 0 );
+add_action( 'init', 'postscript_create_taxonomies', 0 );
 
 
 function postscript_populate_taxonomy() {
-    wp_insert_term('Scripts','postscript');
-    wp_insert_term('Styles','postscript');
+    // wp_insert_term('Scripts','postscript');
+    // wp_insert_term('Styles','postscript');
 }
 add_action( 'registered_taxonomy', 'postscript_populate_taxonomy', 0 );
 

@@ -56,11 +56,18 @@ function postscript_settings_display() {
 
 <div id="postbox-container-1" class="postbox-container">
     <div id="categorydiv" class="postbox ">
-        <h2 class="hndle"><span><?php _e('Postscript Styles and Scripts', 'postscript' ); ?></span></h2>
+        <h2 class="hndle"><span><?php _e('Postscript', 'postscript' ); ?></span></h2>
         <div class="inside">
-            <div id="taxonomy-category" class="categorydiv">
+            <div id="taxonomy-postscript_scripts" class="categorydiv">
+                <h3 class="hndle"><span><?php _e('Scripts', 'postscript' ); ?></span></h3>
                 <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-                    <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript' ) ); ?>
+                    <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_scripts' ) ); ?>
+                </ul>
+            </div><!-- .categorydiv -->
+            <div id="taxonomy-postscript_styles" class="categorydiv">
+                <h3 class="hndle"><span><?php _e('Styles', 'postscript' ); ?></span></h3>
+                <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
+                    <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_styles' ) ); ?>
                 </ul>
             </div><!-- .categorydiv -->
         </div><!-- .inside -->
@@ -336,10 +343,8 @@ function postscript_style_add_callback() {
  * Outputs HTML select menu of all registered scripts.
  */
 function postscript_script_remove_callback() {
-    $options = get_option( 'postscript' );
-
     $args = array(
-      'taxonomy'          => 'postscript',
+      'taxonomy'          => 'postscript_scripts',
       'name'              => 'postscript[script_remove]',
       'option_none_value' => '',
       'show_option_none'  => 'Remove a script:',
@@ -349,6 +354,7 @@ function postscript_script_remove_callback() {
       'hierarchical'      => 1,
       'child_of'          => 193,
       'hide_empty '       => 0,
+      'value_field'       => 'name',
     );
     ?>
 
@@ -362,10 +368,8 @@ function postscript_script_remove_callback() {
  * Outputs HTML select menu of all registered style (tax term).
  */
 function postscript_style_remove_callback() {
-    $options = get_option( 'postscript' );
-
     $args = array(
-      'taxonomy'          => 'postscript',
+      'taxonomy'          => 'postscript_styles',
       'name'              => 'postscript[style_remove]',
       'option_none_value' => '',
       'show_option_none'  => 'Remove a style:',
@@ -374,12 +378,13 @@ function postscript_style_remove_callback() {
       'hide_empty'        => 0,
       'hierarchical'      => 1,
       'child_of'          => 194,
-      'hide_empty '       => 0,
+      'hide_empty'        => 0,
+      'value_field'       => 'name',
     );
     ?>
 
     <ul class="clear">
-    <?php wp_dropdown_categories( $args ); ?>
+        <?php wp_dropdown_categories( $args ); ?>
     </ul>
 <?php
 }
@@ -395,7 +400,7 @@ function postscript_scripts_callback() {
     // Add script chosen with select menu.
     if ( isset( $options['script_add'] ) && in_array( $options['script_add'], $scripts_arr )  ) {
         $options['script'][] = $options['script_add'];
-        wp_insert_term( $options['script_add'], 'postscript', array( 'parent' => 193 ) );
+        wp_insert_term( $options['script_add'], 'postscript_scripts', array( 'parent' => 193 ) );
     }
 
     // Output select menu of (sorted) registered script handles.
