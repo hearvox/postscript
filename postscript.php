@@ -219,7 +219,7 @@ function postscript_create_taxonomy() {
     $args = array(
         'hierarchical'      => true,
         'labels'            => $labels,
-        'public'            => false,
+        'public'            => true,
         'query_var'         => true,
         'rewrite'           => array( 'slug' => 'postscript' ),
     );
