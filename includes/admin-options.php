@@ -28,20 +28,18 @@ function postscript_settings_menu() {
 
 }
 add_action('admin_menu', 'postscript_settings_menu');
-
+    $options = get_option( 'postscript' );
 /**
  * Renders settings menu page.
  */
 function postscript_settings_display() {
-    $options = get_option( 'postscript' );
 
-    global $postscript_scripts_reg_handles;
-    $postscript_scripts_reg_handles = postscript_script_reg_handles();
+    // Make global vars with arrays of registered script and style handles.
+    postscript_script_style_reg_handles();
 
-    global $postscript_styles_reg_handles;
-    $postscript_styles_reg_handles = postscript_style_reg_handles();
-
-?>
+    // Add or remove user-selected scripts and styles (custom taxonomy terms).
+    postscript_script_styles_add_remove();
+    ?>
     <!-- Create a header in the default WordPress 'wrap' container -->
     <div class="wrap">
 
@@ -49,7 +47,7 @@ function postscript_settings_display() {
         <h2><?php _e('Postscript settings', 'postscript' ); ?></h2>
 
         <!-- Make a call to the WordPress function for rendering errors when settings are saved. -->
-        <?php settings_errors(); ?>
+        <?php // settings_errors(); ?>
 
         <!-- Create the form that will be used to render our options -->
         <form method="post" action="options.php">
@@ -57,38 +55,100 @@ function postscript_settings_display() {
             <?php do_settings_sections( 'postscript' ); ?>
             <?php submit_button(); ?>
 
+            <?php
+            $options = get_option( 'postscript' );
+             if ( isset( $options['style_remove'] )  ) {
+
+                echo $options['style_remove'];
+                $style_slug = get_term_by('slug', $options['script_remove'], 'postscript_styles');
+                print_r( $style_slug );
+                // wp_delete_term( $style_slug->term_id, 'postscript_styles' );
+            }   else {
+                echo 'no';
+            }
+
+             ?>
+
             <?php // postscript_reg_scripts_select(); ?>
             <?php // postscript_render_script_list_form(); ?>
 
         </form>
 
-<div id="postbox-container-1" class="postbox-container">
-    <div id="categorydiv" class="postbox ">
-        <h2 class="hndle"><span><?php _e('Postscript', 'postscript' ); ?></span></h2>
-        <div class="inside">
-            <div id="taxonomy-postscript_scripts" class="categorydiv">
-                <h3 class="hndle"><span><?php _e('Scripts', 'postscript' ); ?></span></h3>
-                <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-                    <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_scripts' ) ); ?>
-                </ul>
-            </div><!-- .categorydiv -->
-            <div id="taxonomy-postscript_styles" class="categorydiv">
-                <h3 class="hndle"><span><?php _e('Styles', 'postscript' ); ?></span></h3>
-                <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-                    <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_styles' ) ); ?>
-                </ul>
-            </div><!-- .categorydiv -->
-        </div><!-- .inside -->
-    </div><!-- .postbox -->
-</div><!-- .postbox-container -->
-
-
-
+        <div id="postbox-container-1" class="postbox-container">
+            <div id="categorydiv" class="postbox ">
+                <h2 class="hndle"><span><?php _e('Postscript', 'postscript' ); ?></span></h2>
+                <div class="inside">
+                    <div id="taxonomy-postscript_scripts" class="categorydiv">
+                        <h3 class="hndle"><span><?php _e('Scripts', 'postscript' ); ?></span></h3>
+                        <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
+                            <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_scripts' ) ); ?>
+                        </ul>
+                    </div><!-- .categorydiv -->
+                    <div id="taxonomy-postscript_styles" class="categorydiv">
+                        <h3 class="hndle"><span><?php _e('Styles', 'postscript' ); ?></span></h3>
+                        <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
+                            <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_styles' ) ); ?>
+                        </ul>
+                    </div><!-- .categorydiv -->
+                    <div id="taxonomy-postscript_styles" class="categorydiv">
+                        <h3 class="hndle"><span><?php _e('Script URL', 'postscript' ); ?></span></h3>
+                        <input type="url" placeholder="https:" class="regular-text">
+                    </div><!-- .categorydiv -->
+                    <div id="taxonomy-postscript_styles" class="categorydiv">
+                        <h3 class="hndle"><span><?php _e('Style URL', 'postscript' ); ?></span></h3>
+                        <input type="url" placeholder="https:" class="regular-text">
+                    </div><!-- .categorydiv -->
+                </div><!-- .inside -->
+            </div><!-- .postbox -->
+        </div><!-- .postbox-container -->
 
         <?php print_test_data(); ?>
 
     </div><!-- .wrap -->
-<?php
+    <?php
+}
+
+/**
+ * Makes global vars with arrays of registered script and style handles.
+ */
+function postscript_script_style_reg_handles() {
+    // Make global vars with arrays of registered script and style handles.
+    global $postscript_scripts_reg_handles;
+    $postscript_scripts_reg_handles = postscript_script_reg_handles();
+
+    global $postscript_styles_reg_handles;
+    $postscript_styles_reg_handles = postscript_style_reg_handles();
+}
+
+/**
+ * Adds or removes user-selected scripts and styles as custom taxonomy terms.
+ */
+function postscript_script_styles_add_remove() {
+    $options = get_option( 'postscript' );
+    global $postscript_scripts_reg_handles;
+    global $postscript_styles_reg_handles;
+
+    // Add new script or style tax term, if registered handle.
+    if ( isset( $options['script_add'] ) && in_array( $options['script_add'], $postscript_scripts_reg_handles )  ) {
+        wp_insert_term( $options['script_add'], 'postscript_scripts' );
+    }
+
+    if ( isset( $options['style_add'] ) && in_array( $options['style_add'], $postscript_styles_reg_handles )  ) {
+        wp_insert_term( $options['style_add'], 'postscript_styles' );
+    }
+
+    // De script or style, if registered.
+    if ( ! empty( $options['script_remove'] ) && term_exists( $options['script_remove'], 'postscript_scripts') ) {
+        $script_slug = get_term_by('slug', $options['script_remove'], 'postscript_scripts');
+        $script_id = $script_slug->term_id;
+        wp_delete_term( $script_id, 'postscript_scripts' );
+    }
+
+    if ( ! empty( $options['style_remove'] ) && term_exists( $options['style_remove'], 'postscript_styles') ) {
+        $style_slug = get_term_by( 'slug', $options['style_remove'], 'postscript_styles');
+        $style_id = $style_slug->term_id;
+        wp_delete_term( $style_id, 'postscript_styles' );
+    }
 }
 
 /* ------------------------------------------------------------------------ *
@@ -181,22 +241,6 @@ function postscript_options_init() {
         'postscript_script_style_remove_section'
     );
 
-    add_settings_field(
-        'postscript_scripts',
-        __( 'Allowed Scripts', 'postscript' ),
-        'postscript_scripts_callback',
-        'postscript',
-        'postscript_scripts_styles_section'
-    );
-
-    add_settings_field(
-        'postscript_styles',
-        __( 'Allowed Styles', 'postscript' ),
-        'postscript_styles_callback',
-        'postscript',
-        'postscript_scripts_styles_section'
-    );
-
     register_setting(
         'postscript',
         'postscript'
@@ -210,22 +254,22 @@ add_action('admin_init', 'postscript_options_init');
  * ------------------------------------------------------------------------ */
 
 function postscript_section_callback() {
-?>
+    ?>
     <p><?php _e('The Postscript meta box (in the Edit Post screen) lets users enqueue scripts and styles for a single post.', 'postscript' ); ?></p>
     <p><?php _e('Choose which post-types and user-roles display the Postscript box.', 'postscript' ); ?></p>
-<?php
+    <?php
 }
 
 function postscript_scripts_styles_section_callback() {
-?>
+    ?>
     <p><?php _e('Add registered script or style to be listed in the Postscript box.', 'postscript' ); ?></p>
-<?php
+    <?php
 }
 
 function postscript_script_style_remove_section_callback() {
-?>
+    ?>
     <p><?php _e('Remove script or style from the Postscript box.', 'postscript' ); ?></p>
-<?php
+    <?php
 }
 
 
@@ -245,7 +289,7 @@ function postscript_user_roles_callback() {
     if ( ! function_exists( 'get_editable_roles' ) ) {
         require_once( ABSPATH . 'wp-admin/includes/user.php' );
     }
-?>
+    ?>
     <fieldset>
         <legend><?php _e( 'Select the roles allowed to use Postscript box:', 'postscript' ); ?></legend>
         <ul class="inside">
@@ -259,7 +303,7 @@ function postscript_user_roles_callback() {
             <input type="hidden" value="on" name="postscript[user_role][administrator]" />
         </ul>
     </fieldset>
-<?php
+    <?php
 }
 
 /**
@@ -267,7 +311,7 @@ function postscript_user_roles_callback() {
  */
 function postscript_post_types_callback() {
     $options = get_option( 'postscript' );
-?>
+    ?>
     <fieldset>
         <legend><?php _e( 'Select which post types display Postscript box:', 'postscript' ); ?></legend>
         <ul class="inside">
@@ -283,7 +327,7 @@ function postscript_post_types_callback() {
         ?>
         </ul>
     </fieldset>
-<?php
+    <?php
 }
 
 /**
@@ -291,7 +335,7 @@ function postscript_post_types_callback() {
  */
 function postscript_allow_urls_callback() {
     $options = get_option( 'postscript' );
-?>
+    ?>
     <fieldset>
         <legend><?php _e( 'Add a text field in Postscript box for:', 'postscript' ); ?></legend>
         <ul class="inside">
@@ -299,7 +343,7 @@ function postscript_allow_urls_callback() {
             <li><label><input type="checkbox" id="" name="postscript[allow_url][script]" value="on"<?php checked( 'on', isset( $options['allow_url']['script'] ) ? $options['allow_url']['script'] : 'off' ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
         </ul>
     </fieldset>
-<?php
+    <?php
 }
 
 /**
@@ -310,7 +354,7 @@ function postscript_script_add_callback() {
     global $postscript_scripts_reg_handles;
 
     // Output select menu of (sorted) registered script handles.
-?>
+    ?>
     <select id="postscript_scripts_field" name="postscript[script_add]">
         <option value=''><?php _e( 'Select script to add:', 'postscript' ); ?></option>
         <?php
@@ -319,7 +363,7 @@ function postscript_script_add_callback() {
         }
         ?>
     </select>
-<?php
+    <?php
 }
 
 /**
@@ -330,7 +374,7 @@ function postscript_style_add_callback() {
     global $postscript_styles_reg_handles;
 
     // Output select menu of (sorted) registered style handles.
-?>
+    ?>
     <select id="postscript_styles_field" name="postscript[style_add]">
         <option value=''><?php _e( 'Select style to add:', 'postscript' ); ?></option>
         <?php
@@ -339,7 +383,7 @@ function postscript_style_add_callback() {
         }
         ?>
     </select>
-<?php
+    <?php
 }
 
 
@@ -351,21 +395,16 @@ function postscript_script_remove_callback() {
       'taxonomy'          => 'postscript_scripts',
       'name'              => 'postscript[script_remove]',
       'option_none_value' => '',
-      'show_option_none'  => 'Remove a script:',
+      'show_option_none'  => 'Select script to remove:',
       'show_count'        => 1,
-      'pad_counts'        => 0,
       'hide_empty'        => 0,
-      'hierarchical'      => 1,
-      'child_of'          => 193,
-      'hide_empty '       => 0,
       'value_field'       => 'name',
     );
     ?>
-
     <ul class="clear">
-    <?php wp_dropdown_categories( $args ); ?>
+        <?php wp_dropdown_categories( $args ); ?>
     </ul>
-<?php
+    <?php
 }
 
 /**
@@ -376,21 +415,16 @@ function postscript_style_remove_callback() {
       'taxonomy'          => 'postscript_styles',
       'name'              => 'postscript[style_remove]',
       'option_none_value' => '',
-      'show_option_none'  => 'Remove a style:',
+      'show_option_none'  => 'Select style to remove:',
       'show_count'        => 1,
-      'pad_counts'        => 0,
-      'hide_empty'        => 0,
-      'hierarchical'      => 1,
-      'child_of'          => 194,
       'hide_empty'        => 0,
       'value_field'       => 'name',
     );
     ?>
-
     <ul class="clear">
         <?php wp_dropdown_categories( $args ); ?>
     </ul>
-<?php
+    <?php
 }
 
 /**
@@ -452,43 +486,6 @@ function postscript_scripts_callback() {
     } else {
 ?>
     <p><?php _e( 'No scripts added yet.', 'postscript' ); ?></p>
-<?php
-    }
-}
-
-/**
- * Outputs HTML checkboxes of selected styles (used for Postscript box list).
- */
-function postscript_styles_callback() {
-    $options = get_option( 'postscript' );
-    global $styles_reg_handles;
-
-    // Add script chosen with select menu.
-    if ( isset( $options['style_add'] ) && in_array( $options['style_add'], $styles_reg_handles )  ) {
-        $options['style'][] = $options['style_add'];
-    }
-
-    // Output select menu of (sorted) registered script handles.
-    if ( isset( $options['style'] ) ) {
-        $styles_added = array_unique( $options['style'] );
-        sort( $styles_added );
-?>
-    <fieldset>
-        <legend><?php _e( 'Uncheck to remove styles:', 'postscript' ); ?></legend>
-        <ul class="inside">
-        <?php
-        foreach ( $styles_added as $style ) {
-        ?>
-            <li><label><input type="checkbox" id="<?php echo $style; ?>" value="<?php echo $style; ?>" name="postscript[style][]" checked="checked" /> <?php echo $style; ?></label></li>
-        <?php
-        }
-        ?>
-        </ul>
-    </fieldset>
-<?php
-    } else {
-?>
-    <p><?php _e( 'No styles added yet.', 'postscript' ); ?></p>
 <?php
     }
 }
@@ -714,10 +711,8 @@ function postscript_upgrade_options( $options ) {
     $defaults = array(
         'roles'         => array( 'administrator' ),
         'post_types'    => array( 'post' ),
-        'script_url'    => true,
-        'style_url'     => true,
-        'scripts'       => array(),
-        'styles'        => array(),
+        'script_url'    => 'on',
+        'style_url'     => 'on',
     );
 
     if ( is_array( $options ) && ! empty( $options ) )
@@ -925,8 +920,8 @@ function print_test_data() {
             echo '<br><code>array_keys( $options[\'postscript_allow_url\'] )</code>:<br />';
             print_r( array_keys( $options['postscript_allow_url'] ) ); } ?>
         <hr />
-        <?php $screen = get_current_screen(); ?>
-        <?php echo "{$screen->id}\n"; ?>
+        <?php // $screen = get_current_screen(); ?>
+        <?php // echo "{$screen->id}\n"; ?>
         <?php // print_r( $screen ); ?>
         <hr />
         <?php // global $wp_scripts; ?>

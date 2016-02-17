@@ -220,7 +220,7 @@ function postscript_create_taxonomies() {
     );
 
     $args_postscript_scripts = array(
-        'hierarchical'      => true,
+        'hierarchical'      => false,
         'labels'            => $labels_postscript_scripts,
         'public'            => true,
         'query_var'         => true,
@@ -244,7 +244,7 @@ function postscript_create_taxonomies() {
     );
 
     $args_postscript_styles = array(
-        'hierarchical'      => true,
+        'hierarchical'      => false,
         'labels'            => $labels_postscript_styles,
         'public'            => true,
         'query_var'         => true,
