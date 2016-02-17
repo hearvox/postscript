@@ -42,7 +42,6 @@ function postscript_settings_display() {
     ?>
     <!-- Create a header in the default WordPress 'wrap' container -->
     <div class="wrap">
-
         <!-- Add the icon to the page -->
         <h2><?php _e('Postscript settings', 'postscript' ); ?></h2>
 
@@ -62,34 +61,7 @@ function postscript_settings_display() {
 
         <?php postscript_scripts_added_table(); ?>
         <?php postscript_styles_added_table(); ?>
-
-        <div id="postbox-container-1" class="postbox-container">
-            <div id="categorydiv" class="postbox ">
-                <h2 class="hndle"><span><?php _e('Postscript', 'postscript' ); ?></span></h2>
-                <div class="inside">
-                    <div id="taxonomy-postscript_scripts" class="categorydiv">
-                        <h3 class="hndle"><span><?php _e('Scripts', 'postscript' ); ?></span></h3>
-                        <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-                            <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_scripts' ) ); ?>
-                        </ul>
-                    </div><!-- .categorydiv -->
-                    <div id="taxonomy-postscript_styles" class="categorydiv">
-                        <h3 class="hndle"><span><?php _e('Styles', 'postscript' ); ?></span></h3>
-                        <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-                            <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_styles' ) ); ?>
-                        </ul>
-                    </div><!-- .categorydiv -->
-                    <div id="taxonomy-postscript_styles" class="categorydiv">
-                        <h3 class="hndle"><span><?php _e('Script URL', 'postscript' ); ?></span></h3>
-                        <input type="url" placeholder="https:" class="regular-text">
-                    </div><!-- .categorydiv -->
-                    <div id="taxonomy-postscript_styles" class="categorydiv">
-                        <h3 class="hndle"><span><?php _e('Style URL', 'postscript' ); ?></span></h3>
-                        <input type="url" placeholder="https:" class="regular-text">
-                    </div><!-- .categorydiv -->
-                </div><!-- .inside -->
-            </div><!-- .postbox -->
-        </div><!-- .postbox-container -->
+        <?php postscript_meta_box_example(); ?>
 
 
         <?php print_test_data(); ?>
@@ -156,14 +128,14 @@ function postscript_scripts_added_table() {
     ?>
     <table class="wp-list-table widefat striped">
         <thead>
-            <caption><h3 class="textleft">Scripts Added</h3></caption>
+            <caption><h3 class="textleft"><?php _e( 'Scripts Added', 'postscript' ); ?></h3></caption>
             <tr>
-                <th scope="col" class="th-full" style="padding: 0.5em;">Handle</th>
-                <th scope="col" class="th-full" style="padding: 0.5em;">Ver</th>
-                <th scope="col" class="th-full" style="padding: 0.5em;">Deps</th>
-                <th scope="col" class="th-full" style="padding: 0.5em;">Footer</th>
-                <th scope="col" class="th-full" style="padding: 0.5em;">Status</th>
-                <th scope="col" class="th-full" style="padding: 0.5em;">Posts</th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Handle', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Ver', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Deps', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Footer', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Status', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Posts', 'postscript' ); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -218,14 +190,14 @@ function postscript_styles_added_table() {
     ?>
     <table class="wp-list-table widefat striped">
         <thead>
-            <caption><h3 class="textleft">Styles Added</h3></caption>
+            <caption><h3 class="textleft"><?php _e( 'Styles Added', 'postscript' ); ?></h3></caption>
             <tr>
-                <th scope="col" class="th-full" style="padding: 0.5em;">Handle</th>
-                <th scope="col" class="th-full" style="padding: 0.5em;">Ver</th>
-                <th scope="col" class="th-full" style="padding: 0.5em;">Deps</th>
-                <th scope="col" class="th-full" style="padding: 0.5em;">Media</th>
-                <th scope="col" class="th-full" style="padding: 0.5em;">Status</th>
-                <th scope="col" class="th-full" style="padding: 0.5em;">Posts</th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Handle', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Ver', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Deps', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Media', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Status', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Posts', 'postscript' ); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -265,6 +237,42 @@ function postscript_styles_added_table() {
         </tbody>
     </table>
     <p class="wp-ui-text-icon textright"><?php _e( 'Status response code links goes to <code>src</code> file. Posts link goes to list of Posts.', 'postscript' ); ?></p>
+    <?php
+}
+
+/**
+ * Render example of Edit Post screen meta box, based on settings.
+ */
+function postscript_meta_box_example() {
+    $options = get_option( 'postscript' );
+    ?>
+    <div id="postbox-container-1" class="postbox-container">
+        <div id="categorydiv" class="postbox ">
+            <h2 class="hndle"><span><?php _e('Postscript', 'postscript' ); ?></span></h2>
+            <div class="inside">
+                <div id="taxonomy-postscript_scripts" class="categorydiv">
+                    <h3 class="hndle"><span><?php _e('Scripts', 'postscript' ); ?></span></h3>
+                    <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
+                        <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_scripts' ) ); ?>
+                    </ul>
+                </div><!-- .categorydiv -->
+                <div id="taxonomy-postscript_styles" class="categorydiv">
+                    <h3 class="hndle"><span><?php _e('Styles', 'postscript' ); ?></span></h3>
+                    <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
+                        <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_styles' ) ); ?>
+                    </ul>
+                </div><!-- .categorydiv -->
+                <div id="taxonomy-postscript_styles" class="categorydiv">
+                    <h3 class="hndle"><span><?php _e('Script URL', 'postscript' ); ?></span></h3>
+                    <input type="url" placeholder="https:" class="regular-text">
+                </div><!-- .categorydiv -->
+                <div id="taxonomy-postscript_styles" class="categorydiv">
+                    <h3 class="hndle"><span><?php _e('Style URL', 'postscript' ); ?></span></h3>
+                    <input type="url" placeholder="https:" class="regular-text">
+                </div><!-- .categorydiv -->
+            </div><!-- .inside -->
+        </div><!-- .postbox -->
+    </div><!-- .postbox-container -->
     <?php
 }
 
