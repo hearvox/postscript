@@ -28,7 +28,7 @@ function postscript_settings_menu() {
 
 }
 add_action('admin_menu', 'postscript_settings_menu');
-    $options = get_option( 'postscript' );
+
 /**
  * Renders settings menu page.
  */
@@ -55,24 +55,12 @@ function postscript_settings_display() {
             <?php do_settings_sections( 'postscript' ); ?>
             <?php submit_button(); ?>
 
-            <?php
-            $options = get_option( 'postscript' );
-             if ( isset( $options['style_remove'] )  ) {
-
-                echo $options['style_remove'];
-                $style_slug = get_term_by('slug', $options['script_remove'], 'postscript_styles');
-                print_r( $style_slug );
-                // wp_delete_term( $style_slug->term_id, 'postscript_styles' );
-            }   else {
-                echo 'no';
-            }
-
-             ?>
-
             <?php // postscript_reg_scripts_select(); ?>
             <?php // postscript_render_script_list_form(); ?>
 
         </form>
+
+        <?php postscript_scripts_added_table(); ?>
 
         <div id="postbox-container-1" class="postbox-container">
             <div id="categorydiv" class="postbox ">
@@ -102,7 +90,10 @@ function postscript_settings_display() {
             </div><!-- .postbox -->
         </div><!-- .postbox-container -->
 
+
         <?php print_test_data(); ?>
+
+
 
     </div><!-- .wrap -->
     <?php
@@ -149,6 +140,60 @@ function postscript_script_styles_add_remove() {
         $style_id = $style_slug->term_id;
         wp_delete_term( $style_id, 'postscript_styles' );
     }
+}
+
+/**
+ * Outputs HTML table add user-added registered scripts (with metadata and term posts count).
+ */
+function postscript_scripts_added_table() {
+    global $postscript_scripts_reg_handles;
+    $args = array(
+        'hide_empty'             => false,
+        'fields'                 => 'all',
+    );
+    $scripts_added = get_terms( 'postscript_scripts', $args );
+    ?>
+    <table class="wp-list-table widefat striped">
+        <thead>
+            <tr>
+                <th scope="col" class="th-full" style="padding: 0.5em;">Handle</th>
+                <th scope="col" class="th-full" style="padding: 0.5em;">Ver</th>
+                <th scope="col" class="th-full" style="padding: 0.5em;">Deps</th>
+                <th scope="col" class="th-full" style="padding: 0.5em;">Footer</th>
+                <th scope="col" class="th-full" style="padding: 0.5em;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+    <?php
+    if ( ! empty( $scripts_added ) ) {
+        global $wp_scripts;
+        foreach ( $scripts_added as $script_obj ) {
+            if ( in_array( $script_obj->name, $postscript_scripts_reg_handles ) ) {
+                $script_arr   = $wp_scripts->registered[ $script_obj->name ];
+                $deps         = implode( ',', $script_arr->deps );
+                $footer       = ( ( $script_arr->args == 1 ) ) ? 'footer' : 'head';
+                $src          = ( $script_arr->src ) ? postscript_core_full_urls( $script_arr->src ) : '';
+                $status_code  = postscript_url_exists( $src );
+            ?>
+            <tr>
+                <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $script_obj->name; ?></label></th>
+                <td><?php echo $script_arr->ver; ?></td>
+                <td><?php echo $deps; ?></td>
+                <td><?php echo $script_arr->args; ?></td>
+                <td><a href="<?php echo $src; ?>"><?php echo $status_code; ?></a></td>
+            </tr>
+            <?php
+            } // if
+        } // foreach
+    } else { ?>
+            <tr><td><p><?php _e( 'You have not added any scripts yet.', 'postscript' ); ?></p></td></tr>
+    <?php
+    }
+    ?>
+        </tbody>
+    </table>
+    <p class="wp-ui-text-icon textright">(Status response code link goes to <code>src</code> file. Posts link goes to list of Posts.)
+    <?php
 }
 
 /* ------------------------------------------------------------------------ *
@@ -386,19 +431,18 @@ function postscript_style_add_callback() {
     <?php
 }
 
-
 /**
  * Outputs HTML select menu of all registered scripts.
  */
 function postscript_script_remove_callback() {
     $args = array(
-      'taxonomy'          => 'postscript_scripts',
-      'name'              => 'postscript[script_remove]',
-      'option_none_value' => '',
-      'show_option_none'  => 'Select script to remove:',
-      'show_count'        => 1,
-      'hide_empty'        => 0,
-      'value_field'       => 'name',
+        'taxonomy'          => 'postscript_scripts',
+        'name'              => 'postscript[script_remove]',
+        'option_none_value' => '',
+        'show_option_none'  => 'Select script to remove:',
+        'show_count'        => 1,
+        'hide_empty'        => 0,
+        'value_field'       => 'name',
     );
     ?>
     <ul class="clear">
@@ -412,13 +456,13 @@ function postscript_script_remove_callback() {
  */
 function postscript_style_remove_callback() {
     $args = array(
-      'taxonomy'          => 'postscript_styles',
-      'name'              => 'postscript[style_remove]',
-      'option_none_value' => '',
-      'show_option_none'  => 'Select style to remove:',
-      'show_count'        => 1,
-      'hide_empty'        => 0,
-      'value_field'       => 'name',
+        'taxonomy'          => 'postscript_styles',
+        'name'              => 'postscript[style_remove]',
+        'option_none_value' => '',
+        'show_option_none'  => 'Select style to remove:',
+        'show_count'        => 1,
+        'hide_empty'        => 0,
+        'value_field'       => 'name',
     );
     ?>
     <ul class="clear">
@@ -427,11 +471,13 @@ function postscript_style_remove_callback() {
     <?php
 }
 
+
+
 /**
  * Outputs HTML checkboxes in a table of selected scripts and their params (used for Postscript box list).
  */
 function postscript_scripts_callback() {
-    $options = get_option( 'postscript' );
+    $scripts_added = get_option( 'postscript' );
     global $postscript_scripts_reg_handles;
 
     // Add script chosen with select menu.
@@ -469,7 +515,7 @@ function postscript_scripts_callback() {
                 $status_code = postscript_url_exists( $src );
             ?>
                 <tr>
-                    <th scope="row" class="th-full" style="padding: 0.5em;"><label><input type="checkbox" id="<?php echo $script; ?>" value="<?php echo $script; ?>" name="postscript[script][]" checked="checked" /> <?php echo $script; ?></label></th>
+                    <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $script; ?></label></th>
                     <td><?php echo $ps_script_arr->ver; ?></td>
                     <td><?php echo $deps; ?></td>
                     <td><?php echo $ps_script_arr->args; ?></td>
