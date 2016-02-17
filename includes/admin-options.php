@@ -33,6 +33,14 @@ add_action('admin_menu', 'postscript_settings_menu');
  * Renders settings menu page.
  */
 function postscript_settings_display() {
+    $options = get_option( 'postscript' );
+
+    global $postscript_scripts_reg_handles;
+    $postscript_scripts_reg_handles = postscript_script_reg_handles();
+
+    global $postscript_styles_reg_handles;
+    $postscript_styles_reg_handles = postscript_style_reg_handles();
+
 ?>
     <!-- Create a header in the default WordPress 'wrap' container -->
     <div class="wrap">
@@ -299,16 +307,14 @@ function postscript_allow_urls_callback() {
  */
 function postscript_script_add_callback() {
     $options = get_option( 'postscript' );
-
-    global $scripts_arr;
-    $scripts_arr = postscript_reg_script_handles();
+    global $postscript_scripts_reg_handles;
 
     // Output select menu of (sorted) registered script handles.
 ?>
     <select id="postscript_scripts_field" name="postscript[script_add]">
         <option value=''><?php _e( 'Select script to add:', 'postscript' ); ?></option>
         <?php
-        foreach( $scripts_arr as $script_handle ) {
+        foreach( $postscript_scripts_reg_handles as $script_handle ) {
             echo "<option value=\"{$script_handle}\">{$script_handle}</option>";
         }
         ?>
@@ -321,16 +327,14 @@ function postscript_script_add_callback() {
  */
 function postscript_style_add_callback() {
     $options = get_option( 'postscript' );
-
-    global $styles_arr;
-    $styles_arr = postscript_reg_style_handles();
+    global $postscript_styles_reg_handles;
 
     // Output select menu of (sorted) registered style handles.
 ?>
     <select id="postscript_styles_field" name="postscript[style_add]">
         <option value=''><?php _e( 'Select style to add:', 'postscript' ); ?></option>
         <?php
-        foreach( $styles_arr as $style_handle ) {
+        foreach( $postscript_styles_reg_handles as $style_handle ) {
             echo "<option value=\"{$style_handle}\">{$style_handle}</option>";
         }
         ?>
@@ -394,11 +398,10 @@ function postscript_style_remove_callback() {
  */
 function postscript_scripts_callback() {
     $options = get_option( 'postscript' );
-
-    global $scripts_arr;
+    global $postscript_scripts_reg_handles;
 
     // Add script chosen with select menu.
-    if ( isset( $options['script_add'] ) && in_array( $options['script_add'], $scripts_arr )  ) {
+    if ( isset( $options['script_add'] ) && in_array( $options['script_add'], $postscript_scripts_reg_handles )  ) {
         $options['script'][] = $options['script_add'];
         wp_insert_term( $options['script_add'], 'postscript_scripts', array( 'parent' => 193 ) );
     }
@@ -458,11 +461,10 @@ function postscript_scripts_callback() {
  */
 function postscript_styles_callback() {
     $options = get_option( 'postscript' );
-
-    global $styles_arr;
+    global $styles_reg_handles;
 
     // Add script chosen with select menu.
-    if ( isset( $options['style_add'] ) && in_array( $options['style_add'], $styles_arr )  ) {
+    if ( isset( $options['style_add'] ) && in_array( $options['style_add'], $styles_reg_handles )  ) {
         $options['style'][] = $options['style_add'];
     }
 
@@ -498,7 +500,7 @@ function postscript_styles_callback() {
 /**
  * Makes an alphabetized array of registered script handles.
  */
-function postscript_reg_script_handles() {
+function postscript_script_reg_handles() {
     global $wp_scripts;
     $script_handles = array();
 
@@ -515,7 +517,7 @@ function postscript_reg_script_handles() {
 /**
  * Makes an alphabetized array of registered style handles.
  */
-function postscript_reg_style_handles() {
+function postscript_style_reg_handles() {
     global $wp_styles;
     $style_handles = array();
 
@@ -527,23 +529,6 @@ function postscript_reg_style_handles() {
     sort( $style_handles ); // Alphabetize.
 
     return $style_handles;
-}
-
-/**
- * Makes an alphabetized array of registered script handles.
- */
-function postscript_reg_scripts_arr() {
-    global $wp_scripts;
-    $script_handles = array();
-
-    // Make array to sort registered scripts by handle (from $wp_scripts object).
-    foreach( $wp_scripts->registered as $script_reg ) {
-        $script_handles[] = $script_reg->handle;
-    }
-
-    sort( $script_handles ); // Alphabetize.
-
-    return $script_handles;
 }
 
 /**
@@ -576,23 +561,23 @@ function ps_script_is( $script, $list = 'registered') {
 /**
  * Outputs HTML select element populated with registered script handles (alphabetized).
  */
-function postscript_reg_scripts_select() {
+function postscript_scripts_reg_select() {
     global $wp_scripts;
     $scripts_data = '';
-    $scripts_arr = array();
+    $postscript_scripts_reg_handles = array();
 
     // Make array to sort registered scripts by handle (from $wp_scripts object).
     foreach( $wp_scripts->registered as $script_reg ) {
-        $scripts_arr[] = $script_reg->handle;
+        $postscript_scripts_reg_handles[] = $script_reg->handle;
     }
-    sort( $scripts_arr );
+    sort( $postscript_scripts_reg_handles );
 
     // $options = get_option( 'postscript_scripts_option' );
     ?>
     <select id="postscript_scripts" name="postscript[scripts]">
         <option value=''><?php _e( 'Select a script:', 'postscript' ); ?></option>
         <?php
-        foreach( $scripts_arr as $script_handle ) {
+        foreach( $postscript_scripts_reg_handles as $script_handle ) {
             echo "<option value=\"{$script_handle}\">{$script_handle}</option>";
         }
         ?>

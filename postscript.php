@@ -251,6 +251,11 @@ function postscript_create_taxonomies() {
         'rewrite'           => array( 'slug' => 'postscript_styles' ),
     );
 
+    // Filter params for Styles custom taxonomy.
+    if ( has_filter( 'postscript_tax_styles' ) ) {
+        $args_postscript_styles = apply_filters( 'postscript_tax_styles', $args_postscript_styles );
+    }
+
     register_taxonomy( 'postscript_styles', array( 'post' ), $args_postscript_styles );
 }
 
