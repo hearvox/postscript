@@ -513,9 +513,6 @@ escape late
 https://codex.wordpress.org/Function_Reference/wp_script_is
 wp_script_is( $handle, $list = 'enqueued' );
 
-https://developer.wordpress.org/reference/functions/wp_register_script/
-
-https://developer.wordpress.org/reference/functions/metadata_exists/
 http://code.tutsplus.com/articles/the-ins-and-outs-of-the-enqueue-script-for-wordpress-themes-and-plugins--wp-22509
 https://pippinsplugins.com/add-screen-options-tab-to-your-wordpress-plugin/
 http://code.tutsplus.com/tutorials/how-to-create-custom-wordpress-writemeta-boxes--wp-20336
@@ -524,157 +521,32 @@ http://www.smashingmagazine.com/2011/10/create-custom-post-meta-boxes-wordpress/
 http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/apps/non-labor-income/non-labor-income.css
 http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/apps/non-labor-income/non-labor-income.js
 
-function url_exists( $url ) {
-    $response = wp_remote_get( $url );
-    if ( is_wp_error( $response ) ) {
-        //request can't performed
-        return 1;
-    }
 
-    if ( wp_remote_retrieve_response_code( $response ) == '404' ) {
-        //request succeed and link not found
-        return 2;
-    }
+@TODO
+Add/set version in options:
+$new_options['version'] = POSTSCRIPT_VERSION;
 
-    //request succeed and link exist
-   return 3;
-}
+<?php print_r( wp_load_alloptions() ); ?>
+depecated: get_alloptions
 
+Options:
+http://rji.local/wp-admin/options.php
+rm:
+psing_allow_script_url
+psing_allow_style_url
+psing_added_scripts
+psing_post_types
+postscript_options
+postscript_allow_style_url_field
+postscript_allow_script_url_field
+postscript_settings
+postscript_display_options
+postscript_scripts
+postscript_styles
 
+sandbox_*
 
-function cd_meta_box_cb()
-{
-    // $post is already set, and contains an object: the WordPress post
-    global $post;
-    $values = get_post_custom( $post->ID );
-    $text = isset( $values['my_meta_box_text'] ) ? $values['my_meta_box_text'] : '';
-    $selected = isset( $values['my_meta_box_select'] ) ? esc_attr( $values['my_meta_box_select'] ) : '';
-    $check = isset( $values['my_meta_box_check'] ) ? esc_attr( $values['my_meta_box_check'] ) : '';
+Keep:
+postscript
 
-    // We'll use this nonce field later on when saving.
-    wp_nonce_field( 'my_meta_box_nonce', 'meta_box_nonce' );
-    ?>
-    <p>
-        <label for="my_meta_box_text">Text Label</label>
-        <input type="text" name="my_meta_box_text" id="my_meta_box_text" value="<?php echo $text; ?>" />
-    </p>
-
-    <p>
-        <label for="my_meta_box_select">Color</label>
-        <select name="my_meta_box_select" id="my_meta_box_select">
-            <option value="red" <?php selected( $selected, 'red' ); ?>>Red</option>
-            <option value="blue" <?php selected( $selected, 'blue' ); ?>>Blue</option>
-        </select>
-    </p>
-
-    <p>
-        <input type="checkbox" id="my_meta_box_check" name="my_meta_box_check" <?php checked( $check, 'on' ); ?> />
-        <label for="my_meta_box_check">Do not check this</label>
-    </p>
-    <?php
-}
-
-function music_meta_box( $post ) {
-    // Get post meta value using the key from our save function in the second paramater.
-    $custom_meta = get_post_meta($post->ID, '_custom-meta-box', true);
-
-    ?>
-        <input type="checkbox" name="custom-meta-box[]" value="huge" <?php echo (in_array('huge', $custom_meta)) ? 'checked="checked"' : ''; ?> />Huge
-        <br>
-        <input type="checkbox" name="custom-meta-box[]" value="house" <?php echo (in_array('house', $custom_meta)) ? 'checked="checked"' : ''; ?> />House
-        <br>
-        <input type="checkbox" name="custom-meta-box[]" value="techno" <?php echo (in_array('techno', $custom_meta)) ? 'checked="checked"' : ''; ?> />Techno<br>
-    <?php
-}
-add_action( 'save_post', 'save_music_meta_box' );
-
-function save_music_meta_box() {
-
-    global $post;
-    // Get our form field
-    if ( isset ( $_POST['custom-meta-box'] ) ) {
-        $custom = $_POST['custom-meta-box'];
-        $old_meta = get_post_meta( $post->ID, '_custom-meta-box', true );
-        // Update post meta
-        if( ! empty( $old_meta ) ){
-            update_post_meta( $post->ID, '_custom-meta-box', $custom );
-        } else {
-            add_post_meta( $post->ID, '_custom-meta-box', $custom, true );
-        }
-    }
-}
-
-delete_option( $option );
-
-https://developer.wordpress.org/reference/functions/wp_register_style/
-
-*/
-
-/*
-// $array = json_decode(json_encode($object), true);
-
-
-function recursive_array_search($needle,$haystack) {
-    foreach ($haystack as $key => $item) {
-        if ($item['handle'] === $needle)
-             return $key;
-        } else {
-        return false;
-        }
-    }
-}
-
-
-http://culttt.com/2012/06/25/functions-to-handle-multidimensional-arrays-in-php/
-
-
-// https://coderwall.com/p/8mmicq/php-convert-mixed-array-objects-recursively
-function object_to_array($d) {
-    if (is_object($d))
-        $d = get_object_vars($d);
-
-    return is_array($d) ? array_map(__FUNCTION__, $d) : $d;
-}
-
-function array_to_object($d) {
-    return is_array($d) ? (object) array_map(__FUNCTION__, $d) : $d;
-}
-
-http://ben.lobaugh.net/blog/567/php-recursively-convert-an-object-to-an-array
-
-http://stackoverflow.com/questions/7994497/how-to-get-an-array-of-specific-key-in-multidimensional-array-without-looping
-$ids = array_column($users, 'id'); // 5.5+
-$ids = array_map(function ($ar) {return $ar['id'];}, $users); // 5.3+
-$ids = array_map(create_function('$ar', 'return $ar["id"];'), $users);
-
-$input = array(
-    array(
-        'tag_name' => 'google'
-    ),
-    array(
-        'tag_name' => 'technology'
-    )
-);
-
-echo implode(', ', array_map( function ( $entry ) {
-    return $entry['tag_name'];
-}, $input ) );
-
-
-http://ben.lobaugh.net/blog/567/php-recursively-convert-an-object-to-an-array
-function object_to_array( $obj ) {
-    if ( is_object($obj) ) {
-        $obj = (array) $obj;
-    }
-
-    if ( is_array( $obj ) ) {
-        $new = array();
-        foreach ( $obj as $key => $val ) {
-            $new[$key] = object_to_array( $val );
-        }
-    } else {
-        $new = $obj;
-    }
-    return $new;
-}
 */

@@ -59,14 +59,8 @@ function postscript_settings_display() {
 
         </form>
 
-        <?php postscript_scripts_added_table(); ?>
-        <?php postscript_styles_added_table(); ?>
         <?php postscript_meta_box_example(); ?>
-
-
         <?php print_test_data(); ?>
-
-
 
     </div><!-- .wrap -->
     <?php
@@ -128,7 +122,6 @@ function postscript_scripts_added_table() {
     ?>
     <table class="wp-list-table widefat striped">
         <thead>
-            <caption><h3 class="textleft"><?php _e( 'Scripts Added', 'postscript' ); ?></h3></caption>
             <tr>
                 <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Handle', 'postscript' ); ?></th>
                 <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Ver', 'postscript' ); ?></th>
@@ -190,7 +183,6 @@ function postscript_styles_added_table() {
     ?>
     <table class="wp-list-table widefat striped">
         <thead>
-            <caption><h3 class="textleft"><?php _e( 'Styles Added', 'postscript' ); ?></h3></caption>
             <tr>
                 <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Handle', 'postscript' ); ?></th>
                 <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Ver', 'postscript' ); ?></th>
@@ -236,7 +228,7 @@ function postscript_styles_added_table() {
     ?>
         </tbody>
     </table>
-    <p class="wp-ui-text-icon textright"><?php _e( 'Status response code links goes to <code>src</code> file. Posts link goes to list of Posts.', 'postscript' ); ?></p>
+    <p class="wp-ui-text-icon textright"><?php _e( '* <strong>Status</strong> response code links to <code>src</code> file. <strong>Posts</strong> count link lists posts enqueueing the file.', 'postscript' ); ?></p>
     <?php
 }
 
@@ -346,6 +338,22 @@ function postscript_options_init() {
         'postscript_style_add',
         __( 'Add a Style', 'postscript' ),
         'postscript_style_add_callback',
+        'postscript',
+        'postscript_scripts_styles_section'
+    );
+
+    add_settings_field(
+        'postscript_scripts_added_table',
+        __( 'Scripts Added*', 'postscript' ),
+        'postscript_scripts_added_table_callback',
+        'postscript',
+        'postscript_scripts_styles_section'
+    );
+
+    add_settings_field(
+        'postscript_styles_added_table',
+        __( 'Styles Added*', 'postscript' ),
+        'postscript_styles_added_table_callback',
         'postscript',
         'postscript_scripts_styles_section'
     );
@@ -511,12 +519,22 @@ function postscript_style_add_callback() {
     <?php
 }
 
+function postscript_scripts_added_table_callback() {
+    postscript_scripts_added_table();
+}
+
+function postscript_styles_added_table_callback() {
+    postscript_styles_added_table();
+}
+
+
 /**
  * Outputs HTML select menu of all registered scripts.
  */
 function postscript_script_remove_callback() {
     $args = array(
         'taxonomy'          => 'postscript_scripts',
+        'orderby'           => 'name',
         'name'              => 'postscript[script_remove]',
         'option_none_value' => '',
         'show_option_none'  => 'Select script to remove:',
@@ -537,6 +555,7 @@ function postscript_script_remove_callback() {
 function postscript_style_remove_callback() {
     $args = array(
         'taxonomy'          => 'postscript_styles',
+        'orderby'           => 'name',
         'name'              => 'postscript[style_remove]',
         'option_none_value' => '',
         'show_option_none'  => 'Select style to remove:',
@@ -549,71 +568,6 @@ function postscript_style_remove_callback() {
         <?php wp_dropdown_categories( $args ); ?>
     </ul>
     <?php
-}
-
-
-
-/**
- * Outputs HTML checkboxes in a table of selected scripts and their params (used for Postscript box list).
- */
-function postscript_scripts_callback() {
-    $scripts_added = get_option( 'postscript' );
-    global $postscript_scripts_reg_handles;
-
-    // Add script chosen with select menu.
-    if ( isset( $options['script_add'] ) && in_array( $options['script_add'], $postscript_scripts_reg_handles )  ) {
-        $options['script'][] = $options['script_add'];
-        wp_insert_term( $options['script_add'], 'postscript_scripts', array( 'parent' => 193 ) );
-    }
-
-    // Output select menu of (sorted) registered script handles.
-    if ( isset( $options['script'] ) ) {
-        $scripts_added = array_unique( $options['script'] );
-        sort( $scripts_added );
-?>
-    <fieldset>
-        <legend><?php _e( 'Uncheck to remove scripts:', 'postscript' ); ?></legend>
-        <table class="wp-list-table widefat striped">
-            <thead>
-                <tr>
-                    <th scope="col" class="th-full" style="padding: 0.5em;">Handle</th>
-                    <th scope="col" class="th-full" style="padding: 0.5em;">Ver</th>
-                    <th scope="col" class="th-full" style="padding: 0.5em;">Deps</th>
-                    <th scope="col" class="th-full" style="padding: 0.5em;">Footer</th>
-                    <th scope="col" class="th-full" style="padding: 0.5em;">Src*</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php
-            global $wp_scripts;
-            foreach ( $scripts_added as $script ) {
-
-                $ps_script_arr = $wp_scripts->registered[ $script ];
-                $deps        = implode( ',', $ps_script_arr->deps );
-                $footer      = ( ( $ps_script_arr->args == 1 ) ) ? 'footer' : 'head';
-                $src         = postscript_core_full_urls( $ps_script_arr->src );
-                $status_code = postscript_url_exists( $src );
-            ?>
-                <tr>
-                    <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $script; ?></label></th>
-                    <td><?php echo $ps_script_arr->ver; ?></td>
-                    <td><?php echo $deps; ?></td>
-                    <td><?php echo $ps_script_arr->args; ?></td>
-                    <td><a href="<?php echo $src; ?>"><?php echo $status_code; ?></a></td>
-                </tr>
-            <?php
-            }
-            ?>
-            </tbody>
-        </table>
-    </fieldset>
-    <p class="wp-ui-text-icon textright">(* "Src" is URL status response code; link goes to file.)
-<?php
-    } else {
-?>
-    <p><?php _e( 'No scripts added yet.', 'postscript' ); ?></p>
-<?php
-    }
 }
 
 /* ------------------------------------------------------------------------ *
@@ -908,128 +862,6 @@ function postscript_configuration_load() {
         exit;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-
-global $wp_scripts;
-// print_r($wp_scripts->registered['jquery']);
-
-$ps_options = get_option('postscript');
-$ps_scripts = $ps_options['script'];
-
-echo '<table><thead><tr><th scope="col">handle</th><th scope="col">ver</th><th scope="col">deps</th><th scope="col">footer</th><th scope="col">src*</th></tr></thead><tbody>';
-
-foreach ( $ps_scripts as $ps_script ) {
-    // echo '<hr /><pre>';
-    // print_r($wp_scripts->registered[ $ps_script ]);
-    // echo '</pre>';
-    $ps_script_arr = $wp_scripts->registered[ $ps_script ];
-    $deps        = implode( ',', $ps_script_arr->deps );
-    $footer      = ( ( $ps_script_arr->args == 1 ) ) ? 'footer' : 'head';
-    $src         = postscript_core_full_urls( $ps_script_arr->src );
-    $status_code = postscript_url_exists( $src );
-
-    echo "<tr><th scope='row'><label><input type='checkbox'> $ps_script_arr->handle</label></th><td>$ps_script_arr->ver</td><td>$deps</td><td>$ps_script_arr->args</td><td><a href='$src'>$status_code</a></td></tr>";
-
-
-}
-
-echo '</tbody><tfoot><tr><td colspan="5" class="wp-ui-text-icon">* "src" is URL status response code, linked to file.</td></tr></tfoot></table>';
-
-
- */
-
-
-/*
-
-
-global $wp_scripts;
-// print_r($wp_scripts->registered['jquery']);
-
-$ps_options = get_option('postscript');
-$ps_scripts = $ps_options['script'];
-
-echo '<table><thead><tr><th scope="col">handle</th><th scope="col">ver</th><th scope="col">deps</th><th scope="col">footer</th><th scope="col">src*</th></tr></thead><tbody>';
-
-foreach ( $ps_scripts as $ps_script ) {
-    // echo '<hr /><pre>';
-    // print_r($wp_scripts->registered[ $ps_script ]);
-    // echo '</pre>';
-    $ps_script_arr = $wp_scripts->registered[ $ps_script ];
-    $deps        = implode( ',', $ps_script_arr->deps );
-    $footer      = ( ( $ps_script_arr->args == 1 ) ) ? 'footer' : 'head';
-    $src         = postscript_core_full_urls( $ps_script_arr->src );
-    $status_code = postscript_url_exists( $src );
-
-    echo "<tr><th scope='row'><label><input type='checkbox'> $ps_script_arr->handle</label></th><td>$ps_script_arr->ver</td><td>$deps</td><td>$ps_script_arr->args</td><td><a href='$src'>$status_code</a></td></tr>";
-
-
-}
-
-echo '</tbody><tfoot><tr><td colspan="5" class="wp-ui-text-icon">* "src" is URL status response code, linked to file.</td></tr></tfoot></table>';
-
-
-    <fieldset>
-        <legend><?php _e( 'Uncheck to remove styles:', 'postscript' ); ?></legend>
-        <ul class="inside">
-        <?php
-        foreach ( $styles_added as $style ) {
-        ?>
-            <li><label><input type="checkbox" id="<?php echo $style; ?>" value="<?php echo $style; ?>" name="postscript[style][]" checked="checked" /> <?php echo $style; ?></label></li>
-        <?php
-        }
-        ?>
-        </ul>
-    </fieldset>
-
- */
-
-/*
-@TODO
-Add/set version in options:
-$new_options['version'] = POSTSCRIPT_VERSION;
-
-<?php print_r( wp_load_alloptions() ); ?>
-depecated: get_alloptions
-
-Options:
-http://rji.local/wp-admin/options.php
-rm:
-psing_allow_script_url
-psing_allow_style_url
-psing_added_scripts
-psing_post_types
-postscript_options
-postscript_allow_style_url_field
-postscript_allow_script_url_field
-postscript_settings
-postscript_display_options
-postscript_scripts
-postscript_styles
-
-sandbox_*
-
-Keep:
-postscript
-
- */
-
 
 function print_test_data() {
 ?>
