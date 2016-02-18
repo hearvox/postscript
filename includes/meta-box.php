@@ -14,10 +14,7 @@
  * Get Settings Options
  * ------------------------------------------------------------------------ */
 
-$postscript_allow_script_url = get_option( 'postscript_allow_script_url', true ) ? true : false;
-$postscript_allow_style_url = get_option( 'postscript_allow_style_url', true ) ? true : false;
-$postscript_script_handles = get_option( 'postscript_script_handles' );
-$postscript_style_handles = get_option( 'postscript_style_handles' );
+// $postscript_options = get_option( 'postscript' );
 
 
 /* ------------------------------------------------------------------------ *
@@ -71,16 +68,28 @@ function postscript_post_meta_box_callback( $post, $box ) {
     $postscript_script_url = get_post_meta( $post_id, 'postscript_script_url', true );
 
 ?>
-
     <?php wp_nonce_field( basename( __FILE__ ), 'postscript_post_enqueue_nonce' ); ?>
     <p>
-        <label for="postscript-style-url"><?php _e( 'Enter URL of CSS stylesheet.', 'post-scripting' ); ?></label><br />
+        <h3 class="hndle"><span><?php _e('Styles', 'postscript' ); ?></span></h3>
+        <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
+        <?php
+        $term_list = wp_get_post_terms( $post_id, 'postscript_styles', array( 'fields' => 'ids' ) );
+        ?>
+            <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_styles', 'selected_cats' => array( $term_list ) ) ); ?>
+        </ul>
+        <label for="postscript-style-url"><?php _e( 'Enter URL of CSS stylesheet:', 'post-scripting' ); ?></label><br />
         <input class="widefat" type="url" name="postscript-style-url" id="postscript-style-url" value="<?php if ( isset ( $postscript_style_url ) ) { echo esc_attr( $postscript_style_url ); } ?>" size="30" />
     </p>
     <p>
-        <label for="postscript-script-url"><?php _e( 'Enter URL of JS file.', 'post-scripting' ); ?></label><br />
+        <label for="postscript-script-url"><?php _e( 'Enter URL of JS file:', 'post-scripting' ); ?></label><br />
         <input class="widefat" type="url" name="postscript-script-url" id="postscript-script-url" value="<?php if ( isset ( $postscript_script_url ) ) { echo esc_attr( $postscript_script_url ); } ?>" size="30" />
     </p>
+
+    <pre>
+        <code>$term_list</code>:
+        <?php print_r( $term_list );  ?>
+
+    </pre>
     <hr />
 <?php
 }
