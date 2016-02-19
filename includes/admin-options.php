@@ -254,13 +254,21 @@ function postscript_meta_box_example() {
                         <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_styles' ) ); ?>
                     </ul>
                 </div><!-- .categorydiv -->
-                <div id="taxonomy-postscript_styles" class="categorydiv">
+                <div class="categorydiv">
                     <h3 class="hndle"><span><?php _e('Script URL', 'postscript' ); ?></span></h3>
                     <input type="url" placeholder="https:" class="regular-text">
                 </div><!-- .categorydiv -->
-                <div id="taxonomy-postscript_styles" class="categorydiv">
+                <div class="categorydiv">
                     <h3 class="hndle"><span><?php _e('Style URL', 'postscript' ); ?></span></h3>
                     <input type="url" placeholder="https:" class="regular-text">
+                </div><!-- .categorydiv -->
+                <div class="categorydiv">
+                    <h3 class="hndle"><span><?php _e('Body class', 'postscript' ); ?></span></h3>
+                    <input type="text" placeholder="CSS class" class="regular-text">
+                </div><!-- .categorydiv -->
+                <div class="categorydiv">
+                    <h3 class="hndle"><span><?php _e('Post class', 'postscript' ); ?></span></h3>
+                    <input type="text" placeholder="CSS class" class="regular-text">
                 </div><!-- .categorydiv -->
             </div><!-- .inside -->
         </div><!-- .postbox -->
@@ -322,6 +330,14 @@ function postscript_options_init() {
         'postscript_allow_urls',
         __( 'Allow URLs', 'postscript' ),
         'postscript_allow_urls_callback',
+        'postscript',
+        'postscript_settings_section'
+    );
+
+    add_settings_field(
+        'postscript_allow_classes',
+        __( 'Allow Classes', 'postscript' ),
+        'postscript_allow_classes_callback',
         'postscript',
         'postscript_settings_section'
     );
@@ -464,7 +480,7 @@ function postscript_post_types_callback() {
 }
 
 /**
- * Outputs HTML checkboxes, used to allow URL fields in Postscript box.
+ * Outputs HTML checkboxes, settings used to allow URL fields in Postscript box.
  */
 function postscript_allow_urls_callback() {
     $options = get_option( 'postscript' );
@@ -475,6 +491,23 @@ function postscript_allow_urls_callback() {
             <li><label><input type="checkbox" id="" name="postscript[allow_url][style]" value="on"<?php checked( 'on', isset( $options['allow_url']['style'] ) ? $options['allow_url']['style'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
             <li><label><input type="checkbox" id="" name="postscript[allow_url][script]" value="on"<?php checked( 'on', isset( $options['allow_url']['script'] ) ? $options['allow_url']['script'] : 'off' ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
         </ul>
+    </fieldset>
+    <?php
+}
+
+/**
+ * Outputs HTML checkboxes, used to allow URL fields in Postscript box.
+ */
+function postscript_allow_classes_callback() {
+    $options = get_option( 'postscript' );
+    ?>
+    <fieldset>
+        <legend><?php _e( 'Add a text field in Postscript box for:', 'postscript' ); ?></legend>
+        <ul class="inside">
+            <li><label><input type="checkbox" id="" name="postscript[allow_class][body]" value="on"<?php checked( 'on', isset( $options['allow_url']['style'] ) ? $options['allow_url']['style'] : 'off' ); ?>/> <?php _e( 'Body class', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript[allow_class][post]" value="on"<?php checked( 'on', isset( $options['allow_url']['script'] ) ? $options['allow_url']['script'] : 'off' ); ?>/> <?php _e( 'Post class', 'postscript' ); ?></label></li>
+        </ul>
+        <p class="wp-ui-text-icon"><?php _e( 'Requires <code>body_class()</code>/<code>post_class()</code> in theme.', 'postscript' ); ?></p>
     </fieldset>
     <?php
 }
