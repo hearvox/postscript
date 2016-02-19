@@ -111,7 +111,7 @@ if ( is_admin() ) {
     include_once( plugin_dir_path( __FILE__ ) . 'includes/admin-options.php' );
     include_once( plugin_dir_path( __FILE__ ) . 'includes/meta-box.php' );
 } else {
-    // include_once( 'includes/front-end-functions.php' );
+    include_once( 'includes/enqueue-scripts.php' );
 }
 
 /* ------------------------------------------------------------------------ *
@@ -124,60 +124,6 @@ if ( ! function_exists( 'wp_terms_checklist' ) ) {
 if ( ! function_exists( 'get_editable_roles' ) ) { // Need WP_User class.
     require_once( ABSPATH . 'wp-admin/includes/user.php' );
 }
-
-/* ------------------------------------------------------------------------ *
- * Enqueue Scripts and Styles
- * ------------------------------------------------------------------------ */
-
-/**
- * Enqueue scripts and styles selected in the meta box form.
- *
- *
- */
-function postscript_enqueue_scripts() {
-    if ( is_singular() && is_main_query() ) {
-        global $post;
-        $post_id = $post->ID;
-        $postscript_style_url = get_post_meta( $post_id, 'postscript_style_url', true );
-        $postscript_script_url = get_post_meta( $post_id, 'postscript_script_url', true );
-        // $postscript_style_handles = get_post_meta( $post_id, 'postscript_style_handles', true );
-        // $postscript_script_handles = get_post_meta( $post_id, 'postscript_script_handles', true );
-
-        if ( has_filter( 'postscript_post_style' ) ) {
-            $style_handles = apply_filters( 'postscript_post_style', $style_handles );
-        }
-
-        if ( ! empty( $postscript_post_style ) ) {
-            wp_enqueue_style( 'postscript-style-' . $post_id, $postscript_post_style, false );
-        }
-
-        if ( has_filter( 'postscript_script_url' ) ) {
-            $postscript_script_url = apply_filters( 'postscript_script_url', $postscript_script_url );
-        }
-
-        if ( ! empty( $postscript_script_url ) ) {
-            wp_enqueue_script( 'postscript-script-url' . $post_id, $postscript_script_url );
-        }
-/*
-        if ( has_filter( 'postscript_style_handles' ) ) {
-            $postscript_style_handles = apply_filters( 'postscript_style_handles', $postscript_style_handles );
-        }
-
-        foreach ( $postscript_style_handles as $handle ) {
-            wp_enqueue_style( $handle );
-        }
-
-        if ( has_filter( 'postscript_script_handles' ) ) {
-            $url = apply_filters( 'postscript_script_handles', $postscript_script_handles );
-        }
-
-        foreach ( $postscript_script_handles as $handle ) {
-            wp_enqueue_script( $handle );
-        }
-*/
-    }
-}
-add_action( 'wp_enqueue_scripts', 'postscript_enqueue_scripts' );
 
 /**
  * Checks if URL exists.

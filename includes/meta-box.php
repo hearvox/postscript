@@ -133,7 +133,6 @@ function postscript_save_post_meta( $post_id, $post ) {
 
     /* Get and sanitize the posted data. */
     $new_meta_value = ( isset( $_POST['postscript_meta'] ) ?  $_POST['postscript_meta'] : '' );
-
     $new_meta_value['url_script'] = esc_url_raw( $new_meta_value['url_script'] );
     $new_meta_value['url_style'] = esc_url_raw( $new_meta_value['url_style'] );
     $new_meta_value['class_body'] = sanitize_html_class( $new_meta_value['class_body'] );
@@ -144,15 +143,15 @@ function postscript_save_post_meta( $post_id, $post ) {
 
     /* If a new meta value was added and there was no previous value, add it. */
     if ( $new_meta_value && '' == $meta_value ) {
-    add_post_meta( $post_id, $meta_key, $new_meta_value, true );
+        add_post_meta( $post_id, $meta_key, $new_meta_value, true );
 
     /* If the new meta value does not match the old value, update it. */
     } elseif ( $new_meta_value && $new_meta_value != $meta_value ) {
-    update_post_meta( $post_id, $meta_key, $new_meta_value );
+        update_post_meta( $post_id, $meta_key, $new_meta_value );
 
     /* If there is no new meta value but an old value exists, delete it. */
     } elseif ( '' == $new_meta_value && $meta_value ) {
-    delete_post_meta( $post_id, $meta_key, $meta_value );
+        delete_post_meta( $post_id, $meta_key, $meta_value );
     }
 
 }
