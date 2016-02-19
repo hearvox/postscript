@@ -40,7 +40,7 @@ if ( ! defined( 'WPINC' ) ) {
 define( 'POSTSCRIPT_VERSION', '1.0.0' );
 
 /**
- * Adds "Settings" link on plugin page (next to "Activate" link).
+ * Adds "Settings" link on plugin page (next to "Activate").
  */
 //
 function postscript_plugin_settings_link( $links ) {
@@ -291,38 +291,6 @@ function postscript_populate_taxonomy() {
 add_action( 'registered_taxonomy', 'postscript_populate_taxonomy', 0 );
 
 
-
-
-
-/*
-
-$x = wp_insert_term('Scripts','postscript');
-print_r( $x->error_data['term_exists'] );
-
-Array ( [term_id] => 193 [term_taxonomy_id] => 193 )
-WP_Error Object ( [errors] => Array ( [term_exists] => Array ( [0] => A term with the name provided already exists with this parent. ) ) [error_data] => Array ( [term_exists] => 193 ) )
-
-http://rji.local/wp-admin/edit.php?postscript=scripts
-
-function postscript_delete_terms() {
-     if ( is_admin() ) {
-          $terms = get_terms( 'postscript', array( 'fields' => 'ids', 'hide_empty' => false ) );
-          foreach ( $terms as $value ) {
-               wp_delete_term( $value, 'postscript' );
-          }
-     }
-}
-register_uninstall_hook( __FILE__, 'postscript_delete_terms')
-
-https://codex.wordpress.org/Function_Reference/register_uninstall_hook
-
- */
-
-
-
-
-
-
 /* ------------------------------------------------------------------------ *
  * Tests and Notes
  * ------------------------------------------------------------------------ */
@@ -339,9 +307,6 @@ function ps_log( $message ) {
         }
     }
 }
-
-// ps_log( array( 'This is a message in an array' => 'for debugging purposes' ));
-// ps_log( 'This is a message for debugging purposes' );
 
 /* Write test data in content of specified post */
 // http://rji.local/?p=1740
@@ -538,10 +503,38 @@ http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/apps/
 http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/apps/non-labor-income/non-labor-income.js
 
 
+/*
+
+$x = wp_insert_term('Scripts','postscript');
+print_r( $x->error_data['term_exists'] );
+
+http://rji.local/wp-admin/edit.php?postscript=scripts
+
+
+
+https://codex.wordpress.org/Function_Reference/register_uninstall_hook
+
+
+
+// ps_log( array( 'This is a message in an array' => 'for debugging purposes' ));
+// ps_log( 'This is a message for debugging purposes' );
+
+function postscript_delete_terms() {
+     if ( is_admin() ) {
+          $terms = get_terms( 'postscript', array( 'fields' => 'ids', 'hide_empty' => false ) );
+          foreach ( $terms as $value ) {
+               wp_delete_term( $value, 'postscript' );
+          }
+     }
+}
+register_uninstall_hook( __FILE__, 'postscript_delete_terms')
+
+$query = new WP_Query( array( 'meta_key' => 'color' ) );
+
 @TODO
 * Activate- init option defaults.
 * Deactivate
-* Uninstall - rm option, post meta, tax terms.
+* Uninstall - rm: option, post meta, tax terms.
 * Settings link to plugin page.
 * Sanitize (escape late).
 * rm tax terms not in reg array.
