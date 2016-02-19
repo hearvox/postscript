@@ -13,7 +13,7 @@ Text Domain:       postscript
 Domain Path:       /languages
 Plugin Prefix:     postscript
 
-Post Scripting is free software: you can redistribute it and/or modify
+Postscript is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 2 of the License, or
 any later version.
@@ -38,6 +38,17 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 define( 'POSTSCRIPT_VERSION', '1.0.0' );
+
+/**
+ * Adds "Settings" link on plugin page (next to "Activate" link).
+ */
+//
+function postscript_plugin_settings_link( $links ) {
+  $settings_link = '<a href="options-general.php?page=postscript">Settings</a>';
+  array_unshift( $links, $settings_link );
+  return $links;
+}
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'postscript_plugin_settings_link' );
 
 /**
  * Load the plugin text domain for translation.
@@ -103,7 +114,16 @@ if ( is_admin() ) {
     // include_once( 'includes/front-end-functions.php' );
 }
 
+/* ------------------------------------------------------------------------ *
+ * Required WordPress Files
+ * ------------------------------------------------------------------------ */
+if ( ! function_exists( 'wp_terms_checklist' ) ) {
+    require_once( ABSPATH . '/wp-admin/includes/template.php' );
+}
 
+if ( ! function_exists( 'get_editable_roles' ) ) { // Need WP_User class.
+    require_once( ABSPATH . 'wp-admin/includes/user.php' );
+}
 
 /* ------------------------------------------------------------------------ *
  * Enqueue Scripts and Styles
@@ -500,18 +520,14 @@ array(
 
 /*
 
-sanitize_text_field();
+http://rji.local/wp-admin/options-general.php?page=postscript
 
-ID 1740
-
-update_option( 'my_plugin_options', $array_of_options );
+http://rji.local/plugin-postscript/
+http://rji.local/?p=1740
+<?php print_r( wp_load_alloptions() ); ?>
+http://rji.local/wp-admin/options.php
 
 current_user_can( 'manage_options' );
-
-escape late
-
-https://codex.wordpress.org/Function_Reference/wp_script_is
-wp_script_is( $handle, $list = 'enqueued' );
 
 http://code.tutsplus.com/articles/the-ins-and-outs-of-the-enqueue-script-for-wordpress-themes-and-plugins--wp-22509
 https://pippinsplugins.com/add-screen-options-tab-to-your-wordpress-plugin/
@@ -523,30 +539,21 @@ http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/apps/
 
 
 @TODO
-Add/set version in options:
-$new_options['version'] = POSTSCRIPT_VERSION;
-
-<?php print_r( wp_load_alloptions() ); ?>
-depecated: get_alloptions
-
-Options:
-http://rji.local/wp-admin/options.php
-rm:
-psing_allow_script_url
-psing_allow_style_url
-psing_added_scripts
-psing_post_types
-postscript_options
-postscript_allow_style_url_field
-postscript_allow_script_url_field
-postscript_settings
-postscript_display_options
-postscript_scripts
-postscript_styles
-
-sandbox_*
-
-Keep:
-postscript
-
+* Activate- init option defaults.
+* Deactivate
+* Uninstall - rm option, post meta, tax terms.
+* Settings link to plugin page.
+* Sanitize (escape late).
+* rm tax terms not in reg array.
+* Add settings notices.
+* Check if script still registered
+* Add/set version in options: $new_options['version'] = POSTSCRIPT_VERSION;
+* rm unused options (keep: postscript)
+* rm unsued meta (keep: postscript_meta)
+* Test from install.
+* Test uninstall (rm 'postscript' option, 'postscript_meta' meta, and tax terms.)
+* Export settings, post meta, and tax terms.
+* List enqueues on Post screen?
+*
+*
 */

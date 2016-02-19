@@ -490,7 +490,7 @@ function postscript_post_types_callback() {
 
 
 /**
- * Outputs HTML checkboxes, settings used to allow URL fields in Postscript box.
+ * Outputs HTML checkboxes (settings to allow text fields in Postscript box for entering URLs and classes).
  */
 function postscript_allow_fields_callback() {
     $options = get_option( 'postscript' );
@@ -884,10 +884,6 @@ function postscript_configuration_load() {
         $options = postscript_get_options();
         $options['script_url']  = isset( $_POST['script_url']  ) && $_POST['script_url'];
         $options['style_url'] = isset( $_POST['style_url'] ) && $_POST['style_url'];
-
-        if ( ! function_exists( 'get_editable_roles' ) ) { // Need WP_User class.
-            require_once( ABSPATH . 'wp-admin/includes/user.php' );
-        }
 
         $options['roles'] = array( 'administrator' );
         foreach ( get_editable_roles() as $role => $details ) { // Get user roles.
