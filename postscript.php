@@ -74,49 +74,43 @@ if ( defined( 'STATS_VERSION' ) ) {
     return;
 }
 
-define( 'STATS_VERSION', '9' );
+define( 'STATS_VERSION', '1.0.0' );
 
-function stats_get_options() {
-    $options = get_option( 'stats_options' );
+function postscript_get_options() {
+    $options = get_option( 'postscript' );
 
-    if ( !isset( $options['version'] ) || $options['version'] < STATS_VERSION )
-        $options = stats_upgrade_options( $options );
+    if ( ! isset( $options['version'] ) || $options['version'] < STATS_VERSION )
+        $options = postscript_upgrade_options( $options );
 
     return $options;
 }
 
-function stats_get_option( $option ) {
-    $options = stats_get_options();
+function postscript_get_option( $option ) {
+    $options = postscript_get_options();
 
-    if ( $option == 'blog_id' )
-        return Jetpack_Options::get_option( 'id' );
-
-    if ( isset( $options[$option] ) )
-        return $options[$option];
+    if ( isset( $options[ $option ] ) )
+        return $options[ $option ];
 
     return null;
 }
 
-function stats_set_option( $option, $value ) {
-    $options = stats_get_options();
+function postscript_set_option( $option, $value ) {
+    $options = postscript_get_options();
 
-    $options[$option] = $value;
+    $options[ $option ] = $value;
 
-    stats_set_options($options);
+    postscript_set_options( $options );
 }
 
-function stats_set_options($options) {
-    update_option( 'stats_options', $options );
+function postscript_set_options($options) {
+    update_option( 'postscript', $options );
 }
 
-function stats_upgrade_options( $options ) {
+function postscript_upgrade_options( $options ) {
     $defaults = array(
-        'admin_bar'    => true,
-        'roles'        => array( 'administrator' ),
-        'count_roles'  => array(),
-        'blog_id'      => Jetpack_Options::get_option( 'id' ),
-        'do_not_track' => true, // @todo
-        'hide_smile'   => true,
+        'user_role'    => array ( 'administrator' => 'on' ),
+        'post_type'    => array ( 'post' => 'on' ),
+        'allow'        => array ( 'script_url' => 'on', 'style_url' => 'on' ),
     );
 
     if ( isset( $options['reg_users'] ) ) {
@@ -140,6 +134,33 @@ function stats_upgrade_options( $options ) {
 
     return $new_options;
 }
+
+
+Array
+(
+    [user_role] => Array
+        (
+            [administrator] => on
+        )
+
+    [post_type] => Array
+        (
+            [post] => on
+        )
+
+    [allow] => Array
+        (
+            [style_url] => on
+            [script_url] => on
+            [body_class] => on
+            [post_class] => on
+        )
+
+    [script_add] =>
+    [style_add] =>
+    [script_remove] =>
+    [style_remove] =>
+)
 
  */
 
