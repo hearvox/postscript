@@ -61,25 +61,97 @@ function postscript_load_textdomain() {
 add_action( 'plugins_loaded', 'postscript_load_textdomain' );
 
 /**
- * The code that runs during plugin activation.
+ * Sets default settings option upon activation, if options doesn't exist.
  * This action is documented in includes/class-post-scripting-activator.php
  */
-function activate_postscript() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-post-scripting-activator.php';
-	Postscript_Activator::activate();
+function postscript_activate() {
+
 }
+
+/*
+
+if ( defined( 'STATS_VERSION' ) ) {
+    return;
+}
+
+define( 'STATS_VERSION', '9' );
+
+function stats_get_options() {
+    $options = get_option( 'stats_options' );
+
+    if ( !isset( $options['version'] ) || $options['version'] < STATS_VERSION )
+        $options = stats_upgrade_options( $options );
+
+    return $options;
+}
+
+function stats_get_option( $option ) {
+    $options = stats_get_options();
+
+    if ( $option == 'blog_id' )
+        return Jetpack_Options::get_option( 'id' );
+
+    if ( isset( $options[$option] ) )
+        return $options[$option];
+
+    return null;
+}
+
+function stats_set_option( $option, $value ) {
+    $options = stats_get_options();
+
+    $options[$option] = $value;
+
+    stats_set_options($options);
+}
+
+function stats_set_options($options) {
+    update_option( 'stats_options', $options );
+}
+
+function stats_upgrade_options( $options ) {
+    $defaults = array(
+        'admin_bar'    => true,
+        'roles'        => array( 'administrator' ),
+        'count_roles'  => array(),
+        'blog_id'      => Jetpack_Options::get_option( 'id' ),
+        'do_not_track' => true, // @todo
+        'hide_smile'   => true,
+    );
+
+    if ( isset( $options['reg_users'] ) ) {
+        if ( ! function_exists( 'get_editable_roles' ) )
+            require_once( ABSPATH . 'wp-admin/includes/user.php' );
+        if ( $options['reg_users'] )
+            $options['count_roles'] = array_keys( get_editable_roles() );
+        unset( $options['reg_users'] );
+    }
+
+    if ( is_array( $options ) && ! empty( $options ) )
+        $new_options = array_merge( $defaults, $options );
+    else
+        $new_options = $defaults;
+
+    $new_options['version'] = STATS_VERSION;
+
+    stats_set_options( $new_options );
+
+    stats_update_blog();
+
+    return $new_options;
+}
+
+ */
+
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-post-scripting-deactivator.php
  */
-function deactivate_postscript() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-post-scripting-deactivator.php';
-	Postscript_Deactivator::deactivate();
+function postscript_deactivate() {
 }
 
-// register_activation_hook( __FILE__, 'activate_postscript' );
-// register_deactivation_hook( __FILE__, 'deactivate_postscript' );
+// register_activation_hook( __FILE__, 'postscript_activate' );
+// register_deactivation_hook( __FILE__, 'postscript_deactivate' );
 
 /**
  * The core plugin class that is used to define internationalization,
