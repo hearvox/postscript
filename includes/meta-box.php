@@ -100,21 +100,6 @@ function postscript_meta_box_callback( $post, $box ) {
         <label for="postscript-class-post"><?php _e( 'Post class:', 'postscript' ); ?></label><br />
         <input class="widefat" type="text" name="postscript_meta[class_post]" id="postscript-class-post" value="<?php if ( isset ( $postscript_meta['class_post'] ) ) { echo sanitize_html_class( $postscript_meta['class_post'] ); } ?>" size="30" />
     </p>
-    <pre>
-
-        <code>$term_list</code>:
-        <?php if ( isset( $term_list ) ) { print_r( $term_list ); }  ?>
-        <hr />
-        <?php $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true ); ?>
-        <code>get_post_meta()</code>:
-        <?php if ( isset( $postscript_meta ) ) { print_r( $postscript_meta ); } ?>
-        <hr />
-        <?php $new_postscript_meta = ( isset( $_POST['postscript_meta'] ) ?  $_POST['postscript_meta'] : array() ); ?>
-        <code>$_POST</code>:
-        <?php print_r( $new_postscript_meta ); ?>
-
-    </pre>
-    <hr />
 <?php
 }
 

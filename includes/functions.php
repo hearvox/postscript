@@ -159,11 +159,11 @@ function postscript_object_into_array( $obj ) {
 function postscript_get_options() {
     $options = get_option( 'postscript' );
 
-    /* Set version if not the latest.
+    /* Set version if not the latest. */
     if ( ! isset( $options['version'] ) || $options['version'] < POSTSCRIPT_VERSION ) {
         $options = postscript_upgrade_options( $options );
     }
-    */
+
 
     return $options;
 }
@@ -226,7 +226,7 @@ function postscript_set_option( $option, $value ) {
  * @param array $option array of plugin settings
  */
 function postscript_set_options( $options ) {
-    update_option( 'postscript_options', $options );
+    update_option( 'postscript', $options );
 }
 
 /**
@@ -242,8 +242,10 @@ function postscript_upgrade_options( $options ) {
     $defaults = array(
         'roles'         => array( 'administrator' ),
         'post_types'    => array( 'post' ),
-        'script_url'    => 'on',
-        'style_url'     => 'on',
+        'url_style'    => 'on',
+        'url_script'     => 'on',
+        'class_body'    => 'on',
+        'class_post'     => 'on',
     );
 
     if ( is_array( $options ) && ! empty( $options ) )
@@ -254,8 +256,6 @@ function postscript_upgrade_options( $options ) {
     $new_options['version'] = POSTSCRIPT_VERSION;
 
     postscript_set_options( $new_options );
-
-    // postscript_jp_update_blog();
 
     return $new_options;
 }

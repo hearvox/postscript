@@ -477,34 +477,17 @@ function postscript_post_types_callback() {
  * Outputs HTML checkboxes (settings to allow text fields in Postscript box for entering URLs and classes).
  */
 function postscript_allow_fields_callback() {
-    $options = get_option( 'postscript' );
+    $options = postscript_get_options();
     ?>
     <fieldset>
         <legend><?php _e( 'Add a text field in Postscript box for:', 'postscript' ); ?></legend>
         <ul class="inside">
-            <li><label><input type="checkbox" id="" name="postscript[allow][style_url]" value="on"<?php checked( 'on', isset( $options['allow']['style_url'] ) ? $options['allow']['style_url'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[allow][script_url]" value="on"<?php checked( 'on', isset( $options['allow']['script_url'] ) ? $options['allow']['script_url'] : 'off' ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[allow][body_class]" value="on"<?php checked( 'on', isset( $options['allow']['body_class'] ) ? $options['allow']['body_class'] : 'off' ); ?>/> <?php _e( 'Body class*', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[allow][post_class]" value="on"<?php checked( 'on', isset( $options['allow']['post_class'] ) ? $options['allow']['post_class'] : 'off' ); ?>/> <?php _e( 'Post class*', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript[url_style]" value="on"<?php checked( 'on', isset( $options['url_style'] ) ? $options['url_style'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript[url_script]" value="on"<?php checked( 'on', isset( $options['url_script'] ) ? $options['url_script'] : 'off' ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript[class_body]" value="on"<?php checked( 'on', isset( $options['class_body'] ) ? $options['class_body'] : 'off' ); ?>/> <?php _e( 'Body class*', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript[class_post]" value="on"<?php checked( 'on', isset( $options['class_post'] ) ? $options['class_post'] : 'off' ); ?>/> <?php _e( 'Post class*', 'postscript' ); ?></label></li>
         </ul>
         <p class="wp-ui-text-icon"><?php _e( 'Requires <code>body_class()</code>/<code>post_class()</code> in theme.', 'postscript' ); ?></p>
-    </fieldset>
-    <?php
-}
-
-
-/**
- * Outputs HTML checkboxes, settings used to allow URL fields in Postscript box.
- */
-function postscript_allow_urls_callback() {
-    $options = get_option( 'postscript' );
-    ?>
-    <fieldset>
-        <legend><?php _e( 'Add a text field in Postscript box for:', 'postscript' ); ?></legend>
-        <ul class="inside">
-            <li><label><input type="checkbox" id="" name="postscript[allow_url][style]" value="on"<?php checked( 'on', isset( $options['allow_url']['style'] ) ? $options['allow_url']['style'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[allow_url][script]" value="on"<?php checked( 'on', isset( $options['allow_url']['script'] ) ? $options['allow_url']['script'] : 'off' ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
-        </ul>
     </fieldset>
     <?php
 }
