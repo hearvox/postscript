@@ -85,12 +85,16 @@ function postscript_meta_box_callback( $post, $box ) {
         </ul>
     </p>
     <p>
+        <label for="postscript-url-style"><?php _e( 'CSS stylesheet URL:', 'postscript' ); ?></label><br />
+        <input class="widefat" type="url" name="postscript_meta[url_style]" id="postscript-url-style" value="<?php if ( isset ( $postscript_meta['url_style'] ) ) { echo esc_url_raw( $postscript_meta['url_style'] ); } ?>" size="30" />
+    </p>
+    <p>
         <label for="postscript-url-script"><?php _e( 'JS file URL:', 'postscript' ); ?></label><br />
         <input class="widefat" type="url" name="postscript_meta[url_script]" id="postscript-url-script" value="<?php if ( isset ( $postscript_meta['url_script'] ) ) { echo esc_url_raw( $postscript_meta['url_script'] ); } ?>" size="30" />
     </p>
     <p>
-        <label for="postscript-url-style"><?php _e( 'CSS stylesheet URL:', 'postscript' ); ?></label><br />
-        <input class="widefat" type="url" name="postscript_meta[url_style]" id="postscript-url-style" value="<?php if ( isset ( $postscript_meta['url_style'] ) ) { echo esc_url_raw( $postscript_meta['url_style'] ); } ?>" size="30" />
+        <label for="postscript-url-data"><?php _e( 'JSON/data file URL:', 'postscript' ); ?></label><br />
+        <input class="widefat" type="url" name="postscript_meta[url_data]" id="postscript-url-data" value="<?php if ( isset ( $postscript_meta['url_data'] ) ) { echo esc_url_raw( $postscript_meta['url_data'] ); } ?>" size="30" />
     </p>
     <p>
         <label for="postscript-class-body"><?php _e( 'Body class:', 'postscript' ); ?></label><br />
@@ -128,8 +132,9 @@ function postscript_save_post_meta( $post_id, $post ) {
 
     /* Get and sanitize the posted data. */
     $new_meta_value = ( isset( $_POST['postscript_meta'] ) ?  $_POST['postscript_meta'] : '' );
+    $new_meta_value['url_style']  = esc_url_raw( $new_meta_value['url_style'] );
     $new_meta_value['url_script'] = esc_url_raw( $new_meta_value['url_script'] );
-    $new_meta_value['url_style'] = esc_url_raw( $new_meta_value['url_style'] );
+    $new_meta_value['url_data']   = esc_url_raw( $new_meta_value['url_data'] );
     $new_meta_value['class_body'] = sanitize_html_class( $new_meta_value['class_body'] );
     $new_meta_value['class_post'] = sanitize_html_class( $new_meta_value['class_post'] );
 

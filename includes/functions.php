@@ -240,12 +240,13 @@ function postscript_set_options( $options ) {
  */
 function postscript_upgrade_options( $options ) {
     $defaults = array(
-        'roles'         => array( 'administrator' ),
-        'post_types'    => array( 'post' ),
-        'url_style'    => 'on',
-        'url_script'     => 'on',
-        'class_body'    => 'on',
-        'class_post'     => 'on',
+        'user_roles' => array( 'administrator' ),
+        'post_types' => array( 'post' ),
+        'url_style'  => 'on',
+        'url_script' => 'on',
+        'url_data'   => 'on',
+        'class_body' => 'on',
+        'class_post' => 'on',
     );
 
     if ( is_array( $options ) && ! empty( $options ) )

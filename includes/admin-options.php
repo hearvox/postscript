@@ -423,8 +423,8 @@ function postscript_script_style_remove_section_callback() {
  * Outputs HTML checkboxes of user roles (used to determine if Postscript box displays).
  */
 function postscript_user_roles_callback() {
-    $options = get_option( 'postscript' );
-    $options['user_role']['administrator'] = 'on';
+    $options = postscript_get_options();
+    // $options['user_roles']['administrator'] = 'on';
 
     // Need WP_User class.
     if ( ! function_exists( 'get_editable_roles' ) ) {
@@ -437,11 +437,11 @@ function postscript_user_roles_callback() {
         <?php
         foreach ( get_editable_roles() as $role => $details ) {
         ?>
-            <li><label><input type="checkbox" id="<?php echo $role; ?>" value="on" name="postscript[user_role][<?php echo $role; ?>]"<?php checked( 'on', isset( $options['user_role'][$role] ) ? $options['user_role'][$role] : 'off' ); ?><?php disabled( 'administrator', $role ); ?> /> <?php echo translate_user_role( $details['name'] ); ?></label></li>
+            <li><label><input type="checkbox" id="<?php echo $role; ?>" value="<?php echo $role ?>" name="postscript[user_roles]"<?php checked( in_array( $role, $options['user_roles'] ) ); ?><?php disabled( 'administrator', $role ); ?> /> <?php echo translate_user_role( $details['name'] ); ?></label></li>
         <?php
         }
         ?>
-            <input type="hidden" value="on" name="postscript[user_role][administrator]" />
+            <input type="hidden" value="administrator" name="postscript[user_roles]" />
         </ul>
     </fieldset>
     <?php
@@ -451,7 +451,7 @@ function postscript_user_roles_callback() {
  * Outputs HTML checkboxes of post types (used to determine if Postscript box displays).
  */
 function postscript_post_types_callback() {
-    $options = get_option( 'postscript' );
+    $options = postscript_get_options();
     ?>
     <fieldset>
         <legend><?php _e( 'Select which post types display Postscript box:', 'postscript' ); ?></legend>
@@ -462,7 +462,7 @@ function postscript_post_types_callback() {
         foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type_arr ) {
             $post_type = $post_type_arr->name;
         ?>
-            <li><label><input type="checkbox" id="<?php echo $post_type; ?>" value="on" name="postscript[post_type][<?php echo $post_type; ?>]"<?php checked( 'on', isset( $options['post_type'][$post_type] ) ? $options['post_type'][$post_type] : 'off' ); ?> /> <?php echo $post_type_arr->labels->name; ?></label></li>
+            <li><label><input type="checkbox" id="<?php echo $post_type; ?>" value="<?php echo $post_type; ?>" name="postscript[post_types]"<?php checked( in_array( $post_type, $options['post_types'] ) ); ?> /> <?php echo $post_type_arr->labels->name; ?></label></li>
         <?php
         }
         ?>
@@ -470,8 +470,6 @@ function postscript_post_types_callback() {
     </fieldset>
     <?php
 }
-
-
 
 /**
  * Outputs HTML checkboxes (settings to allow text fields in Postscript box for entering URLs and classes).
@@ -484,6 +482,7 @@ function postscript_allow_fields_callback() {
         <ul class="inside">
             <li><label><input type="checkbox" id="" name="postscript[url_style]" value="on"<?php checked( 'on', isset( $options['url_style'] ) ? $options['url_style'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
             <li><label><input type="checkbox" id="" name="postscript[url_script]" value="on"<?php checked( 'on', isset( $options['url_script'] ) ? $options['url_script'] : 'off' ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript[url_data]" value="on"<?php checked( 'on', isset( $options['url_data'] ) ? $options['url_data'] : 'off' ); ?>/> <?php _e( 'Data URL', 'postscript' ); ?></label></li>
             <li><label><input type="checkbox" id="" name="postscript[class_body]" value="on"<?php checked( 'on', isset( $options['class_body'] ) ? $options['class_body'] : 'off' ); ?>/> <?php _e( 'Body class*', 'postscript' ); ?></label></li>
             <li><label><input type="checkbox" id="" name="postscript[class_post]" value="on"<?php checked( 'on', isset( $options['class_post'] ) ? $options['class_post'] : 'off' ); ?>/> <?php _e( 'Post class*', 'postscript' ); ?></label></li>
         </ul>

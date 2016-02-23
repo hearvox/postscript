@@ -52,8 +52,9 @@ add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_handles' );
  * returns:
  * Array
  * (
- *     [url_script] => http://example.com/my-js-file.js
  *     [url_style]  => http://example.com/my-css-file.css
+ *     [url_script] => http://example.com/my-js-file.js
+ *     [url_data]  => http://example.com/my-data-file.js
  *     [class_body] => my-body-class
  *     [class_post] => my-post-class
  * )
@@ -62,17 +63,20 @@ add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_handles' );
  */
 function postscript_enqueue_script_urls() {
     if ( is_singular() && is_main_query() ) {
-        global $post;
-        $post_id = $post->ID;
+        $post_id = get_the_id();
         $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
 
-        // Script/styles handles made from string: "postscript-style-{$post_id}".
+        // Style/script handles made from string: "postscript-style-{$post_id}".
+        if ( isset( $postscript_meta['url_style'] ) ) {
+            wp_enqueue_style( "postscript-style-$post_id", $postscript_meta['url_style'], false );
+        }
+
         if ( isset( $postscript_meta['url_script'] ) ) {
             wp_enqueue_script( "postscript-script-$post_id", $postscript_meta['url_script'], false, false, true );
         }
 
-        if ( isset( $postscript_meta['url_style'] ) ) {
-            wp_enqueue_style( "postscript-style-$post_id", $postscript_meta['url_style'], false );
+        if ( isset( $postscript_meta['url_data'] ) ) {
+            wp_enqueue_script( "postscript-data-$post_id", $postscript_meta['url_data'], false, false, true );
         }
 
 /*
