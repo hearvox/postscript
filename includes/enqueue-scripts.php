@@ -21,20 +21,27 @@
  */
 function postscript_enqueue_script_handles() {
     if ( is_singular() && is_main_query() ) {
-        global $post;
-        $post_id = $post->ID;
-        $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
-/*
-        foreach ( $postscript_script_handles as $handle ) {
-            if wp_script_is( $handle, 'registered' )
-                wp_enqueue_script( $handle );
+        $scripts = get_the_terms( get_the_ID(), 'postscript_scripts' );
+        $styles = get_the_terms( get_the_ID(), 'postscript_styles' );
+
+        if ( $scripts ) {
+            foreach ( $scripts as $script ) {
+                if ( wp_script_is( $script->name, 'registered' ) ) {
+                    wp_enqueue_style( $script->name );
+                }
+            }
         }
- */
 
-
+        if ( $styles ) {
+            foreach ( $styles as $style ) {
+                if ( wp_style_is( $style->name, 'registered' ) ) {
+                    wp_enqueue_script( $style->name );
+                }
+            }
+        }
     }
 }
-// add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_handles' );
+add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_handles' );
 
 
 /**

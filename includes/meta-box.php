@@ -50,7 +50,6 @@ function postscript_add_meta_box() {
     );
 }
 
-
 function remove_post_custom_fields() {
         remove_meta_box( 'postscript_scriptsdiv', 'post', 'normal' );
         remove_meta_box( 'postscript_stylesdiv', 'post', 'normal' );
@@ -74,8 +73,14 @@ function postscript_meta_box_callback( $post, $box ) {
     ?>
     <?php wp_nonce_field( basename( __FILE__ ), 'postscript_meta_nonce' ); ?>
     <p>
-        <h3 class="hndle"><span><?php _e('Load styles', 'postscript' ); ?></span></h3>
-        <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
+        <h3 class="hndle"><span><?php _e('Load Scripts', 'postscript' ); ?></span></h3>
+        <ul id="postscript_styleschecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
+            <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_scripts', 'selected_cats' => true, 'checked_ontop' => true ) ); ?>
+        </ul>
+    </p>
+    <p>
+        <h3 class="hndle"><span><?php _e('Load Styles', 'postscript' ); ?></span></h3>
+        <ul id="postscript_scriptschecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
             <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_styles', 'selected_cats' => true, 'checked_ontop' => true ) ); ?>
         </ul>
     </p>
@@ -160,8 +165,8 @@ function postscript_save_post_meta( $post_id, $post ) {
     }
 
     if ( isset( $_POST['tax_input'] ) ) {
+        wp_set_object_terms( $post_id, $_POST['tax_input']['postscript_scripts'], $postscript_scripts, false );
         wp_set_object_terms( $post_id, $_POST['tax_input']['postscript_styles'], $postscript_styles, false );
     }
-
 
 }
