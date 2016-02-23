@@ -41,14 +41,21 @@ add_action( 'load-post-new.php', 'postscript_meta_box_setup' );
  */
 function postscript_add_meta_box() {
     add_meta_box(
-        'postscript-meta',      // Unique ID
-        esc_html__( 'Postscript', 'post-scripting' ),    // Title
-        'postscript_meta_box_callback',   // Callback function
-        'post',         // Admin page (or post type)
-        'side',         // Context
-        'default'         // Priority
+        'postscript-meta',
+        esc_html__( 'Postscript', 'postscript' ),
+        'postscript_meta_box_callback',
+        'post',
+        'side',
+        'default'
     );
 }
+
+
+function remove_post_custom_fields() {
+        remove_meta_box( 'postscript_scriptsdiv', 'post', 'normal' );
+        remove_meta_box( 'postscript_stylesdiv', 'post', 'normal' );
+}
+add_action( 'admin_menu' , 'remove_post_custom_fields' );
 
 /**
  * Builds HTML form for the post meta box.
@@ -60,7 +67,8 @@ function postscript_add_meta_box() {
  * @return string HTML of meta box
  */
 function postscript_meta_box_callback( $post, $box ) {
-    $post_id = $post->ID;
+
+    $post_id = get_the_ID();
     $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
     $postscript_meta_class_post = get_post_meta( $post_id, 'postscript_meta_class_post', true );
     ?>
@@ -68,10 +76,7 @@ function postscript_meta_box_callback( $post, $box ) {
     <p>
         <h3 class="hndle"><span><?php _e('Load styles', 'postscript' ); ?></span></h3>
         <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-        <?php
-        $term_list = wp_get_post_terms( $post_id, 'postscript_styles', array( 'fields' => 'ids' ) );
-        ?>
-            <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_styles', 'selected_cats' => array( $term_list ) ) ); ?>
+            <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_styles', 'selected_cats' => true, 'checked_ontop' => true ) ); ?>
         </ul>
     </p>
     <p>
@@ -153,5 +158,10 @@ function postscript_save_post_meta( $post_id, $post ) {
     } elseif ( '' == $new_meta_value && $meta_value ) {
         delete_post_meta( $post_id, $meta_key, $meta_value );
     }
+
+    if ( isset( $_POST['tax_input'] ) ) {
+        wp_set_object_terms( $post_id, $_POST['tax_input']['postscript_styles'], $postscript_styles, false );
+    }
+
 
 }

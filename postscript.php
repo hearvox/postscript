@@ -76,65 +76,11 @@ if ( defined( 'STATS_VERSION' ) ) {
 
 define( 'STATS_VERSION', '1.0.0' );
 
-function postscript_get_options() {
-    $options = get_option( 'postscript' );
-
-    if ( ! isset( $options['version'] ) || $options['version'] < STATS_VERSION )
-        $options = postscript_upgrade_options( $options );
-
-    return $options;
-}
-
-function postscript_get_option( $option ) {
-    $options = postscript_get_options();
-
-    if ( isset( $options[ $option ] ) )
-        return $options[ $option ];
-
-    return null;
-}
-
-function postscript_set_option( $option, $value ) {
-    $options = postscript_get_options();
-
-    $options[ $option ] = $value;
-
-    postscript_set_options( $options );
-}
-
-function postscript_set_options($options) {
-    update_option( 'postscript', $options );
-}
-
-function postscript_upgrade_options( $options ) {
     $defaults = array(
         'user_role'    => array ( 'administrator' => 'on' ),
         'post_type'    => array ( 'post' => 'on' ),
         'allow'        => array ( 'script_url' => 'on', 'style_url' => 'on' ),
     );
-
-    if ( isset( $options['reg_users'] ) ) {
-        if ( ! function_exists( 'get_editable_roles' ) )
-            require_once( ABSPATH . 'wp-admin/includes/user.php' );
-        if ( $options['reg_users'] )
-            $options['count_roles'] = array_keys( get_editable_roles() );
-        unset( $options['reg_users'] );
-    }
-
-    if ( is_array( $options ) && ! empty( $options ) )
-        $new_options = array_merge( $defaults, $options );
-    else
-        $new_options = $defaults;
-
-    $new_options['version'] = STATS_VERSION;
-
-    stats_set_options( $new_options );
-
-    stats_update_blog();
-
-    return $new_options;
-}
-
 
 Array
 (
@@ -203,6 +149,7 @@ function run_postscript() {
 if ( is_admin() ) {
     include_once( plugin_dir_path( __FILE__ ) . 'includes/admin-options.php' );
     include_once( plugin_dir_path( __FILE__ ) . 'includes/meta-box.php' );
+    include_once( plugin_dir_path( __FILE__ ) . 'includes/functions.php' );
 } else {
     include_once( 'includes/enqueue-scripts.php' );
 }
@@ -279,7 +226,7 @@ function postscript_create_taxonomies() {
     );
 
     $args_postscript_scripts = array(
-        'hierarchical'      => false,
+        'hierarchical'      => true,
         'labels'            => $labels_postscript_scripts,
         'public'            => true,
         'query_var'         => true,
@@ -303,7 +250,7 @@ function postscript_create_taxonomies() {
     );
 
     $args_postscript_styles = array(
-        'hierarchical'      => false,
+        'hierarchical'      => true,
         'labels'            => $labels_postscript_styles,
         'public'            => true,
         'query_var'         => true,

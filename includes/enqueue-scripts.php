@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Load Scripts and Add Classes to Posts
  *
@@ -15,54 +14,69 @@
  * ------------------------------------------------------------------------ */
 
 /**
- * Enqueue scripts and styles selected in the meta box form.
+ * Enqueue scripts and styles checked in the meta box form.
+ *
  *
  *
  */
-function postscript_enqueue_scripts() {
+function postscript_enqueue_script_handles() {
     if ( is_singular() && is_main_query() ) {
         global $post;
         $post_id = $post->ID;
-        $postscript_style_url = get_post_meta( $post_id, 'postscript_style_url', true );
-        $postscript_script_url = get_post_meta( $post_id, 'postscript_script_url', true );
-        // $postscript_style_handles = get_post_meta( $post_id, 'postscript_style_handles', true );
-        // $postscript_script_handles = get_post_meta( $post_id, 'postscript_script_handles', true );
+        $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
+/*
+        foreach ( $postscript_script_handles as $handle ) {
+            if wp_script_is( $handle, 'registered' )
+                wp_enqueue_script( $handle );
+        }
+ */
 
-        if ( has_filter( 'postscript_post_style' ) ) {
-            $style_handles = apply_filters( 'postscript_post_style', $style_handles );
+
+    }
+}
+// add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_handles' );
+
+
+/**
+ * Enqueue script and style URLs entered in the meta box text fields.
+ *
+ * get_post_meta( $post_id, 'postscript_meta', true )
+ * returns:
+ * Array
+ * (
+ *     [url_script] => http://example.com/my-js-file.js
+ *     [url_style]  => http://example.com/my-css-file.css
+ *     [class_body] => my-body-class
+ *     [class_post] => my-post-class
+ * )
+ *
+ *
+ */
+function postscript_enqueue_script_urls() {
+    if ( is_singular() && is_main_query() ) {
+        global $post;
+        $post_id = $post->ID;
+        $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
+
+        // Script/styles handles made from string: "postscript-style-{$post_id}".
+        if ( isset( $postscript_meta['url_script'] ) ) {
+            wp_enqueue_script( "postscript-script-$post_id", $postscript_meta['url_script'], false, false, true );
         }
 
-        if ( ! empty( $postscript_post_style ) ) {
-            wp_enqueue_style( 'postscript-style-' . $post_id, $postscript_post_style, false );
+        if ( isset( $postscript_meta['url_style'] ) ) {
+            wp_enqueue_style( "postscript-style-$post_id", $postscript_meta['url_style'], false );
         }
+
+/*
 
         if ( has_filter( 'postscript_script_url' ) ) {
             $postscript_script_url = apply_filters( 'postscript_script_url', $postscript_script_url );
         }
 
-        if ( ! empty( $postscript_script_url ) ) {
-            wp_enqueue_script( 'postscript-script-url' . $post_id, $postscript_script_url );
-        }
-/*
-        if ( has_filter( 'postscript_style_handles' ) ) {
-            $postscript_style_handles = apply_filters( 'postscript_style_handles', $postscript_style_handles );
-        }
-
-        foreach ( $postscript_style_handles as $handle ) {
-            wp_enqueue_style( $handle );
-        }
-
-        if ( has_filter( 'postscript_script_handles' ) ) {
-            $url = apply_filters( 'postscript_script_handles', $postscript_script_handles );
-        }
-
-        foreach ( $postscript_script_handles as $handle ) {
-            wp_enqueue_script( $handle );
-        }
 */
     }
 }
-add_action( 'wp_enqueue_scripts', 'postscript_enqueue_scripts' );
+add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_urls' );
 
 /* Filter the post class hook with our custom post class function. */
 function postscript_class_post( $classes ) {
