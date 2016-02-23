@@ -277,6 +277,27 @@ function postscript_populate_taxonomy() {
 add_action( 'registered_taxonomy', 'postscript_populate_taxonomy', 0 );
 
 
+function postscript_check_tax_term( $term, $taxonomy) {
+    if ( $taxonomy == 'postscript_scripts' ) {
+        if ( wp_script_is( $term, 'registered' ) ) {
+            return $term;
+        } else {
+        return new WP_Error( 'invalid_term', __('The script handle you entered is <strong>not</strong> <a href="https://developer.wordpress.org/reference/functions/wp_register_script/">registered</a>.') );
+        }
+    }
+
+    if ( $taxonomy == 'postscript_styles' ) {
+        if (wp_style_is( $term, 'registered' ) ) {
+            return $term;
+        } else {
+        return new WP_Error( 'invalid_term', __('The style handle you entered is <strong>not</strong> <a href="https://developer.wordpress.org/reference/functions/wp_register_style/">registered</a>.') );
+        }
+    }
+
+    return $term;
+}
+add_filter('pre_insert_term', 'postscript_check_tax_term', 20, 2);
+
 /* ------------------------------------------------------------------------ *
  * Tests and Notes
  * ------------------------------------------------------------------------ */

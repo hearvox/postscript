@@ -24,6 +24,7 @@ function postscript_enqueue_script_handles() {
         $scripts = get_the_terms( get_the_ID(), 'postscript_scripts' );
         $styles = get_the_terms( get_the_ID(), 'postscript_styles' );
 
+        // If custom tax terms, check for registered handle, then enqueue.
         if ( $scripts ) {
             foreach ( $scripts as $script ) {
                 if ( wp_script_is( $script->name, 'registered' ) ) {
