@@ -104,6 +104,9 @@ function postscript_meta_box_callback( $post, $box ) {
         <label for="postscript-class-post"><?php _e( 'Post class:', 'postscript' ); ?></label><br />
         <input class="widefat" type="text" name="postscript_meta[class_post]" id="postscript-class-post" value="<?php if ( isset ( $postscript_meta['class_post'] ) ) { echo sanitize_html_class( $postscript_meta['class_post'] ); } ?>" size="30" />
     </p>
+
+    <?php $screen = get_current_screen(); ?>
+    <?php echo "{$screen->id}\n"; // 'post', 'cpt-slug', 'settings_page_postscript' ?>
 <?php
 }
 

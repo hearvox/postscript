@@ -17,6 +17,33 @@
 /**
  * Makes an alphabetized array of registered script handles.
  */
+function postscript_get_style_reg_handles() {
+    global $wp_styles;
+
+    // Array of registered scripts handles (from $wp_scripts object).
+    $styles_reg = array_values( wp_list_pluck( $wp_styles->registered, 'handle' ) );
+    sort( $styles_reg ); // Alphabetize.
+
+    return $styles_reg;
+}
+
+/**
+ * Makes an alphabetized array of registered script handles.
+ */
+function postscript_get_script_reg_handles() {
+    global $wp_scripts;
+
+    // Array of registered scripts handles (from $wp_scripts object).
+    $scripts_reg = array_values( wp_list_pluck( $wp_scripts->registered, 'handle' ) );
+    sort( $scripts_reg ); // Alphabetize.
+
+    return $scripts_reg;
+}
+
+
+/**
+ * Makes an alphabetized array of registered script handles.
+ */
 function postscript_script_reg_handles() {
     global $wp_scripts;
     $script_handles = array();
@@ -242,11 +269,13 @@ function postscript_upgrade_options( $options ) {
     $defaults = array(
         'user_roles' => array( 'administrator' ),
         'post_types' => array( 'post' ),
-        'url_style'  => 'on',
-        'url_script' => 'on',
-        'url_data'   => 'on',
-        'class_body' => 'on',
-        'class_post' => 'on',
+        'allow'      => array(
+            'url_style'  => 'on',
+            'url_script' => 'on',
+            'url_data'   => 'on',
+            'class_body' => 'on',
+            'class_post' => 'on',
+        )
     );
 
     if ( is_array( $options ) && ! empty( $options ) )

@@ -53,10 +53,6 @@ function postscript_settings_display() {
             <?php settings_fields( 'postscript' ); ?>
             <?php do_settings_sections( 'postscript' ); ?>
             <?php submit_button(); ?>
-
-            <?php // postscript_reg_scripts_select(); ?>
-            <?php // postscript_render_script_list_form(); ?>
-
         </form>
 
         <?php postscript_meta_box_example(); ?>
@@ -86,7 +82,7 @@ function postscript_script_styles_add_remove() {
     global $postscript_scripts_reg_handles;
     global $postscript_styles_reg_handles;
 
-    // Add new script or style tax term, if registered handle.
+    // Add new script or style custom tax term, if registered handle.
     if ( isset( $options['script_add'] ) && in_array( $options['script_add'], $postscript_scripts_reg_handles )  ) {
         wp_insert_term( $options['script_add'], 'postscript_scripts' );
     }
@@ -95,7 +91,7 @@ function postscript_script_styles_add_remove() {
         wp_insert_term( $options['style_add'], 'postscript_styles' );
     }
 
-    // De script or style, if registered.
+    // Delete custom tax term for added script or style.
     if ( ! empty( $options['script_remove'] ) && term_exists( $options['script_remove'], 'postscript_scripts') ) {
         $script_slug = get_term_by('slug', $options['script_remove'], 'postscript_scripts');
         $script_id = $script_slug->term_id;
@@ -232,6 +228,18 @@ function postscript_styles_added_table() {
     <?php
 }
 
+/* ------------------------------------------------------------------------ *
+ * Displays posts in all allowed post-types (linked from tax post count in above table)
+ * ------------------------------------------------------------------------ */
+function postscript_pre_get_posts( $query ) {
+    if ( is_admin() ) {
+        if ( get_query_var( 'postscript_scripts' ) || get_query_var( 'postscript_styles' ) ) {
+            $query->set( 'post_type', array( 'post','dataviz' ) );
+        }
+    }
+}
+add_action( 'pre_get_posts', 'postscript_pre_get_posts' );
+
 /**
  * Render example of Edit Post screen meta box, based on settings.
  */
@@ -285,6 +293,18 @@ function postscript_meta_box_example() {
  */
 function postscript_options_init() {
 
+    // Arrays to pass to $callback functions as add_settings_field() $args (last param).
+    $options     = postscript_get_options();                 // Option: 'postscript'.
+    $styles_reg  = postscript_get_style_reg_handles();       // Registered style handles.
+    $scripts_reg = postscript_get_script_reg_handles();      // Registered script handles.
+
+    $args_tax = array(
+        'hide_empty'             => false,
+        'fields'                 => 'all',
+    );
+    $styles_sel  = get_terms( 'postscript_styles', $args_tax );  // User selected registered styles.
+    $scripts_sel = get_terms( 'postscript_scripts', $args_tax ); // User selected registered scripts.
+
     if ( false == get_option( 'postscript' ) ) {
         add_option( 'postscript' );
     }
@@ -315,7 +335,8 @@ function postscript_options_init() {
         __( 'User Roles', 'postscript' ),
         'postscript_user_roles_callback',
         'postscript',
-        'postscript_settings_section'
+        'postscript_settings_section',
+        $args = $options
     );
 
     add_settings_field(
@@ -323,7 +344,8 @@ function postscript_options_init() {
         __( 'Post Types', 'postscript' ),
         'postscript_post_types_callback',
         'postscript',
-        'postscript_settings_section'
+        'postscript_settings_section',
+        $args = $options
     );
 
     add_settings_field(
@@ -331,7 +353,8 @@ function postscript_options_init() {
         __( 'Allow URLs, Classes', 'postscript' ),
         'postscript_allow_fields_callback',
         'postscript',
-        'postscript_settings_section'
+        'postscript_settings_section',
+        $args = $options
     );
 
     add_settings_field(
@@ -422,14 +445,13 @@ function postscript_script_style_remove_section_callback() {
 /**
  * Outputs HTML checkboxes of user roles (used to determine if Postscript box displays).
  */
-function postscript_user_roles_callback() {
-    $options = postscript_get_options();
-    // $options['user_roles']['administrator'] = 'on';
-
+function postscript_user_roles_callback( $options ) {
     // Need WP_User class.
     if ( ! function_exists( 'get_editable_roles' ) ) {
         require_once( ABSPATH . 'wp-admin/includes/user.php' );
     }
+
+    // Note: $options[0] below is array of user-selected roles, from 'postscript' option.
     ?>
     <fieldset>
         <legend><?php _e( 'Select the roles allowed to use Postscript box:', 'postscript' ); ?></legend>
@@ -437,11 +459,11 @@ function postscript_user_roles_callback() {
         <?php
         foreach ( get_editable_roles() as $role => $details ) {
         ?>
-            <li><label><input type="checkbox" id="<?php echo $role; ?>" value="<?php echo $role ?>" name="postscript[user_roles]"<?php checked( in_array( $role, $options['user_roles'] ) ); ?><?php disabled( 'administrator', $role ); ?> /> <?php echo translate_user_role( $details['name'] ); ?></label></li>
+            <li><label><input type="checkbox" id="<?php echo $role; ?>" value="<?php echo $role ?>" name="postscript[user_roles][]"<?php checked( in_array( $role, $options['user_roles'] ) ); ?><?php disabled( 'administrator', $role ); ?> /> <?php echo translate_user_role( $details['name'] ); ?></label></li>
         <?php
         }
         ?>
-            <input type="hidden" value="administrator" name="postscript[user_roles]" />
+            <input type="hidden" value="administrator" name="postscript[user_roles][]" />
         </ul>
     </fieldset>
     <?php
@@ -450,8 +472,7 @@ function postscript_user_roles_callback() {
 /**
  * Outputs HTML checkboxes of post types (used to determine if Postscript box displays).
  */
-function postscript_post_types_callback() {
-    $options = postscript_get_options();
+function postscript_post_types_callback( $options ) {
     ?>
     <fieldset>
         <legend><?php _e( 'Select which post types display Postscript box:', 'postscript' ); ?></legend>
@@ -462,7 +483,7 @@ function postscript_post_types_callback() {
         foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type_arr ) {
             $post_type = $post_type_arr->name;
         ?>
-            <li><label><input type="checkbox" id="<?php echo $post_type; ?>" value="<?php echo $post_type; ?>" name="postscript[post_types]"<?php checked( in_array( $post_type, $options['post_types'] ) ); ?> /> <?php echo $post_type_arr->labels->name; ?></label></li>
+            <li><label><input type="checkbox" id="<?php echo $post_type; ?>" value="<?php echo $post_type; ?>" name="postscript[post_types][]"<?php checked( in_array( $post_type, $options['post_types'] ) ); ?> /> <?php echo $post_type_arr->labels->name; ?></label></li>
         <?php
         }
         ?>
@@ -474,17 +495,18 @@ function postscript_post_types_callback() {
 /**
  * Outputs HTML checkboxes (settings to allow text fields in Postscript box for entering URLs and classes).
  */
-function postscript_allow_fields_callback() {
-    $options = postscript_get_options();
+function postscript_allow_fields_callback( $options ) {
+    $opt = $options['allow'];
+print_r($opt);
     ?>
     <fieldset>
         <legend><?php _e( 'Add a text field in Postscript box for:', 'postscript' ); ?></legend>
         <ul class="inside">
-            <li><label><input type="checkbox" id="" name="postscript[url_style]" value="on"<?php checked( 'on', isset( $options['url_style'] ) ? $options['url_style'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[url_script]" value="on"<?php checked( 'on', isset( $options['url_script'] ) ? $options['url_script'] : 'off' ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[url_data]" value="on"<?php checked( 'on', isset( $options['url_data'] ) ? $options['url_data'] : 'off' ); ?>/> <?php _e( 'Data URL', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[class_body]" value="on"<?php checked( 'on', isset( $options['class_body'] ) ? $options['class_body'] : 'off' ); ?>/> <?php _e( 'Body class*', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[class_post]" value="on"<?php checked( 'on', isset( $options['class_post'] ) ? $options['class_post'] : 'off' ); ?>/> <?php _e( 'Post class*', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript[allow][url_style]" value="on"<?php checked( 'on', isset( $opt['url_style'] ) ? $opt['url_style'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript[allow][url_script]" value="on"<?php checked( 'on', isset( $opt['url_script'] ) ? $opt['url_script'] : 'off' ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript[allow][url_data]" value="on"<?php checked( 'on', isset( $opt['url_data'] ) ? $opt['url_data'] : 'off' ); ?>/> <?php _e( 'Data URL', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript[allow][class_body]" value="on"<?php checked( 'on', isset( $opt['class_body'] ) ? $opt['class_body'] : 'off' ); ?>/> <?php _e( 'Body class*', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript[allow][class_post]" value="on"<?php checked( 'on', isset( $opt['class_post'] ) ? $opt['class_post'] : 'off' ); ?>/> <?php _e( 'Post class*', 'postscript' ); ?></label></li>
         </ul>
         <p class="wp-ui-text-icon"><?php _e( 'Requires <code>body_class()</code>/<code>post_class()</code> in theme.', 'postscript' ); ?></p>
     </fieldset>
@@ -615,7 +637,7 @@ function print_test_data() {
             print_r( array_keys( $options['postscript_allow_url'] ) ); } ?>
         <hr />
         <?php // $screen = get_current_screen(); ?>
-        <?php // echo "{$screen->id}\n"; ?>
+        <?php // echo "{$screen->id}\n"; // settings_page_postscript ?>
         <?php // print_r( $screen ); ?>
         <hr />
         <?php // global $wp_scripts; ?>
