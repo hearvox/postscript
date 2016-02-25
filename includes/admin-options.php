@@ -105,129 +105,6 @@ function postscript_script_styles_add_remove() {
     }
 }
 
-/**
- * Outputs HTML table add user-added registered scripts (with metadata and term posts count).
- */
-function postscript_scripts_added_table() {
-    global $postscript_scripts_reg_handles;
-    $args = array(
-        'hide_empty'             => false,
-        'fields'                 => 'all',
-    );
-    $scripts_added = get_terms( 'postscript_scripts', $args );
-    ?>
-    <table class="wp-list-table widefat striped">
-        <thead>
-            <tr>
-                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Handle', 'postscript' ); ?></th>
-                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Ver', 'postscript' ); ?></th>
-                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Deps', 'postscript' ); ?></th>
-                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Footer', 'postscript' ); ?></th>
-                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Status', 'postscript' ); ?></th>
-                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Posts', 'postscript' ); ?></th>
-            </tr>
-        </thead>
-        <tbody>
-    <?php
-    if ( ! empty( $scripts_added ) ) {
-        global $wp_scripts;
-        foreach ( $scripts_added as $script_obj ) {
-            if ( in_array( $script_obj->name, $postscript_scripts_reg_handles ) ) {
-                $script_name  = $script_obj->name;
-                $script_arr   = $wp_scripts->registered[ $script_name ];
-                // Comma-separated list of style dependencies.
-                $deps         = implode( ',', $script_arr->deps );
-                // Make relative URLs full (for core registered scripts in '/wp-admin' or '/wp-includes').
-                $src          = ( $script_arr->src ) ? postscript_core_full_urls( $script_arr->src ) : '';
-                // Check URL status response code, if script has a 'src' set.
-                $status_code  = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
-                // Tax term post count, linked to list of posts (if count>0).
-                $count  = $script_obj->count;
-                $posts_count  = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscript_styles=$script_name\">$count</a>" : $count;
-            ?>
-            <tr>
-                <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $script_name; ?></label></th>
-                <td><?php echo $script_arr->ver; ?></td>
-                <td><?php echo $deps; ?></td>
-                <td><?php echo $script_arr->args; ?></td>
-                <td><?php echo $status_code; ?></td>
-                <td><?php echo $posts_count; ?></td>
-            </tr>
-            <?php
-            } // if
-        } // foreach
-    } else { ?>
-            <tr><td><p><?php _e( 'You have not added any scripts yet.', 'postscript' ); ?></p></td></tr>
-    <?php
-    }
-    ?>
-        </tbody>
-    </table>
-    <?php
-}
-
-/**
- * Outputs HTML table add user-added registered scripts (with metadata and term posts count).
- */
-function postscript_styles_added_table() {
-    global $postscript_styles_reg_handles;
-    $args = array(
-        'hide_empty'             => false,
-        'fields'                 => 'all',
-    );
-    $styles_added = get_terms( 'postscript_styles', $args );
-    ?>
-    <table class="wp-list-table widefat striped">
-        <thead>
-            <tr>
-                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Handle', 'postscript' ); ?></th>
-                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Ver', 'postscript' ); ?></th>
-                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Deps', 'postscript' ); ?></th>
-                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Media', 'postscript' ); ?></th>
-                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Status', 'postscript' ); ?></th>
-                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Posts', 'postscript' ); ?></th>
-            </tr>
-        </thead>
-        <tbody>
-    <?php
-    if ( ! empty( $styles_added ) ) {
-        global $wp_styles;
-        foreach ( $styles_added as $style_obj ) {
-            if ( in_array( $style_obj->name, $postscript_styles_reg_handles ) ) {
-                $style_name   = $style_obj->name;
-                $style_arr    = $wp_styles->registered[ $style_name ];
-                // Comma-separated list of style dependencies.
-                $deps         = implode( ',', $style_arr->deps );
-                // Make relative URLs full (for core registered scripts in '/wp-admin' or '/wp-includes').
-                $src          = ( $style_arr->src ) ? postscript_core_full_urls( $style_arr->src ) : '';
-                // Check URL status response code, if script has a 'src' set.
-                $status_code  = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
-                // Tax term post count, linked to list of posts (if count>0).
-                $count  = $style_obj->count;
-                $posts_count  = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscript_styles=$style_name\">$count</a>" : $count;
-            ?>
-            <tr>
-                <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $style_name; ?></label></th>
-                <td><?php echo $style_arr->ver; ?></td>
-                <td><?php echo $deps; ?></td>
-                <td><?php echo $style_arr->args; ?></td>
-                <td><?php echo $status_code; ?></td>
-                <td><?php echo $posts_count; ?></td>
-            </tr>
-            <?php
-            } // if
-        } // foreach
-    } else { ?>
-            <tr><td><p><?php _e( 'You have not added any styles yet.', 'postscript' ); ?></p></td></tr>
-    <?php
-    }
-    ?>
-        </tbody>
-    </table>
-    <p class="wp-ui-text-icon textright"><?php _e( '* <strong>Status</strong> response code links to <code>src</code> file. <strong>Posts</strong> count link lists posts enqueueing the file.', 'postscript' ); ?></p>
-    <?php
-}
-
 /* ------------------------------------------------------------------------ *
  * Setting Registrations
  * ------------------------------------------------------------------------ */
@@ -363,8 +240,6 @@ function postscript_script_style_remove_section_callback() {
     <p><?php _e('Remove script or style from the Postscript box.', 'postscript' ); ?></p>
     <?php
 }
-
-
 
 /* ------------------------------------------------------------------------ *
  * Field Callbacks
@@ -646,14 +521,6 @@ function postscript_style_remove_callback() {
         <?php wp_dropdown_categories( $args ); ?>
     </ul>
     <?php
-}
-
-function postscript_scripts_added_table_callback() {
-    postscript_scripts_added_table();
-}
-
-function postscript_styles_added_table_callback() {
-    postscript_styles_added_table();
 }
 
 /**
