@@ -229,62 +229,6 @@ function postscript_styles_added_table() {
 }
 
 /* ------------------------------------------------------------------------ *
- * Displays posts in all allowed post-types (linked from tax post count in above table)
- * ------------------------------------------------------------------------ */
-function postscript_pre_get_posts( $query ) {
-    if ( is_admin() ) {
-        if ( get_query_var( 'postscript_scripts' ) || get_query_var( 'postscript_styles' ) ) {
-            $query->set( 'post_type', array( 'post','dataviz' ) );
-        }
-    }
-}
-add_action( 'pre_get_posts', 'postscript_pre_get_posts' );
-
-/**
- * Render example of Edit Post screen meta box, based on settings.
- */
-function postscript_meta_box_example() {
-    $options = get_option( 'postscript' );
-    ?>
-    <div id="postbox-container-1" class="postbox-container">
-        <div id="categorydiv" class="postbox ">
-            <h2 class="hndle"><span><?php _e('Postscript', 'postscript' ); ?></span></h2>
-            <div class="inside">
-                <div id="taxonomy-postscript_scripts" class="categorydiv">
-                    <h3 class="hndle"><span><?php _e('Scripts', 'postscript' ); ?></span></h3>
-                    <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-                        <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_scripts' ) ); ?>
-                    </ul>
-                </div><!-- .categorydiv -->
-                <div id="taxonomy-postscript_styles" class="categorydiv">
-                    <h3 class="hndle"><span><?php _e('Styles', 'postscript' ); ?></span></h3>
-                    <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-                        <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_styles' ) ); ?>
-                    </ul>
-                </div><!-- .categorydiv -->
-                <div class="categorydiv">
-                    <h3 class="hndle"><span><?php _e('Script URL', 'postscript' ); ?></span></h3>
-                    <input type="url" placeholder="https:" class="regular-text">
-                </div><!-- .categorydiv -->
-                <div class="categorydiv">
-                    <h3 class="hndle"><span><?php _e('Style URL', 'postscript' ); ?></span></h3>
-                    <input type="url" placeholder="https:" class="regular-text">
-                </div><!-- .categorydiv -->
-                <div class="categorydiv">
-                    <h3 class="hndle"><span><?php _e('Body class', 'postscript' ); ?></span></h3>
-                    <input type="text" placeholder="CSS class" class="regular-text">
-                </div><!-- .categorydiv -->
-                <div class="categorydiv">
-                    <h3 class="hndle"><span><?php _e('Post class', 'postscript' ); ?></span></h3>
-                    <input type="text" placeholder="CSS class" class="regular-text">
-                </div><!-- .categorydiv -->
-            </div><!-- .inside -->
-        </div><!-- .postbox -->
-    </div><!-- .postbox-container -->
-    <?php
-}
-
-/* ------------------------------------------------------------------------ *
  * Setting Registrations
  * ------------------------------------------------------------------------ */
 
@@ -358,14 +302,6 @@ function postscript_options_init() {
     );
 
     add_settings_field(
-        'postscript_script_add',
-        __( 'Add a Script', 'postscript' ),
-        'postscript_script_add_callback',
-        'postscript',
-        'postscript_scripts_styles_section'
-    );
-
-    add_settings_field(
         'postscript_style_add',
         __( 'Add a Style', 'postscript' ),
         'postscript_style_add_callback',
@@ -374,33 +310,25 @@ function postscript_options_init() {
     );
 
     add_settings_field(
-        'postscript_scripts_added_table',
-        __( 'Scripts Added*', 'postscript' ),
-        'postscript_scripts_added_table_callback',
+        'postscript_script_add',
+        __( 'Add a Script', 'postscript' ),
+        'postscript_script_add_callback',
         'postscript',
         'postscript_scripts_styles_section'
-    );
-
-    add_settings_field(
-        'postscript_styles_added_table',
-        __( 'Styles Added*', 'postscript' ),
-        'postscript_styles_added_table_callback',
-        'postscript',
-        'postscript_scripts_styles_section'
-    );
-
-    add_settings_field(
-        'postscript_script_remove',
-        __( 'Remove a Script', 'postscript' ),
-        'postscript_script_remove_callback',
-        'postscript',
-        'postscript_script_style_remove_section'
     );
 
     add_settings_field(
         'postscript_style_remove',
         __( 'Remove a Style', 'postscript' ),
         'postscript_style_remove_callback',
+        'postscript',
+        'postscript_script_style_remove_section'
+    );
+
+    add_settings_field(
+        'postscript_script_remove',
+        __( 'Remove a Script', 'postscript' ),
+        'postscript_script_remove_callback',
         'postscript',
         'postscript_script_style_remove_section'
     );
@@ -514,19 +442,79 @@ print_r($opt);
 }
 
 /**
- * Outputs HTML checkboxes, used to allow URL fields in Postscript box.
+ * Outputs HTML select menu of all registered styles.
  */
-function postscript_allow_classes_callback() {
+function postscript_style_add_callback() {
     $options = get_option( 'postscript' );
+    global $postscript_styles_reg_handles;
+
+    // Output select menu of (sorted) registered style handles.
     ?>
-    <fieldset>
-        <legend><?php _e( 'Add a text field in Postscript box for:', 'postscript' ); ?></legend>
-        <ul class="inside">
-            <li><label><input type="checkbox" id="" name="postscript[allow_class][body]" value="on"<?php checked( 'on', isset( $options['allow_url']['style'] ) ? $options['allow_url']['style'] : 'off' ); ?>/> <?php _e( 'Body class', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[allow_class][post]" value="on"<?php checked( 'on', isset( $options['allow_url']['script'] ) ? $options['allow_url']['script'] : 'off' ); ?>/> <?php _e( 'Post class', 'postscript' ); ?></label></li>
-        </ul>
-        <p class="wp-ui-text-icon"><?php _e( 'Requires <code>body_class()</code>/<code>post_class()</code> in theme.', 'postscript' ); ?></p>
-    </fieldset>
+    <select id="postscript_styles_field" name="postscript[style_add]">
+        <option value=''><?php _e( 'Select style to add:', 'postscript' ); ?></option>
+        <?php
+        foreach( $postscript_styles_reg_handles as $style_handle ) {
+            echo "<option value=\"{$style_handle}\">{$style_handle}</option>";
+        }
+        ?>
+    </select>
+    <?php
+    // Display HTML table with user-added registered styles (with metadata and term posts count).
+    $args = array(
+        'hide_empty'             => false,
+        'fields'                 => 'all',
+    );
+    $styles_added = get_terms( 'postscript_styles', $args );
+    ?>
+    <table class="wp-list-table widefat striped">
+        <caption><strong>Styles added</strong></caption>
+        <thead>
+            <tr>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Handle', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Ver', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Deps', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Media', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Status', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Posts', 'postscript' ); ?></th>
+            </tr>
+        </thead>
+        <tbody>
+    <?php
+    if ( ! empty( $styles_added ) ) {
+        global $wp_styles;
+        foreach ( $styles_added as $style_obj ) {
+            if ( in_array( $style_obj->name, $postscript_styles_reg_handles ) ) {
+                $style_name   = $style_obj->name;
+                $style_arr    = $wp_styles->registered[ $style_name ];
+                // Comma-separated list of style dependencies.
+                $deps         = implode( ',', $style_arr->deps );
+                // Make relative URLs full (for core registered scripts in '/wp-admin' or '/wp-includes').
+                $src          = ( $style_arr->src ) ? postscript_core_full_urls( $style_arr->src ) : '';
+                // Check URL status response code, if script has a 'src' set.
+                $status_code  = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
+                // Tax term post count, linked to list of posts (if count>0).
+                $count  = $style_obj->count;
+                $posts_count  = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscript_styles=$style_name\">$count</a>" : $count;
+            ?>
+            <tr>
+                <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $style_name; ?></label></th>
+                <td><?php echo $style_arr->ver; ?></td>
+                <td><?php echo $deps; ?></td>
+                <td><?php echo $style_arr->args; ?></td>
+                <td><?php echo $status_code; ?></td>
+                <td><?php echo $posts_count; ?></td>
+            </tr>
+            <?php
+            } // if
+        } // foreach
+    } else { ?>
+            <tr><td><p><?php _e( 'You have not added any styles yet.', 'postscript' ); ?></p></td></tr>
+    <?php
+    }
+    ?>
+        </tbody>
+    </table>
+    <p class="wp-ui-text-icon textright"><?php _e( '* <strong>Status</strong> response code links to <code>src</code> file. <strong>Posts</strong> count link lists posts enqueueing the file.', 'postscript' ); ?></p>
     <?php
 }
 
@@ -548,36 +536,75 @@ function postscript_script_add_callback() {
         ?>
     </select>
     <?php
-}
-
-/**
- * Outputs HTML select menu of all registered styles.
- */
-function postscript_style_add_callback() {
-    $options = get_option( 'postscript' );
-    global $postscript_styles_reg_handles;
-
-    // Output select menu of (sorted) registered style handles.
+    // Display HTML table of user-added registered scripts (with metadata and term posts count).
+    $args = array(
+        'hide_empty'             => false,
+        'fields'                 => 'all',
+    );
+    $scripts_added = get_terms( 'postscript_scripts', $args );
     ?>
-    <select id="postscript_styles_field" name="postscript[style_add]">
-        <option value=''><?php _e( 'Select style to add:', 'postscript' ); ?></option>
-        <?php
-        foreach( $postscript_styles_reg_handles as $style_handle ) {
-            echo "<option value=\"{$style_handle}\">{$style_handle}</option>";
-        }
-        ?>
-    </select>
+    <table class="wp-list-table widefat striped">
+        <caption><strong>Scripts added</strong></caption>
+        <thead>
+            <tr>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Handle', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Ver', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Deps', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Footer', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Status', 'postscript' ); ?></th>
+                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Posts', 'postscript' ); ?></th>
+            </tr>
+        </thead>
+        <tbody>
+    <?php
+    if ( ! empty( $scripts_added ) ) {
+        global $wp_scripts;
+        foreach ( $scripts_added as $script_obj ) {
+            if ( in_array( $script_obj->name, $postscript_scripts_reg_handles ) ) {
+                $script_name  = $script_obj->name;
+                $script_arr   = $wp_scripts->registered[ $script_name ];
+                // Comma-separated list of style dependencies.
+                $deps         = implode( ',', $script_arr->deps );
+                // Make relative URLs full (for core registered scripts in '/wp-admin' or '/wp-includes').
+                $src          = ( $script_arr->src ) ? postscript_core_full_urls( $script_arr->src ) : '';
+                // Check URL status response code, if script has a 'src' set.
+                $status_code  = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
+                // Tax term post count, linked to list of posts (if count>0).
+                $count  = $script_obj->count;
+                $posts_count  = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscript_styles=$script_name\">$count</a>" : $count;
+            ?>
+            <tr>
+                <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $script_name; ?></label></th>
+                <td><?php echo $script_arr->ver; ?></td>
+                <td><?php echo $deps; ?></td>
+                <td><?php echo $script_arr->args; ?></td>
+                <td><?php echo $status_code; ?></td>
+                <td><?php echo $posts_count; ?></td>
+            </tr>
+            <?php
+            } // if
+        } // foreach
+    } else { ?>
+            <tr><td><p><?php _e( 'You have not added any scripts yet.', 'postscript' ); ?></p></td></tr>
+    <?php
+    }
+    ?>
+        </tbody>
+    </table>
     <?php
 }
 
-function postscript_scripts_added_table_callback() {
-    postscript_scripts_added_table();
+/* ------------------------------------------------------------------------ *
+ * Displays posts in all allowed post-types (post count link in above tables)
+ * ------------------------------------------------------------------------ */
+function postscript_pre_get_posts( $query ) {
+    if ( is_admin() ) {
+        if ( get_query_var( 'postscript_scripts' ) || get_query_var( 'postscript_styles' ) ) {
+            $query->set( 'post_type', array( 'post','dataviz' ) );
+        }
+    }
 }
-
-function postscript_styles_added_table_callback() {
-    postscript_styles_added_table();
-}
-
+add_action( 'pre_get_posts', 'postscript_pre_get_posts' );
 
 /**
  * Outputs HTML select menu of all registered scripts.
@@ -618,6 +645,58 @@ function postscript_style_remove_callback() {
     <ul class="clear">
         <?php wp_dropdown_categories( $args ); ?>
     </ul>
+    <?php
+}
+
+function postscript_scripts_added_table_callback() {
+    postscript_scripts_added_table();
+}
+
+function postscript_styles_added_table_callback() {
+    postscript_styles_added_table();
+}
+
+/**
+ * Render example of Edit Post screen meta box, based on settings.
+ */
+function postscript_meta_box_example() {
+    $options = get_option( 'postscript' );
+    ?>
+    <div id="postbox-container-1" class="postbox-container">
+        <div id="categorydiv" class="postbox ">
+            <h2 class="hndle"><span><?php _e('Postscript', 'postscript' ); ?></span></h2>
+            <div class="inside">
+                <div id="taxonomy-postscript_styles" class="categorydiv">
+                    <h3 class="hndle"><span><?php _e('Styles', 'postscript' ); ?></span></h3>
+                    <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
+                        <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_styles' ) ); ?>
+                    </ul>
+                </div><!-- .categorydiv -->
+                <div id="taxonomy-postscript_scripts" class="categorydiv">
+                    <h3 class="hndle"><span><?php _e('Scripts', 'postscript' ); ?></span></h3>
+                    <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
+                        <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_scripts' ) ); ?>
+                    </ul>
+                </div><!-- .categorydiv -->
+                <div class="categorydiv">
+                    <h3 class="hndle"><span><?php _e('Style URL', 'postscript' ); ?></span></h3>
+                    <input type="url" placeholder="https:" class="regular-text">
+                </div><!-- .categorydiv -->
+                <div class="categorydiv">
+                    <h3 class="hndle"><span><?php _e('Script URL', 'postscript' ); ?></span></h3>
+                    <input type="url" placeholder="https:" class="regular-text">
+                </div><!-- .categorydiv -->
+                <div class="categorydiv">
+                    <h3 class="hndle"><span><?php _e('Body class', 'postscript' ); ?></span></h3>
+                    <input type="text" placeholder="CSS class" class="regular-text">
+                </div><!-- .categorydiv -->
+                <div class="categorydiv">
+                    <h3 class="hndle"><span><?php _e('Post class', 'postscript' ); ?></span></h3>
+                    <input type="text" placeholder="CSS class" class="regular-text">
+                </div><!-- .categorydiv -->
+            </div><!-- .inside -->
+        </div><!-- .postbox -->
+    </div><!-- .postbox-container -->
     <?php
 }
 
