@@ -116,19 +116,12 @@ function postscript_options_init() {
 
     // Arrays to pass to $callback functions as add_settings_field() $args (last param).
     $options     = postscript_get_options();                 // Option: 'postscript'.
-    $styles_reg  = postscript_get_style_reg_handles();       // Registered style handles.
-    $scripts_reg = postscript_get_script_reg_handles();      // Registered script handles.
 
-    $args_tax = array(
-        'hide_empty'             => false,
-        'fields'                 => 'all',
-    );
-    $styles_sel  = get_terms( 'postscript_styles', $args_tax );  // User selected registered styles.
-    $scripts_sel = get_terms( 'postscript_scripts', $args_tax ); // User selected registered scripts.
-
+    /*
     if ( false == get_option( 'postscript' ) ) {
         add_option( 'postscript' );
     }
+     */
 
     add_settings_section(
         'postscript_settings_section',
@@ -300,7 +293,6 @@ function postscript_post_types_callback( $options ) {
  */
 function postscript_allow_fields_callback( $options ) {
     $opt = $options['allow'];
-print_r($opt);
     ?>
     <fieldset>
         <legend><?php _e( 'Add a text field in Postscript box for:', 'postscript' ); ?></legend>
@@ -320,7 +312,8 @@ print_r($opt);
  * Outputs HTML select menu of all registered styles.
  */
 function postscript_style_add_callback() {
-    $options = get_option( 'postscript' );
+    // $styles_reg  = postscript_get_style_reg_handles(); // Registered style handles.
+    // $options = get_option( 'postscript' );
     global $postscript_styles_reg_handles;
 
     // Output select menu of (sorted) registered style handles.
@@ -397,7 +390,8 @@ function postscript_style_add_callback() {
  * Outputs HTML select menu of all registered scripts.
  */
 function postscript_script_add_callback() {
-    $options = get_option( 'postscript' );
+    // $scripts_reg = postscript_get_script_reg_handles(); // Registered script handles.
+    // $options = get_option( 'postscript' );
     global $postscript_scripts_reg_handles;
 
     // Output select menu of (sorted) registered script handles.
