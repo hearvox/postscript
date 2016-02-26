@@ -70,10 +70,8 @@ function postscript_add_meta_box() {
         $options['post_types'],
         'side',
         'default',
-        $callback_args = $options
+        $options
     );
-
-
 }
 
 /**
@@ -86,10 +84,8 @@ function postscript_add_meta_box() {
  * @return string HTML of meta box
  */
 function postscript_meta_box_callback( $post, $box ) {
-
-    $post_id = get_the_ID();
-    $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
-    $postscript_meta_class_post = get_post_meta( $post_id, 'postscript_meta_class_post', true );
+    $post_id = $post->ID;
+    // Print checklist of admin-settings selected styles and scripts (custom tax terms), with checked on top.
     ?>
     <?php wp_nonce_field( basename( __FILE__ ), 'postscript_meta_nonce' ); ?>
     <p>
@@ -104,30 +100,42 @@ function postscript_meta_box_callback( $post, $box ) {
             <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_styles', 'selected_cats' => true, 'checked_ontop' => true ) ); ?>
         </ul>
     </p>
+    <?php
+    // Display text fields for: URLs (style and script) and classes (body and post).
+    $opt_allow = $box['args']['allow'];
+    $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
+    ?>
+    <?php if ( isset ( $opt_allow['url_style'] ) ) { ?>
     <p>
         <label for="postscript-url-style"><?php _e( 'CSS stylesheet URL:', 'postscript' ); ?></label><br />
         <input class="widefat" type="url" name="postscript_meta[url_style]" id="postscript-url-style" value="<?php if ( isset ( $postscript_meta['url_style'] ) ) { echo esc_url_raw( $postscript_meta['url_style'] ); } ?>" size="30" />
     </p>
+    <?php } ?>
+    <?php if ( isset ( $opt_allow['url_script'] ) ) { ?>
     <p>
         <label for="postscript-url-script"><?php _e( 'JS file URL:', 'postscript' ); ?></label><br />
         <input class="widefat" type="url" name="postscript_meta[url_script]" id="postscript-url-script" value="<?php if ( isset ( $postscript_meta['url_script'] ) ) { echo esc_url_raw( $postscript_meta['url_script'] ); } ?>" size="30" />
     </p>
+    <?php } ?>
+    <?php if ( isset ( $opt_allow['url_data'] ) ) { ?>
     <p>
         <label for="postscript-url-data"><?php _e( 'JSON/data file URL:', 'postscript' ); ?></label><br />
         <input class="widefat" type="url" name="postscript_meta[url_data]" id="postscript-url-data" value="<?php if ( isset ( $postscript_meta['url_data'] ) ) { echo esc_url_raw( $postscript_meta['url_data'] ); } ?>" size="30" />
     </p>
+    <?php } ?>
+    <?php if ( isset ( $opt_allow['class_body'] ) ) { ?>
     <p>
         <label for="postscript-class-body"><?php _e( 'Body class:', 'postscript' ); ?></label><br />
         <input class="widefat" type="text" name="postscript_meta[class_body]" id="postscript-class-body" value="<?php if ( isset ( $postscript_meta['class_body'] ) ) { echo sanitize_html_class( $postscript_meta['class_body'] ); } ?>" size="30" />
     </p>
+    <?php } ?>
+    <?php if ( isset ( $opt_allow['class_post'] ) ) { ?>
     <p>
         <label for="postscript-class-post"><?php _e( 'Post class:', 'postscript' ); ?></label><br />
         <input class="widefat" type="text" name="postscript_meta[class_post]" id="postscript-class-post" value="<?php if ( isset ( $postscript_meta['class_post'] ) ) { echo sanitize_html_class( $postscript_meta['class_post'] ); } ?>" size="30" />
     </p>
-
-    <?php // $screen = get_current_screen(); ?>
-    <?php // echo "{$screen->id}\n"; // 'post', 'cpt-slug', 'settings_page_postscript' ?>
-<?php
+    <?php
+    }
 }
 
 /**
