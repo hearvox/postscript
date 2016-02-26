@@ -11,8 +11,24 @@
  */
 
 /* ------------------------------------------------------------------------ *
- * Get Settings Options
+ * Meta Box for the Edit screen.
  * ------------------------------------------------------------------------ */
+
+/**
+ * Removes default display of plugin's custom tax checkboxes.
+ * (Replaced by plugin's custom meta box.)
+ */
+function postscript_remove_meta_boxes() {
+    $options = postscript_get_options( 'postscript' );
+
+    foreach ( $options['post_types'] as $post_type ) {
+        remove_meta_box( 'postscript_scriptsdiv', $post_type, 'normal' );
+        remove_meta_box( 'postscript_stylesdiv', $post_type, 'normal' );
+    }
+}
+add_action( 'admin_menu' , 'postscript_remove_meta_boxes' );
+
+
 
 // $postscript_options = get_option( 'postscript' );
 
@@ -25,14 +41,15 @@
  * Displays meta box on post editor screen (both new and edit pages).
  */
 function postscript_meta_box_setup() {
-
+    $options = postscript_get_options( 'postscript' );
     /* Add meta boxes on the 'add_meta_boxes' hook. */
     add_action( 'add_meta_boxes', 'postscript_add_meta_box' );
 
     /* Save post meta on the 'save_post' hook. */
     add_action( 'save_post', 'postscript_save_post_meta', 10, 2 );
+
+
 }
-/* Fire our meta box setup function on the post editor screen. */
 add_action( 'load-post.php', 'postscript_meta_box_setup' );
 add_action( 'load-post-new.php', 'postscript_meta_box_setup' );
 
@@ -40,21 +57,20 @@ add_action( 'load-post-new.php', 'postscript_meta_box_setup' );
  * Creates meta box for the post editor screen.
  */
 function postscript_add_meta_box() {
+    $options = postscript_get_options( 'postscript' );
+
     add_meta_box(
         'postscript-meta',
         esc_html__( 'Postscript', 'postscript' ),
         'postscript_meta_box_callback',
-        'post',
+        $options['post_types'],
         'side',
-        'default'
+        'default',
+        $callback_args = $options
     );
-}
 
-function remove_post_custom_fields() {
-        remove_meta_box( 'postscript_scriptsdiv', 'post', 'normal' );
-        remove_meta_box( 'postscript_stylesdiv', 'post', 'normal' );
+
 }
-add_action( 'admin_menu' , 'remove_post_custom_fields' );
 
 /**
  * Builds HTML form for the post meta box.
@@ -105,8 +121,8 @@ function postscript_meta_box_callback( $post, $box ) {
         <input class="widefat" type="text" name="postscript_meta[class_post]" id="postscript-class-post" value="<?php if ( isset ( $postscript_meta['class_post'] ) ) { echo sanitize_html_class( $postscript_meta['class_post'] ); } ?>" size="30" />
     </p>
 
-    <?php $screen = get_current_screen(); ?>
-    <?php echo "{$screen->id}\n"; // 'post', 'cpt-slug', 'settings_page_postscript' ?>
+    <?php // $screen = get_current_screen(); ?>
+    <?php // echo "{$screen->id}\n"; // 'post', 'cpt-slug', 'settings_page_postscript' ?>
 <?php
 }
 
@@ -135,11 +151,13 @@ function postscript_save_post_meta( $post_id, $post ) {
 
     /* Get and sanitize the posted data. */
     $new_meta_value = ( isset( $_POST['postscript_meta'] ) ?  $_POST['postscript_meta'] : '' );
-    $new_meta_value['url_style']  = esc_url_raw( $new_meta_value['url_style'] );
-    $new_meta_value['url_script'] = esc_url_raw( $new_meta_value['url_script'] );
-    $new_meta_value['url_data']   = esc_url_raw( $new_meta_value['url_data'] );
-    $new_meta_value['class_body'] = sanitize_html_class( $new_meta_value['class_body'] );
-    $new_meta_value['class_post'] = sanitize_html_class( $new_meta_value['class_post'] );
+    if ( $new_meta_value ) {
+        $new_meta_value['url_style']  = esc_url_raw( $new_meta_value['url_style'] );
+        $new_meta_value['url_script'] = esc_url_raw( $new_meta_value['url_script'] );
+        $new_meta_value['url_data']   = esc_url_raw( $new_meta_value['url_data'] );
+        $new_meta_value['class_body'] = sanitize_html_class( $new_meta_value['class_body'] );
+        $new_meta_value['class_post'] = sanitize_html_class( $new_meta_value['class_post'] );
+    }
 
     $meta_key = 'postscript_meta';
     $meta_value = get_post_meta( $post_id, $meta_key, true );
