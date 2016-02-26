@@ -42,13 +42,17 @@ add_action( 'admin_menu' , 'postscript_remove_meta_boxes' );
  */
 function postscript_meta_box_setup() {
     $options = postscript_get_options( 'postscript' );
-    /* Add meta boxes on the 'add_meta_boxes' hook. */
-    add_action( 'add_meta_boxes', 'postscript_add_meta_box' );
 
-    /* Save post meta on the 'save_post' hook. */
-    add_action( 'save_post', 'postscript_save_post_meta', 10, 2 );
+    $user = wp_get_current_user();
+    $roles_allowed = $options['user_roles'];
 
+    if ( array_intersect( $roles_allowed, $user->roles ) ) {
+        /* Add meta boxes on the 'add_meta_boxes' hook. */
+        add_action( 'add_meta_boxes', 'postscript_add_meta_box' );
 
+        /* Save post meta on the 'save_post' hook. */
+        add_action( 'save_post', 'postscript_save_post_meta', 10, 2 );
+    }
 }
 add_action( 'load-post.php', 'postscript_meta_box_setup' );
 add_action( 'load-post-new.php', 'postscript_meta_box_setup' );
