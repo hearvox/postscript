@@ -569,6 +569,10 @@ function print_test_data() {
     <h2>Test items</h2>
     <pre>
         <?php
+
+        echo 'he-spin: ' . $reg =  ( wp_script_is( 'he-spin', 'registered' ) ) ? 'yo' : 'no'; ?>
+        <hr />
+        <?php
         $options = get_option( 'postscript' );
         echo '<br><code>$options = get_option( \'postscript\' )</code>:<br />';
         print_r( $options );
@@ -580,8 +584,8 @@ function print_test_data() {
         <?php // echo "{$screen->id}\n"; // settings_page_postscript ?>
         <?php // print_r( $screen ); ?>
         <hr />
-        <?php // global $wp_scripts; ?>
-        <?php // print_r( $wp_scripts->registered ); ?>
+        <?php global $wp_scripts; print_r( $wp_scripts->registered ); ?>
+
 
 
         <?php // print_r( wp_load_alloptions() ); ?>

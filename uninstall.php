@@ -20,25 +20,21 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
  *
  * @since 1.0.0
  */
-function postscript_remove_plugin_data() {
-    $option    = 'postscript';
-    $meta_key  = 'postscript_meta';
-    $tax_styles = 'postscript_styles';
-    $tax_scripts = 'postscript_scripts';
-
+if ( function_exists( 'delete_post_meta_by_key' ) ) {
+    $meta_key = 'postscript_meta';
     postscript_remove_meta( $meta_key );
-    postscript_remove_tax_terms( $tax_styles );
-    postscript_remove_tax_terms( $tax_scripts );
-    postscript_remove_option( $option );
 }
 
-/**
- * Removes plugin's option from database.
- *
- * @since 1.0.0
- */
-function postscript_remove_option( $option ) {
-    delete_option( $option_name );
+if ( function_exists( 'wp_delete_term' ) ) {
+    $tax_styles  = 'postscript_styles';
+    $tax_scripts = 'postscript_scripts';
+    postscript_remove_tax_terms( $tax_styles );
+    postscript_remove_tax_terms( $tax_scripts );
+}
+
+if ( function_exists( 'delete_option' ) ) {
+    $option = 'postscript';
+    postscript_remove_option( $option );
 }
 
 /**
@@ -62,7 +58,9 @@ function postscript_remove_tax_terms( $tax ) {
         wp_delete_term( $term->term_id, $tax );
     }
 
-    postscript_unregister_tax( $tax );
+    if ( function_exists( 'taxonomy_exists' ) ) {
+        postscript_unregister_tax( $tax );
+    }
 }
 
 /**
@@ -77,4 +75,13 @@ function postscript_unregister_tax( $tax ) {
     }
 
     return;
+}
+
+/**
+ * Removes plugin's option from database.
+ *
+ * @since 1.0.0
+ */
+function postscript_remove_option( $option ) {
+    delete_option( $option_name );
 }

@@ -146,13 +146,10 @@ function run_postscript() {
 /* ------------------------------------------------------------------------ *
  * Required Plugin Files
  * ------------------------------------------------------------------------ */
-if ( is_admin() ) {
-    include_once( plugin_dir_path( __FILE__ ) . 'includes/admin-options.php' );
-    include_once( plugin_dir_path( __FILE__ ) . 'includes/meta-box.php' );
-    include_once( plugin_dir_path( __FILE__ ) . 'includes/functions.php' );
-} else {
-    include_once( 'includes/enqueue-scripts.php' );
-}
+include_once( plugin_dir_path( __FILE__ ) . 'includes/admin-options.php' );
+include_once( plugin_dir_path( __FILE__ ) . 'includes/meta-box.php' );
+include_once( plugin_dir_path( __FILE__ ) . 'includes/functions.php' );
+include_once( plugin_dir_path( __FILE__ ) . 'includes/enqueue-scripts.php' );
 
 /* ------------------------------------------------------------------------ *
  * Required WordPress Files
