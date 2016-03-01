@@ -293,7 +293,7 @@ function postscript_check_tax_term( $term, $taxonomy) {
 
     return $term;
 }
-add_filter('pre_insert_term', 'postscript_check_tax_term', 20, 2);
+// add_filter('pre_insert_term', 'postscript_check_tax_term', 20, 2);
 
 /* ------------------------------------------------------------------------ *
  * Tests and Notes
