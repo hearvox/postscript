@@ -561,15 +561,6 @@ function postscript_meta_box_example() {
     <?php
 }
 
-function headecon_scripts() {
-    wp_register_style( 'he-font-opensans', 'http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,300,600,700,800' );
-    wp_register_style( 'he-font-vollkorn', 'http://fonts.googleapis.com/css?family=Vollkorn:400italic,700italic,400,700' );
-    wp_register_style( 'he-font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' );
-
-    // wp_enqueue_style( 'he-font-opensans' );
-}
-add_action( 'wp_enqueue_scripts', 'headecon_scripts' );
-
 
 /* ------------------------------------------------------------------------ *
  * Customizes edit-tags screens, via hooks (in /wp-admin: /edit-tags.php, /edit-tags-form.php).
@@ -578,6 +569,7 @@ function postscript_styles_edit_tags( $query ) {
     _e( 'This form only allows a registered style handle as Name and Slug.', 'postscript') ;
 }
 add_action( 'postscript_styles_pre_add_form', 'postscript_styles_edit_tags' );
+add_action( 'postscript_styles_edit_form_fields', 'postscript_styles_edit_tags' );
 
 function postscript_scripts_edit_tags( $query ) {
     _e( 'This form only allows a registered script handle as Name and Slug.', 'postscript') ;
