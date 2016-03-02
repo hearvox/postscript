@@ -28,7 +28,7 @@ function postscript_enqueue_script_handles() {
         if ( $scripts ) {
             foreach ( $scripts as $script ) {
                 if ( wp_script_is( $script->name, 'registered' ) ) {
-                    wp_enqueue_style( $script->name );
+                    wp_enqueue_script( $script->name );
                 }
             }
         }
@@ -36,7 +36,7 @@ function postscript_enqueue_script_handles() {
         if ( $styles ) {
             foreach ( $styles as $style ) {
                 if ( wp_style_is( $style->name, 'registered' ) ) {
-                    wp_enqueue_script( $style->name );
+                    wp_enqueue_style( $style->name );
                 }
             }
         }

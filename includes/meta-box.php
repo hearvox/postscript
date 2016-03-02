@@ -22,8 +22,8 @@ function postscript_remove_meta_boxes() {
     $options = postscript_get_options( 'postscript' );
 
     foreach ( $options['post_types'] as $post_type ) {
-        remove_meta_box( 'postscript_scriptsdiv', $post_type, 'normal' );
-        remove_meta_box( 'postscript_stylesdiv', $post_type, 'normal' );
+        // remove_meta_box( 'postscript_scriptsdiv', $post_type, 'normal' );
+        // remove_meta_box( 'postscript_stylesdiv', $post_type, 'normal' );
     }
 }
 add_action( 'admin_menu' , 'postscript_remove_meta_boxes' );
@@ -91,13 +91,13 @@ function postscript_meta_box_callback( $post, $box ) {
     <p>
         <h3 class="hndle"><span><?php _e('Load Scripts', 'postscript' ); ?></span></h3>
         <ul id="postscript_styleschecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-            <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_scripts', 'selected_cats' => true, 'checked_ontop' => true ) ); ?>
+            <?php // wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_scripts', 'selected_cats' => true, 'checked_ontop' => true ) ); ?>
         </ul>
     </p>
     <p>
         <h3 class="hndle"><span><?php _e('Load Styles', 'postscript' ); ?></span></h3>
         <ul id="postscript_scriptschecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-            <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_styles', 'selected_cats' => true, 'checked_ontop' => true ) ); ?>
+            <?php // wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_styles', 'selected_cats' => true, 'checked_ontop' => true ) ); ?>
         </ul>
     </p>
     <?php
@@ -186,10 +186,10 @@ function postscript_save_post_meta( $post_id, $post ) {
     } elseif ( '' == $new_meta_value && $meta_value ) {
         delete_post_meta( $post_id, $meta_key, $meta_value );
     }
-
+/*
     if ( isset( $_POST['tax_input'] ) ) {
-        wp_set_object_terms( $post_id, $_POST['tax_input']['postscript_scripts'], $postscript_scripts, false );
-        wp_set_object_terms( $post_id, $_POST['tax_input']['postscript_styles'], $postscript_styles, false );
+        wp_set_object_terms( $post_id, $_POST['tax_input']['postscript_scripts'], 'postscript_scripts', false );
+        wp_set_object_terms( $post_id, $_POST['tax_input']['postscript_styles'], 'postscript_styles', false );
     }
-
+*/
 }

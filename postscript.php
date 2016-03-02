@@ -317,9 +317,25 @@ function ps_log( $message ) {
 function postscript_test_nq( $content ) {
     if ( is_single( 1740 ) && is_main_query() ) {
         global $wp_scripts, $wp_styles;
+        $scripts = get_the_terms( get_the_ID(), 'postscript_scripts' );
+        $scripts_names = array_values( wp_list_pluck( $scripts, 'name' ) );
+
         $data_content = '<h2>$wp_scripts->queue</h2>';
         // $data_content .= postscript_get_scripts();
-        $data_content .= '';
+        $data_content .= '<pre>';
+        $data_content .= print_r( $scripts_names, true );
+        $data_content .= '<hr />';
+        foreach ( $scripts as $script ) {
+            $data_content .= "<br>$script->name: ";
+            if ( wp_script_is( $script->name, 'registered' ) ) {
+                $data_content .= 'yo';
+            } else {
+                $data_content .= 'no';
+            }
+        }
+        $data_content .= '<hr />';
+        $data_content .= print_r( array_values( wp_list_pluck( $GLOBALS['wp_scripts']->registered, 'handle' ) ), true );
+        $data_content .= '</pre>';
 
         return $content . $data_content;
     } else {
