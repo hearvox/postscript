@@ -269,9 +269,6 @@ function postscript_create_taxonomies() {
 
     register_taxonomy( 'postscript_styles', $post_types, $args_postscript_styles );
 }
-
-
-// Hook into the init action and call postscript_create_taxonomy() when it fires
 add_action( 'init', 'postscript_create_taxonomies', 0 );
 
 
@@ -458,13 +455,6 @@ function postscript_get_scripts() {
 
     $script_data .= '<p>';
 
-    foreach ( $postscript_added_scripts as $handle ) {
-        // $script_data .= 'handle: ' . $wp_scripts->registered[$handle]->handle . ', src: ' . $wp_scripts->registered[$handle]->src . ', deps: ' . implode( ',', $wp_scripts->registered[$handle]->deps ) . ', ver: ' . $wp_scripts->registered[$handle]->ver . ', args: ' . $wp_scripts->registered[$handle]->args . '<br />';
-    }
-
-    // $script_data .= '</p><pre>$wp_scripts->registered[$postscript_added_scripts[1]]:';
-    // print_r( $wp_scripts->registered[$postscript_added_scripts[1]], true );
-
     $script_data .= '</pre>';
 
 
@@ -474,45 +464,6 @@ function postscript_get_scripts() {
 
 
 
-// Small array for testing registered scripts object converted into array:
-$test_reg_scripts_arr =
-array(
-    array(
-        'handle' => 'a8c-developer',
-        'src' => 'http://rji.local/wp-content/plugins/developer/developer.js',
-        'deps' => array( 'jquery' ),
-        'ver' => '1.2.6',
-        'args' => '',
-    ),
-    array(
-        'handle' => 'accordion',
-        'src' => '/wp-admin/js/accordion.min.js',
-        'deps' => array( 'jquery' ),
-        'ver' => '',
-        'args' => '1',
-    ),
-    array(
-        'handle' => 'admin-bar',
-        'src' => '/wp-includes/js/admin-bar.min.js',
-        'deps' => array(),
-        'ver' => '',
-        'args' => '1',
-    ),
-    array(
-        'handle' => 'admin-comments',
-        'src' => '/wp-admin/js/edit-comments.min.js',
-        'deps' => array( 'wp-lists', 'quicktags', 'jquery-query' ),
-        'ver' => '',
-        'args' => '1',
-    ),
-    array(
-        'handle' => 'admin-gallery',
-        'src' => '/wp-admin/js/gallery.min.js',
-        'deps' => array( 'jquery-ui-sortable' ),
-        'ver' => '',
-        'args' => '',
-    )
-);
 
 /*
 
@@ -525,40 +476,12 @@ http://rji.local/wp-admin/options.php
 
 current_user_can( 'manage_options' );
 
-http://code.tutsplus.com/articles/the-ins-and-outs-of-the-enqueue-script-for-wordpress-themes-and-plugins--wp-22509
-https://pippinsplugins.com/add-screen-options-tab-to-your-wordpress-plugin/
-http://code.tutsplus.com/tutorials/how-to-create-custom-wordpress-writemeta-boxes--wp-20336
-http://www.smashingmagazine.com/2011/10/create-custom-post-meta-boxes-wordpress/
-
 http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/apps/non-labor-income/non-labor-income.css
 http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/apps/non-labor-income/non-labor-income.js
 
 
-/*
-
 $x = wp_insert_term('Scripts','postscript');
 print_r( $x->error_data['term_exists'] );
-
-http://rji.local/wp-admin/edit.php?postscript=scripts
-
-
-
-https://codex.wordpress.org/Function_Reference/register_uninstall_hook
-
-
-
-// ps_log( array( 'This is a message in an array' => 'for debugging purposes' ));
-// ps_log( 'This is a message for debugging purposes' );
-
-function postscript_delete_terms() {
-     if ( is_admin() ) {
-          $terms = get_terms( 'postscript', array( 'fields' => 'ids', 'hide_empty' => false ) );
-          foreach ( $terms as $value ) {
-               wp_delete_term( $value, 'postscript' );
-          }
-     }
-}
-register_uninstall_hook( __FILE__, 'postscript_delete_terms')
 
 $query = new WP_Query( array( 'meta_key' => 'color' ) );
 
