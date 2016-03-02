@@ -13,6 +13,35 @@
  * Enqueue Scripts and Styles
  * ------------------------------------------------------------------------ */
 
+/*******************************
+ =REGISTER SCRIPTS
+ ******************************/
+
+function headecon_register_scripts() {
+
+    // $file_he_common_js = WP_PLUGIN_DIR . '/he-interactives/js/he-inter-common.js';
+    $file_he_common_js = 'http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/js/he-inter-common.js';
+
+    if ( file_exists( $file_he_common_js ) ) {
+        wp_register_script( 'he-common', 'http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/js/he-inter-common.js', 'jquery', filemtime( $file_eps_js ), true );
+    }
+
+    wp_register_script( 'he-tableau', 'http://headwaterseconomics.org:8000/javascripts/api/viz_v1.js', array( '' ), '1', true );
+    wp_register_script( 'he-d3', 'http://dev.headwaterseconomics.org//wphw/wp-content/plugins/he-interactives/js/d3/d3.min.js', array( 'jquery' ), '3.4.2', true );
+    wp_register_script( 'he-open-layers-2', 'http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/js/openlayers/OpenLayers.js', array( 'jquery' ), '2.0', true );
+    wp_register_script( 'he-open-layers-3', 'http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/js/openlayers-3.13.0/ol.js', array( 'jquery' ), '3.13.0', true );
+    wp_register_script( 'he-spin', 'http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/js/spin/spin.min.js', array( 'jquery' ), '1', true );
+    wp_register_script( 'he-proj4js', 'http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/js/proj4js/lib/proj4js-combined.js', array( '' ), '1.1.0', true );
+    wp_register_script( 'he-queue', 'http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/js/queue/queue.v1.min.js', array( '' ), '1', true );
+
+    wp_register_style( 'he-font-opensans', 'http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,300,600,700,800' );
+    wp_register_style( 'he-font-vollkorn', 'http://fonts.googleapis.com/css?family=Vollkorn:400italic,700italic,400,700' );
+    wp_register_style( 'he-font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' );
+
+    // wp_enqueue_style( 'he-font-opensans' );
+}
+add_action( 'wp_enqueue_scripts', 'headecon_register_scripts' );
+
 /**
  * Enqueue scripts and styles checked in the meta box form.
  *
@@ -42,7 +71,7 @@ function postscript_enqueue_script_handles() {
         }
     }
 }
-add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_handles' );
+add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_handles', 10000 );
 
 
 /**

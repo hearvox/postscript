@@ -333,7 +333,10 @@ function postscript_test_nq( $content ) {
                 $data_content .= 'no';
             }
         }
-        $data_content .= '<hr />';
+        $data_content .= '<hr /><b>done:</b><br>';
+        $data_content .= print_r( $wp_scripts->done, true );
+
+        $data_content .= '<hr /><b>reg:</b><br>';
         $data_content .= print_r( array_values( wp_list_pluck( $GLOBALS['wp_scripts']->registered, 'handle' ) ), true );
         $data_content .= '</pre>';
 
