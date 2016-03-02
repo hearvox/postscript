@@ -204,24 +204,15 @@ function postscript_get_options() {
  * @param array|string $option array item key
  * @return array $options[$option] array item value (or $options[$option][$option_key])
  */
-function postscript_get_option( $option, $option_key = NULL ) {
+function postscript_get_option( $option_key = NULL ) {
     $options = postscript_get_options();
 
-    if ( isset( $options[ $option ] ) ) {
-
-        // Returns valid inner array key ($options[$option][$option_key]).
-        if ( $option_item != NULL ) {
-            if ( isset( $options[ $option ][ $option_key ] ) ) {
-                return $options[ $option ][ $option_key ];
-            } else { // Inner array key not valid.
-                return NULL;
-            }
-        }
-        return $options[ $option ];
-
-    }
-
+    // Returns valid inner array key ($options[$option_key]).
+    if ( isset( $options ) && $option_key != NULL && isset( $options[ $option_key ] ) ) {
+            return $options[ $option_key ];
+    } else { // Inner array key not valid.
     return NULL;
+    }
 }
 
 /**

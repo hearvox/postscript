@@ -208,6 +208,9 @@ function postscript_core_full_urls( $url ) {
  * Adds new hierarchical, private taxonomies (for Scripts and Styles).
  */
 function postscript_create_taxonomies() {
+    //Settings option for alllowed post types.
+    $post_types = postscript_get_option( 'post_types' );
+
     $labels_postscript_scripts = array(
         'name'              => _x( 'Scripts', 'taxonomy general name' ),
         'singular_name'     => _x( 'Script', 'taxonomy singular name' ),
@@ -230,7 +233,12 @@ function postscript_create_taxonomies() {
         'rewrite'           => array( 'slug' => 'postscript_scripts' ),
     );
 
-    register_taxonomy( 'postscript_scripts', array( 'post' ), $args_postscript_scripts );
+    // Filter params for Styles custom taxonomy.
+    if ( has_filter( 'postscript_tax_styles' ) ) {
+        $args_postscript_styles = apply_filters( 'postscript_tax_styles', $args_postscript_styles );
+    }
+
+    register_taxonomy( 'postscript_scripts', $post_types, $args_postscript_scripts );
 
     $labels_postscript_styles = array(
         'name'              => _x( 'Styles', 'taxonomy general name' ),
@@ -259,7 +267,7 @@ function postscript_create_taxonomies() {
         $args_postscript_styles = apply_filters( 'postscript_tax_styles', $args_postscript_styles );
     }
 
-    register_taxonomy( 'postscript_styles', array( 'post' ), $args_postscript_styles );
+    register_taxonomy( 'postscript_styles', $post_types, $args_postscript_styles );
 }
 
 
