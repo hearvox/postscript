@@ -599,12 +599,36 @@ function print_test_data() {
         <?php // $screen = get_current_screen(); ?>
         <?php // echo "{$screen->id}\n"; // settings_page_postscript ?>
         <?php // print_r( $screen ); ?>
-        <hr />
+        <hr /><h2>admin styles</h2>
         <?php global $wp_styles; print_r( $wp_styles ); ?>
+        <hr /><h2>theme styles</h2>
+        <?php // new FakePage; ?>
+        <?php // global $postscript_wp_styles; print_r( get_transient( 'postscript_wp_styles' ) ); ?>
+        <?php
+
+
+        $args_latest_post = array(
+            'posts_per_page' => 1,
+            'cache_results'  => false,
+            'fields'         => 'ids',
+            );
+        $latest_post = new WP_Query( $args_latest_post );
+        $latest_post_url = get_permalink( $latest_post->posts[0] );
+
+        $response = wp_remote_get( $latest_post_url );
+        if( is_array($response) ) {
+          $header = $response['headers']; // array of http header lines
+          $body = $response['body']; // use the content
+        }
+
+        // echo $body;
+        ?>
 
 
 
-        <?php // print_r( wp_load_alloptions() ); ?>
+
+
+
     </pre>
     <p><?php echo get_num_queries(); ?> queries in <?php timer_stop( 1 ); ?> seconds uses <?php echo round( memory_get_peak_usage() / 1024 / 1024, 3 ); ?> MB peak memory.</p>
 
