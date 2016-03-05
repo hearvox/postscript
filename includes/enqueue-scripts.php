@@ -67,8 +67,11 @@ function postscript_wp_scripts_styles_transient() {
 
     set_transient( 'postscript_wp_scripts', $wp_scripts->registered, 60 * 60 * 4 );
     set_transient( 'postscript_wp_styles', $wp_styles->registered, 60 * 60 * 4 );
-}
 
+    // set_transient( 'postscript_wp_scripts', 'yo script1', 60 * 60 * 4 );
+    // set_transient( 'postscript_wp_styles', 'yo styles1', 60 * 60 * 4 );
+}
+add_action( 'wp_enqueue_scripts', 'postscript_enqueue_handles', 100001 );
 
 /**
  * Enqueue script and style URLs entered in the meta box text fields.

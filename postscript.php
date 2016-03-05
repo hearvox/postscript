@@ -61,14 +61,36 @@ function postscript_load_textdomain() {
 add_action( 'plugins_loaded', 'postscript_load_textdomain' );
 
 /**
- * Load the plugin text domain for translation.
+ * Retrieves the latest post (to set transient with registered scripts/styles) .
+ *
+ * We need to get all scripts/styles registered ont he front-end.
+ * To do that we need to trigger all the 'wp_enqueue_scripts' hooks.
+ * So we get a post to do that, also runs a plugin function
+ * to sets $wp_scripts/$wp_styles globals in transients.
+ * See: postscript_wp_scripts_styles_transient() in /includes/enqueue_scripts.php plugin file.
  *
  * @since    1.0.0
  */
-function postscript_load_textdomain() {
-    load_plugin_textdomain( 'postscript', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+function postscript_load_post() {
+   $args_latest_post = array(
+    'posts_per_page' => 1,
+    'cache_results'  => false,
+    'fields'         => 'ids',
+    'post_status'    => 'publish',
+    );
+    $latest_post = new WP_Query( $args_latest_post );
+    $latest_post_url = get_permalink( $latest_post->posts[0] );
+    $response = wp_remote_get( $latest_post_url );
+/*
+    if( is_array( $response ) ) {
+      $header = $response['headers']; // array of http header lines
+      $body = $response['body']; // use the content
+    }
+*/
 }
 add_action( 'plugins_loaded', 'postscript_load_textdomain' );
+
+
 
 /**
  * Sets default settings option upon activation, if options doesn't exist.

@@ -115,7 +115,7 @@ function postscript_script_styles_add_remove() {
 function postscript_options_init() {
 
     // Arrays to pass to $callback functions as add_settings_field() $args (last param).
-    $options     = postscript_get_options();                 // Option: 'postscript'.
+    $options = postscript_get_options();                 // Option: 'postscript'.
 
     /*
     if ( false == get_option( 'postscript' ) ) {
@@ -216,6 +216,7 @@ add_action('admin_init', 'postscript_options_init');
  * ------------------------------------------------------------------------ */
 
 function postscript_section_callback() {
+    postscript_load_post();
     ?>
     <p><?php _e('The Postscript meta box (in the Edit Post screen) lets users enqueue scripts and styles for a single post.', 'postscript' ); ?></p>
     <p><?php _e('Choose which post-types and user-roles display the Postscript box.', 'postscript' ); ?></p>
@@ -606,22 +607,6 @@ function print_test_data() {
         <?php // global $postscript_wp_styles; print_r( get_transient( 'postscript_wp_styles' ) ); ?>
         <?php
 
-
-        $args_latest_post = array(
-            'posts_per_page' => 1,
-            'cache_results'  => false,
-            'fields'         => 'ids',
-            );
-        $latest_post = new WP_Query( $args_latest_post );
-        $latest_post_url = get_permalink( $latest_post->posts[0] );
-
-        $response = wp_remote_get( $latest_post_url );
-        if( is_array($response) ) {
-          $header = $response['headers']; // array of http header lines
-          $body = $response['body']; // use the content
-        }
-
-        // echo $body;
         ?>
 
 
