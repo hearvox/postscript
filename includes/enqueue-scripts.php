@@ -13,45 +13,21 @@
  * Enqueue Scripts and Styles
  * ------------------------------------------------------------------------ */
 
-/*******************************
- =REGISTER SCRIPTS
- ******************************/
 
-function headecon_register_scripts() {
-
-    // $file_he_common_js = WP_PLUGIN_DIR . '/he-interactives/js/he-inter-common.js';
-    $file_he_common_js = 'http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/js/he-inter-common.js';
-
-    if ( file_exists( $file_he_common_js ) ) {
-        wp_register_script( 'he-common', 'http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/js/he-inter-common.js', 'jquery', filemtime( $file_eps_js ), true );
-    }
-
-    wp_register_script( 'he-tableau', 'http://headwaterseconomics.org:8000/javascripts/api/viz_v1.js', array( '' ), '1', true );
-    wp_register_script( 'he-d3', 'http://dev.headwaterseconomics.org//wphw/wp-content/plugins/he-interactives/js/d3/d3.min.js', array( 'jquery' ), '3.4.2', true );
-    wp_register_script( 'he-open-layers-2', 'http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/js/openlayers/OpenLayers.js', array( 'jquery' ), '2.0', true );
-    wp_register_script( 'he-open-layers-3', 'http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/js/openlayers-3.13.0/ol.js', array( 'jquery' ), '3.13.0', true );
-    wp_register_script( 'he-spin', 'http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/js/spin/spin.min.js', array( 'jquery' ), '1', true );
-    wp_register_script( 'he-proj4js', 'http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/js/proj4js/lib/proj4js-combined.js', array( '' ), '1.1.0', true );
-    wp_register_script( 'he-queue', 'http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/js/queue/queue.v1.min.js', array( '' ), '1', true );
-
-    wp_register_style( 'he-font-opensans', 'http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,700italic,400,300,600,700,800' );
-    wp_register_style( 'he-font-vollkorn', 'http://fonts.googleapis.com/css?family=Vollkorn:400italic,700italic,400,700' );
-    wp_register_style( 'he-font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css' );
-
-    // wp_enqueue_style( 'he-font-opensans' );
-}
-add_action( 'wp_enqueue_scripts', 'headecon_register_scripts' );
 
 /**
  * Enqueue scripts and styles checked in the meta box form.
  *
- *
+ * To get all registered script/styles handles registered for the front-end
+ * by running after all other'wp_enqueue_scripts' hooks, thus the action below
+ * that calls this function has a low priority value (high number), so fires last.
  *
  */
 function postscript_enqueue_script_handles() {
     if ( is_singular() && is_main_query() ) {
+        // Custom tax term is the script/style handle.
         $scripts = get_the_terms( get_the_ID(), 'postscript_scripts' );
-        $styles = get_the_terms( get_the_ID(), 'postscript_styles' );
+        $styles  = get_the_terms( get_the_ID(), 'postscript_styles' );
 
         // If custom tax terms, check for registered handle, then enqueue.
         if ( $scripts ) {
@@ -71,7 +47,7 @@ function postscript_enqueue_script_handles() {
         }
     }
 }
-add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_handles', 10000 );
+add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_handles', 100000 );
 
 
 /**
@@ -81,11 +57,32 @@ add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_handles', 10000 );
  * returns:
  * Array
  * (
- *     [url_style]  => http://example.com/my-css-file.css
- *     [url_script] => http://example.com/my-js-file.js
- *     [url_data]  => http://example.com/my-data-file.js
- *     [class_body] => my-body-class
- *     [class_post] => my-post-class
+ *     [user_roles] => Array
+ *         (
+ *             [0] => {role_key}
+ *             [1] => {role_key name}
+ *         )
+ *
+ *     [post_types] => Array
+ *         (
+ *             [0] => {post_type_key}
+ *             [1] => {post_type_key}
+ *         )
+ *
+ *     [allow] => Array
+ *         (
+ *             [url_style]  => on
+ *             [url_script] => on
+ *             [url_data]   => on
+ *             [class_body] => on
+ *             [class_post] => on
+ *         )
+ *
+ *     [style_add]     => {style_handle}
+ *     [script_add]    => {script_handle}
+ *     [style_remove]  => {style_handle}
+ *     [script_remove] => {script_handle}
+ *     [version]       => 1.0.0
  * )
  *
  *
