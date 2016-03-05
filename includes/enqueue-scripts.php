@@ -1,6 +1,6 @@
 <?php
 /**
- * Load Scripts and Add Classes to Posts
+ * Load Scripts and Adds Classes to Posts
  *
  * @link       http://example.com
  * @since      1.0.0
@@ -10,21 +10,23 @@
  */
 
 /* ------------------------------------------------------------------------ *
- * Enqueue Scripts and Styles
+ * Enqueue User-selected Scripts/Styles and Add Classes
  * ------------------------------------------------------------------------ */
 
-
-
 /**
- * Enqueue scripts and styles checked in the meta box form.
+ * Enqueues scripts/styles checked in the meta box form (of handles = custom tax terms).
  *
  * To get all registered script/styles handles registered for the front-end
- * by running after all other'wp_enqueue_scripts' hooks, thus the action below
- * that calls this function has a low priority value (high number), so fires last.
+ * this must after all other'wp_enqueue_scripts' hooks. So the action below
+ * that calls this function fires last (high number = low priority).
  *
  */
-function postscript_enqueue_script_handles() {
+function postscript_enqueue_handles() {
     if ( is_singular() && is_main_query() ) {
+
+        // Set transients with arrays of registered scripts/styles.
+        postscript_wp_scripts_styles_transient();
+
         // Custom tax term is the script/style handle.
         $scripts = get_the_terms( get_the_ID(), 'postscript_scripts' );
         $styles  = get_the_terms( get_the_ID(), 'postscript_styles' );
@@ -45,9 +47,27 @@ function postscript_enqueue_script_handles() {
                 }
             }
         }
+
     }
+
+    return;
 }
-add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_handles', 100000 );
+add_action( 'wp_enqueue_scripts', 'postscript_enqueue_handles', 100000 );
+
+
+/**
+ * Sets transient with arrays of front-end registered scripts/styles.
+ *
+ * Must be run on front-end to pick up 'wp_enqueue_scripts' firings.
+ * (In back-end $wp_scripts holds only 'admin_enqueue_scripts' registers.)
+ *
+ */
+function postscript_wp_scripts_styles_transient() {
+    global $wp_scripts, $wp_styles;
+
+    set_transient( 'postscript_wp_scripts', $wp_scripts->registered, 60 * 60 * 4 );
+    set_transient( 'postscript_wp_styles', $wp_styles->registered, 60 * 60 * 4 );
+}
 
 
 /**
@@ -60,7 +80,7 @@ add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_handles', 100000 );
  *     [user_roles] => Array
  *         (
  *             [0] => {role_key}
- *             [1] => {role_key name}
+ *             [1] => {role_key}
  *         )
  *
  *     [post_types] => Array

@@ -61,6 +61,16 @@ function postscript_load_textdomain() {
 add_action( 'plugins_loaded', 'postscript_load_textdomain' );
 
 /**
+ * Load the plugin text domain for translation.
+ *
+ * @since    1.0.0
+ */
+function postscript_load_textdomain() {
+    load_plugin_textdomain( 'postscript', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
+add_action( 'plugins_loaded', 'postscript_load_textdomain' );
+
+/**
  * Sets default settings option upon activation, if options doesn't exist.
  * This action is documented in includes/class-post-scripting-activator.php
  */
@@ -75,38 +85,6 @@ if ( defined( 'STATS_VERSION' ) ) {
 }
 
 define( 'STATS_VERSION', '1.0.0' );
-
-    $defaults = array(
-        'user_role'    => array ( 'administrator' => 'on' ),
-        'post_type'    => array ( 'post' => 'on' ),
-        'allow'        => array ( 'script_url' => 'on', 'style_url' => 'on' ),
-    );
-
-Array
-(
-    [user_role] => Array
-        (
-            [administrator] => on
-        )
-
-    [post_type] => Array
-        (
-            [post] => on
-        )
-
-    [allow] => Array
-        (
-            [style_url] => on
-            [script_url] => on
-            [body_class] => on
-            [post_class] => on
-        )
-
-    [script_add] =>
-    [style_add] =>
-    [script_remove] =>
-    [style_remove] =>
-)
 
  */
 
