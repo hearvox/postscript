@@ -216,7 +216,7 @@ add_action('admin_init', 'postscript_options_init');
  * ------------------------------------------------------------------------ */
 
 function postscript_section_callback() {
-    postscript_load_post();
+    postscript_load_latest_post();
     ?>
     <p><?php _e('The Postscript meta box (in the Edit Post screen) lets users enqueue scripts and styles for a single post.', 'postscript' ); ?></p>
     <p><?php _e('Choose which post-types and user-roles display the Postscript box.', 'postscript' ); ?></p>

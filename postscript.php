@@ -71,26 +71,36 @@ add_action( 'plugins_loaded', 'postscript_load_textdomain' );
  *
  * @since    1.0.0
  */
-function postscript_load_post() {
-   $args_latest_post = array(
+function postscript_load_latest_post() {
+   $args = array(
     'posts_per_page' => 1,
     'cache_results'  => false,
     'fields'         => 'ids',
     'post_status'    => 'publish',
     );
-    $latest_post = new WP_Query( $args_latest_post );
-    $latest_post_url = get_permalink( $latest_post->posts[0] );
-    $response = wp_remote_get( $latest_post_url );
-/*
-    if( is_array( $response ) ) {
-      $header = $response['headers']; // array of http header lines
-      $body = $response['body']; // use the content
-    }
-*/
+    $latest_post = new WP_Query( $args );
+    $latest_post_id = $latest_post->posts[0];
+
+    $response = postscript_load_post( $latest_post_id );
+
+    return $response;
 }
 add_action( 'plugins_loaded', 'postscript_load_textdomain' );
 
+/**
+ * Runs post (to fire 'wp_enqueue_scripts' hooks).
+ *
+ * @since    1.0.0
+ * @param integer $post_id ID of post to fetch
+ * @return  mixed Either header array and body HTML or error object is URL not valid
+ */
+function postscript_load_post( $post_id ) {
 
+    $latest_post_url = get_permalink( $post_id ) ?  : NULL;
+    $response = wp_remote_get( $latest_post_url );
+
+    return $response;
+}
 
 /**
  * Sets default settings option upon activation, if options doesn't exist.
