@@ -61,15 +61,18 @@ function postscript_load_textdomain() {
 add_action( 'plugins_loaded', 'postscript_load_textdomain' );
 
 /**
- * Retrieves the latest post (to set transient with registered scripts/styles) .
+ * Retrieves the latest post (to set transients with registered scripts/styles) .
  *
- * We need to get all scripts/styles registered ont he front-end.
- * To do that we need to trigger all the 'wp_enqueue_scripts' hooks.
- * So we get a post to do that, also runs a plugin function
- * to sets $wp_scripts/$wp_styles globals in transients.
- * See: postscript_wp_scripts_styles_transient() in /includes/enqueue_scripts.php plugin file.
+ * We need to get all scripts/styles registered on the front-end.
+ * To do that we need to fire all the 'wp_enqueue_scripts' hooks.
+ * So we get any post, which runs a plugin function, which sets
+ * the globals $wp_scripts and $wp_styles globals as transients.
+ * See function: postscript_wp_scripts_styles_transient()
+ * In plugin file: /includes/enqueue_scripts.php
  *
  * @since    1.0.0
+ *
+ * @return  mixed Array of header items; HTML of body content.
  */
 function postscript_load_latest_post() {
    $args = array(
