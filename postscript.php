@@ -150,7 +150,6 @@ include_once( plugin_dir_path( __FILE__ ) . 'includes/admin-options.php' );
 include_once( plugin_dir_path( __FILE__ ) . 'includes/meta-box.php' );
 include_once( plugin_dir_path( __FILE__ ) . 'includes/functions.php' );
 include_once( plugin_dir_path( __FILE__ ) . 'includes/enqueue-scripts.php' );
-// include_once( plugin_dir_path( __FILE__ ) . 'includes/page-virtual.php' );
 
 /* ------------------------------------------------------------------------ *
  * Required WordPress Files
@@ -200,10 +199,6 @@ function postscript_core_full_urls( $url ) {
 
     return $url;
 }
-
-
-
-
 
 /**
  * Adds new hierarchical, private taxonomies (for Scripts and Styles).
@@ -484,24 +479,30 @@ http://dev.headwaterseconomics.org/wphw/wp-content/plugins/he-interactives/apps/
 $x = wp_insert_term('Scripts','postscript');
 print_r( $x->error_data['term_exists'] );
 
-$query = new WP_Query( array( 'meta_key' => 'color' ) );
-
 @TODO
-* Activate- init option defaults.
-* Deactivate
-* Uninstall - rm: option, post meta, tax terms.
-* Settings link to plugin page.
+* Abstract load post fn for use in per-post enqueued list.
+* Add Activate functions.
+* Add Deactivate functions.
+* Uninstall - rm option, post meta, tax terms.
+* Check if script still registered (i.e., if dereg, or reg removed).
+* Drag drop table row order
+* Run posts in all allowed post-types then merge $wp_scripts (if some reg is post-type only.)
+* Page template.
+* Register scripts.
+* File-mod is vers number.
 * Sanitize (escape late).
-* rm tax terms not in reg array.
+* Export settings, post meta, and tax terms.
+* List enqueues on Post screen?
 * Add settings notices.
 * Check if script still registered
 * Add/set version in options: $new_options['version'] = POSTSCRIPT_VERSION;
-* rm unused options (keep: postscript)
-* rm unsued meta (keep: postscript_meta)
+* Test Activate- init option defaults.
 * Test from install.
 * Test uninstall (rm 'postscript' option, 'postscript_meta' meta, and tax terms.)
-* Export settings, post meta, and tax terms.
-* List enqueues on Post screen?
-*
-*
+* rm tax terms not in reg array.
+* rm unused options (keep: postscript)
+* rm unsued meta (keep: postscript_meta)
+* rm notes and tests.
+
+
 */
