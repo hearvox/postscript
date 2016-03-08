@@ -11,7 +11,55 @@
  */
 
 /* ------------------------------------------------------------------------ *
- * Utility functions for scripts and styles
+ * Fire front-end hooks by loading a post.
+ * ------------------------------------------------------------------------ */
+
+/**
+ * Retrieves the latest post (to set transients with registered scripts/styles) .
+ *
+ * We need to get all scripts/styles registered on the front-end.
+ * To do that we need to fire all the 'wp_enqueue_scripts' hooks.
+ * So we get any post, which runs a plugin function, which sets
+ * the globals $wp_scripts and $wp_styles globals as transients.
+ * See function: postscript_wp_scripts_styles_transient()
+ * In plugin file: /includes/enqueue_scripts.php
+ *
+ * @since    1.0.0
+ *
+ * @return  mixed Array of header items; HTML of body content.
+ */
+function postscript_load_latest_post() {
+   $args = array(
+    'posts_per_page' => 1,
+    'cache_results'  => false,
+    'fields'         => 'ids',
+    'post_status'    => 'publish',
+    );
+    $latest_post = new WP_Query( $args );
+    $latest_post_id = $latest_post->posts[0];
+
+    $response = postscript_load_post( $latest_post_id );
+
+    return $response;
+}
+
+/**
+ * Runs post (to fire 'wp_enqueue_scripts' hooks).
+ *
+ * @since    1.0.0
+ * @param integer $post_id ID of post to fetch
+ * @return  mixed Either header array and body HTML or error object is URL not valid
+ */
+function postscript_load_post( $post_id ) {
+
+    $latest_post_url = get_permalink( $post_id ) ?  : NULL;
+    $response = wp_remote_get( $latest_post_url );
+
+    return $response;
+}
+
+/* ------------------------------------------------------------------------ *
+ * Functions for getting registered scripts and styles.
  * ------------------------------------------------------------------------ */
 
 /**
@@ -130,7 +178,7 @@ function postscript_scripts_reg_select() {
 }
 
 /* ------------------------------------------------------------------------ *
- * Utility functions for arrays and objects.
+ * Functions for arrays and objects.
  * ------------------------------------------------------------------------ */
 
 /**

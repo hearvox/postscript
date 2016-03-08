@@ -14,70 +14,9 @@
  * ------------------------------------------------------------------------ */
 
 /**
- * Enqueues scripts/styles checked in the meta box form (of handles = custom tax terms).
+ * Enqueues script and style URLs entered in the meta box text fields.
  *
- * To get all registered script/styles handles registered for the front-end
- * this must after all other'wp_enqueue_scripts' hooks. So the action below
- * that calls this function fires last (high number = low priority).
- *
- */
-function postscript_enqueue_handles() {
-    if ( is_singular() && is_main_query() ) {
-
-        // Set transients with arrays of registered scripts/styles.
-        postscript_wp_scripts_styles_transient();
-
-        // Custom tax term is the script/style handle.
-        $scripts = get_the_terms( get_the_ID(), 'postscript_scripts' );
-        $styles  = get_the_terms( get_the_ID(), 'postscript_styles' );
-
-        // If custom tax terms, check for registered handle, then enqueue.
-        if ( $scripts ) {
-            foreach ( $scripts as $script ) {
-                if ( wp_script_is( $script->name, 'registered' ) ) {
-                    wp_enqueue_script( $script->name );
-                }
-            }
-        }
-
-        if ( $styles ) {
-            foreach ( $styles as $style ) {
-                if ( wp_style_is( $style->name, 'registered' ) ) {
-                    wp_enqueue_style( $style->name );
-                }
-            }
-        }
-
-    }
-
-    return;
-}
-add_action( 'wp_enqueue_scripts', 'postscript_enqueue_handles', 100000 );
-
-
-/**
- * Sets transient with arrays of front-end registered scripts/styles.
- *
- * Must be run on front-end to pick up 'wp_enqueue_scripts' firings.
- * (In back-end $wp_scripts holds only 'admin_enqueue_scripts' registers.)
- *
- */
-function postscript_wp_scripts_styles_transient() {
-    global $wp_scripts, $wp_styles;
-
-    set_transient( 'postscript_wp_scripts', $wp_scripts->registered, 60 * 60 * 4 );
-    set_transient( 'postscript_wp_styles', $wp_styles->registered, 60 * 60 * 4 );
-
-    // set_transient( 'postscript_wp_scripts', 'yo script1', 60 * 60 * 4 );
-    // set_transient( 'postscript_wp_styles', 'yo styles1', 60 * 60 * 4 );
-}
-add_action( 'wp_enqueue_scripts', 'postscript_enqueue_handles', 100001 );
-
-/**
- * Enqueue script and style URLs entered in the meta box text fields.
- *
- * get_post_meta( $post_id, 'postscript_meta', true )
- * returns:
+ * get_post_meta( $post_id, 'postscript_meta', true ) returns:
  * Array
  * (
  *     [user_roles] => Array
@@ -139,40 +78,120 @@ function postscript_enqueue_script_urls() {
 }
 add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_urls' );
 
+/**
+ * Enqueues scripts/styles checked in the meta box form (handles are custom tax terms).
+ *
+ * To get all registered script/styles handles registered for the front-end
+ * this must after all other'wp_enqueue_scripts' hooks. So the action below
+ * that calls this function fires last (high number = low priority).
+ *
+ */
+function postscript_enqueue_handles() {
+    if ( is_singular() && is_main_query() ) {
+
+        // Set transients with arrays of registered scripts/styles.
+        postscript_wp_scripts_styles_transient();
+
+        // Custom tax term is the script/style handle.
+        $scripts = get_the_terms( get_the_ID(), 'postscript_scripts' );
+        $styles  = get_the_terms( get_the_ID(), 'postscript_styles' );
+
+        // If custom tax terms, check for registered handle, then enqueue.
+        if ( $scripts ) {
+            foreach ( $scripts as $script ) {
+                if ( wp_script_is( $script->name, 'registered' ) ) {
+                    wp_enqueue_script( $script->name );
+                }
+            }
+        }
+
+        if ( $styles ) {
+            foreach ( $styles as $style ) {
+                if ( wp_style_is( $style->name, 'registered' ) ) {
+                    wp_enqueue_style( $style->name );
+                }
+            }
+        }
+
+    }
+
+    return;
+}
+add_action( 'wp_enqueue_scripts', 'postscript_enqueue_handles', 100000 );
+
+/**
+ * Sets transient with arrays of front-end registered scripts/styles.
+ *
+ * Must be run on front-end to pick up 'wp_enqueue_scripts' firings.
+ * (In back-end $wp_scripts holds only 'admin_enqueue_scripts' registers.)
+ * This must after all other'wp_enqueue_scripts' hooks. So the action below
+ * that calls this function fires last (high number = low priority).
+ *
+ */
+function postscript_set_wp_scripts_transient() {
+    global $wp_scripts, $wp_styles;
+    set_transient( 'postscript_wp_scripts', $wp_scripts->registered, 60 * 60 * 4 );
+    set_transient( 'postscript_wp_styles', $wp_styles->registered, 60 * 60 * 4 );
+}
+add_action( 'wp_enqueue_scripts', 'postscript_enqueue_handles', 100001 );
+
+/**
+ * Gets transient with arrays of front-end registered scripts or styles.
+ *
+ * If transient doesn't exist, load a post (to fire front-end hooks)
+ * then sets transient.
+ *
+ */
+function postscript_get_wp_scripts_transient( $file_type = 'postscript_wp_scripts' ) {
+    // If transient not set, run a post to trigger front-end hooks and globals.
+    $scripts = get_transient( 'postscript_wp_scripts' );
+    $styles  = get_transient( 'postscript_wp_styles' );
+
+    if ( isset( $scripts ) && isset( $styles ) ) {
+        $transient = get_transient( $file_type );
+    } else {
+        postscript_load_latest_post();
+        postscript_set_wp_scripts_transient();
+        $transient = get_transient( $file_type );
+    }
+
+    return $transient;
+}
+
 /* Filter the post class hook with our custom post class function. */
 function postscript_class_post( $classes ) {
 
-  $post_id = get_the_ID();
+    $post_id = get_the_ID();
 
-  if ( ! empty( $post_id ) ) {
+    if ( ! empty( $post_id ) ) {
 
     /* Get the custom post class. */
     $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
 
     /* If a post class was input, sanitize it and add it to the post class array. */
     if ( ! empty( $postscript_meta['class_post'] ) )
-      $classes[] = sanitize_html_class( $postscript_meta['class_post'] );
-  }
+        $classes[] = sanitize_html_class( $postscript_meta['class_post'] );
+    }
 
-  return $classes;
+    return $classes;
 }
 add_filter( 'post_class', 'postscript_class_post' );
 
 /* Filter the post class hook with our custom post class function. */
 function postscript_class_body( $classes ) {
 
-  $post_id = get_the_ID();
+    $post_id = get_the_ID();
 
-  if ( ! empty( $post_id ) ) {
+    if ( ! empty( $post_id ) ) {
 
     /* Get the custom post class. */
     $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
 
     /* If a post class was input, sanitize it and add it to the post class array. */
     if ( ! empty( $postscript_meta['class_body'] ) )
-      $classes[] = sanitize_html_class( $postscript_meta['class_body'] );
-  }
+        $classes[] = sanitize_html_class( $postscript_meta['class_body'] );
+    }
 
-  return $classes;
+    return $classes;
 }
 add_filter( 'body_class', 'postscript_class_body' );
