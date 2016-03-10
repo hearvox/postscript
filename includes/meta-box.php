@@ -88,18 +88,22 @@ function postscript_meta_box_callback( $post, $box ) {
     // Print checklist of admin-settings selected styles and scripts (custom tax terms), with checked on top.
     ?>
     <?php wp_nonce_field( basename( __FILE__ ), 'postscript_meta_nonce' ); ?>
+    <?php if ( get_terms( 'postscript_scripts', array( 'hide_empty' => false ) ) ) { ?>
     <p>
         <h3 class="hndle"><span><?php _e('Load Scripts', 'postscript' ); ?></span></h3>
         <ul id="postscript_styleschecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
             <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_scripts', 'selected_cats' => true, 'checked_ontop' => true ) ); ?>
         </ul>
     </p>
+    <?php } ?>
+    <?php if ( get_terms( 'postscript_styles', array( 'hide_empty' => false ) ) ) { ?>
     <p>
         <h3 class="hndle"><span><?php _e('Load Styles', 'postscript' ); ?></span></h3>
         <ul id="postscript_scriptschecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
             <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_styles', 'selected_cats' => true, 'checked_ontop' => true ) ); ?>
         </ul>
     </p>
+    <?php } ?>
     <?php
     // Display text fields for: URLs (style and script) and classes (body and post).
     $opt_allow = $box['args']['allow'];

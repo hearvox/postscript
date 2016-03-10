@@ -172,10 +172,10 @@ function postscript_core_full_urls( $url ) {
  * Adds new hierarchical, private taxonomies (for Scripts and Styles).
  */
 function postscript_create_taxonomies() {
-    //Settings option for alllowed post types.
+    //Settings option for allowed post types.
     $post_types = postscript_get_option( 'post_types' );
 
-    $labels_postscript_scripts = array(
+    $labels_scripts = array(
         'name'              => _x( 'Scripts', 'taxonomy general name' ),
         'singular_name'     => _x( 'Script', 'taxonomy singular name' ),
         'search_items'      => __( 'Search Scripts' ),
@@ -189,22 +189,22 @@ function postscript_create_taxonomies() {
         'menu_name'         => __( 'Scripts' ),
     );
 
-    $args_postscript_scripts = array(
+    $args_scripts = array(
         'hierarchical'      => true,
-        'labels'            => $labels_postscript_scripts,
+        'labels'            => $labels_scripts,
         'public'            => true,
         'query_var'         => true,
         'rewrite'           => array( 'slug' => 'postscript_scripts' ),
     );
 
     // Filter params for Styles custom taxonomy.
-    if ( has_filter( 'postscript_tax_styles' ) ) {
-        $args_postscript_styles = apply_filters( 'postscript_tax_styles', $args_postscript_styles );
+    if ( has_filter( 'postscript_tax_scripts' ) ) {
+        $args_scripts = apply_filters( 'postscript_tax_scripts', $args_scripts );
     }
 
-    register_taxonomy( 'postscript_scripts', $post_types, $args_postscript_scripts );
+    register_taxonomy( 'postscript_scripts', $post_types, $args_scripts );
 
-    $labels_postscript_styles = array(
+    $labels_styles = array(
         'name'              => _x( 'Styles', 'taxonomy general name' ),
         'singular_name'     => _x( 'Style', 'taxonomy singular name' ),
         'search_items'      => __( 'Search Styles' ),
@@ -218,9 +218,9 @@ function postscript_create_taxonomies() {
         'menu_name'         => __( 'Styles' ),
     );
 
-    $args_postscript_styles = array(
+    $args_styles = array(
         'hierarchical'      => true,
-        'labels'            => $labels_postscript_styles,
+        'labels'            => $labels_styles,
         'public'            => true,
         'query_var'         => true,
         'rewrite'           => array( 'slug' => 'postscript_styles' ),
@@ -228,10 +228,10 @@ function postscript_create_taxonomies() {
 
     // Filter params for Styles custom taxonomy.
     if ( has_filter( 'postscript_tax_styles' ) ) {
-        $args_postscript_styles = apply_filters( 'postscript_tax_styles', $args_postscript_styles );
+        $args_styles = apply_filters( 'postscript_tax_styles', $args_styles );
     }
 
-    register_taxonomy( 'postscript_styles', $post_types, $args_postscript_styles );
+    register_taxonomy( 'postscript_styles', $post_types, $args_styles );
 }
 add_action( 'init', 'postscript_create_taxonomies', 0 );
 

@@ -90,7 +90,7 @@ function postscript_enqueue_handles() {
     if ( is_singular() && is_main_query() ) {
 
         // Set transients with arrays of registered scripts/styles.
-        postscript_wp_scripts_styles_transient();
+        postscript_get_wp_scripts_transient();
 
         // Custom tax term is the script/style handle.
         $scripts = get_the_terms( get_the_ID(), 'postscript_scripts' );
