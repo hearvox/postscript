@@ -78,6 +78,17 @@ define( 'STATS_VERSION', '1.0.0' );
 
  */
 
+/**
+ * Sets transient value to array of $wp_scripts global.
+ *
+ * 'admin_bar_init' hook files after 'wp_default_scripts' and 'wp_default_styles'.
+ */
+function postscript_wp_default_scripts() {
+    $wp_scripts = wp_scripts();
+
+    set_transient( 'postscript_wp_default_scripts', $wp_scripts->registered, 60 * 60 * 4 );
+}
+// add_action( 'admin_bar_init', 'postscript_wp_default_scripts' );
 
 /**
  * The code that runs during plugin deactivation.
@@ -234,14 +245,6 @@ function postscript_create_taxonomies() {
     register_taxonomy( 'postscript_styles', $post_types, $args_styles );
 }
 add_action( 'init', 'postscript_create_taxonomies', 0 );
-
-
-function postscript_populate_taxonomy() {
-    // wp_insert_term('Scripts','postscript');
-    // wp_insert_term('Styles','postscript');
-}
-add_action( 'registered_taxonomy', 'postscript_populate_taxonomy', 0 );
-
 
 function postscript_check_tax_term( $term, $taxonomy) {
     if ( $taxonomy == 'postscript_scripts' ) {
