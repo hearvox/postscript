@@ -519,43 +519,29 @@ function postscript_style_remove_callback() {
 }
 
 /**
- * Render example of Edit Post screen meta box, based on settings.
+ * Render example of Edit Post screen meta box, based on settings using post's meta box fn.
+ *
+ * @see   /includes/meta-box.php
+ * @uses  postscript_meta_box_callback()
  */
 function postscript_meta_box_example() {
-    $options = get_option( 'postscript' );
+    $options     = get_option( 'postscript' );
+    $box['args'] = $options; // Need $options as in ['args'] array, as in meta box.
+    $args = array(
+        'posts_per_page' => 1,
+        'cache_results'  => false,
+        'fields'         => 'ids',
+        'post_status'    => 'publish',
+    );
+    $latest_post = new WP_Query( $args );
     ?>
-    <div id="postbox-container-1" class="postbox-container">
+    <hr />
+    <p><?php _e('With these settings the meta box displays on the Edit Post screen like this:', 'postscript' ); ?>
+    <div id="postscript-meta" class="postbox postbox-container">
         <div id="categorydiv" class="postbox ">
-            <h2 class="hndle"><span><?php _e('Postscript', 'postscript' ); ?></span></h2>
+        <h2 class="hndle ui-sortable-handle"><span>Postscript</span></h2>
             <div class="inside">
-                <div id="taxonomy-postscript_styles" class="categorydiv">
-                    <h3 class="hndle"><span><?php _e('Styles', 'postscript' ); ?></span></h3>
-                    <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-                        <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_styles' ) ); ?>
-                    </ul>
-                </div><!-- .categorydiv -->
-                <div id="taxonomy-postscript_scripts" class="categorydiv">
-                    <h3 class="hndle"><span><?php _e('Scripts', 'postscript' ); ?></span></h3>
-                    <ul id="categorychecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-                        <?php wp_terms_checklist( -1, array( 'taxonomy' => 'postscript_scripts' ) ); ?>
-                    </ul>
-                </div><!-- .categorydiv -->
-                <div class="categorydiv">
-                    <h3 class="hndle"><span><?php _e('Style URL', 'postscript' ); ?></span></h3>
-                    <input type="url" placeholder="https:" class="regular-text">
-                </div><!-- .categorydiv -->
-                <div class="categorydiv">
-                    <h3 class="hndle"><span><?php _e('Script URL', 'postscript' ); ?></span></h3>
-                    <input type="url" placeholder="https:" class="regular-text">
-                </div><!-- .categorydiv -->
-                <div class="categorydiv">
-                    <h3 class="hndle"><span><?php _e('Body class', 'postscript' ); ?></span></h3>
-                    <input type="text" placeholder="CSS class" class="regular-text">
-                </div><!-- .categorydiv -->
-                <div class="categorydiv">
-                    <h3 class="hndle"><span><?php _e('Post class', 'postscript' ); ?></span></h3>
-                    <input type="text" placeholder="CSS class" class="regular-text">
-                </div><!-- .categorydiv -->
+                <?php postscript_meta_box_callback( $latest_post, $box ); ?>
             </div><!-- .inside -->
         </div><!-- .postbox -->
     </div><!-- .postbox-container -->

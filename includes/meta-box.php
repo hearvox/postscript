@@ -80,7 +80,7 @@ function postscript_add_meta_box() {
  * Callback function for add_meta_box() -- params below.
  * Used by postscript_add_post_meta_boxes().
  * @param object $post Object containing the current post
- * @param array $box Array of metabox id, title, callback, and args elements
+ * @param array $box Array of meta box id, title, callback, and args elements
  * @return string HTML of meta box
  */
 function postscript_meta_box_callback( $post, $box ) {
@@ -139,6 +139,7 @@ function postscript_meta_box_callback( $post, $box ) {
         <input class="widefat" type="text" name="postscript_meta[class_post]" id="postscript-class-post" value="<?php if ( isset ( $postscript_meta['class_post'] ) ) { echo sanitize_html_class( $postscript_meta['class_post'] ); } ?>" size="30" />
     </p>
     <?php
+    // print_r($box);
     }
 }
 
