@@ -29,11 +29,11 @@
  * @return  mixed Array of header items; HTML of body content.
  */
 function postscript_load_latest_post() {
-   $args = array(
-    'posts_per_page' => 1,
-    'cache_results'  => false,
-    'fields'         => 'ids',
-    'post_status'    => 'publish',
+    $args = array(
+        'posts_per_page' => 1,
+        'cache_results'  => false,
+        'fields'         => 'ids',
+        'post_status'    => 'publish',
     );
     $latest_post = new WP_Query( $args );
     $latest_post_id = $latest_post->posts[0];

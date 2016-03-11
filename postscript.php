@@ -205,6 +205,13 @@ function postscript_create_taxonomies() {
         'labels'            => $labels_scripts,
         'public'            => true,
         'query_var'         => true,
+        'capabilities' => array(
+            'manage_terms' => 'manage_options',
+            'edit_terms'   => 'manage_options',
+            'delete_terms' => 'manage_options',
+            'assign_terms' => 'edit_posts'
+
+        ),
         'rewrite'           => array( 'slug' => 'postscript_scripts' ),
     );
 
@@ -234,6 +241,13 @@ function postscript_create_taxonomies() {
         'labels'            => $labels_styles,
         'public'            => true,
         'query_var'         => true,
+        'capabilities' => array(
+            'manage_terms' => 'manage_options',
+            'edit_terms'   => 'manage_options',
+            'delete_terms' => 'manage_options',
+            'assign_terms' => 'edit_posts'
+
+        ),
         'rewrite'           => array( 'slug' => 'postscript_styles' ),
     );
 
@@ -451,29 +465,28 @@ $x = wp_insert_term('Scripts','postscript');
 print_r( $x->error_data['term_exists'] );
 
 @TODO
-* Abstract load post fn for use in per-post enqueued list.
+* Limit tax terms to Register scripts (hook: pre_insert_term).
+* Sanitize (escape late).
+* Add settings notices.
+* Add/set version in options: $new_options['version'] = POSTSCRIPT_VERSION;
+* Set tax capabilities.
 * Add Activate functions.
 * Add Deactivate functions.
 * Uninstall - rm option, post meta, tax terms.
-* Check if script still registered (i.e., if dereg, or reg removed).
-* Drag drop table row order
-* Run posts in all allowed post-types then merge $wp_scripts (if some reg is post-type only.)
-* Page template.
-* Register scripts.
-* File-mod is vers number.
-* Sanitize (escape late).
-* Export settings, post meta, and tax terms.
-* List enqueues on Post screen?
-* Add settings notices.
-* Check if script still registered
-* Add/set version in options: $new_options['version'] = POSTSCRIPT_VERSION;
 * Test Activate- init option defaults.
 * Test from install.
 * Test uninstall (rm 'postscript' option, 'postscript_meta' meta, and tax terms.)
 * rm tax terms not in reg array.
-* rm unused options (keep: postscript)
-* rm unsued meta (keep: postscript_meta)
 * rm notes and tests.
+* Install at HE.
+* Install at HV.
+* Write use cases: D3, jquery.
+* Write how it works.
+* @tutorial
+* @see
+* @author Barrett Golding <goldingb@rjionline.org>
+* Write README https://wordpress.org/plugins/about/readme.txt
+* Get code revu bid from Pippin.
 
 
 */

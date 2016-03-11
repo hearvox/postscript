@@ -527,21 +527,15 @@ function postscript_style_remove_callback() {
 function postscript_meta_box_example() {
     $options     = get_option( 'postscript' );
     $box['args'] = $options; // Need $options as in ['args'] array, as in meta box.
-    $args = array(
-        'posts_per_page' => 1,
-        'cache_results'  => false,
-        'fields'         => 'ids',
-        'post_status'    => 'publish',
-    );
-    $latest_post = new WP_Query( $args );
+    $fake_post   = (object) array( 'ID' => '-1'); // Need a non-existent post object id.
     ?>
     <hr />
-    <p><?php _e('With these settings the meta box displays on the Edit Post screen like this:', 'postscript' ); ?>
+    <p><?php _e('The meta box displays like this on the Edit Post screen:', 'postscript' ); ?>
     <div id="postscript-meta" class="postbox postbox-container">
         <div id="categorydiv" class="postbox ">
         <h2 class="hndle ui-sortable-handle"><span>Postscript</span></h2>
             <div class="inside">
-                <?php postscript_meta_box_callback( $latest_post, $box ); ?>
+                <?php postscript_meta_box_callback( $fake_post, $box ); ?>
             </div><!-- .inside -->
         </div><!-- .postbox -->
     </div><!-- .postbox-container -->
