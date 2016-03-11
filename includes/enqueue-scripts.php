@@ -108,67 +108,6 @@ function postscript_enqueue_handles() {
 }
 add_action( 'wp_enqueue_scripts', 'postscript_enqueue_handles', 100000 );
 
-/**
- * Sets transient with arrays of front-end registered scripts/styles.
- *
- * The 'wp_head' hook fires after 'wp_enqueue_scripts', so all scripts registered.
- *
- */
-function postscript_set_wp_scripts_transient() {
-    global $wp_scripts, $wp_styles;
-
-    $postscript_wp_scripts = get_transient( 'postscript_wp_scripts' );
-    $postscript_wp_styles = get_transient( 'postscript_wp_styles' );
-
-    if ( $wp_scripts != $postscript_wp_scripts ) {
-        set_transient( 'postscript_wp_scripts', $wp_scripts->registered, 60 * 60 * 4 );
-    }
-
-    if ( $wp_styles != $postscript_wp_styles ) {
-        set_transient( 'postscript_wp_styles', $wp_styles->registered, 60 * 60 * 4 );
-    }
-
-}
-add_action( 'wp_head', 'postscript_set_wp_scripts_transient' );
-
-/**
- * Gets transient with arrays of front-end registered scripts or styles.
- *
- * If transient doesn't exist, load a post (to fire front-end hooks)
- * then sets transient.
- *
- */
-function postscript_check_wp_scripts_transient( $file_type ) {
-    // If transient not set, run a post to trigger front-end hooks and globals.
-    $scripts = get_transient( 'postscript_wp_scripts' );
-    $styles  = get_transient( 'postscript_wp_styles' );
-
-    if ( ! is_array( $scripts ) || ! is_array( $styles ) ) {
-        delete_transient( 'postscript_wp_scripts' );
-        delete_transient( 'postscript_wp_styles' );
-        postscript_load_latest_post();
-    }
-
-    $transient = get_transient( $file_type );
-    return $transient;
-}
-
-/**
- * Gets transient with arrays of front-end registered scripts or styles.
- *
- * If transient doesn't exist, load a post (to fire front-end hooks)
- * then sets transient.
- *
- */
-function postscript_get_wp_scripts_transient( $file_type = 'postscript_wp_scripts' ) {
-    // If transient not set, run a post to trigger front-end hooks and globals.
-    postscript_load_latest_post();
-
-    $transient = get_transient( $file_type );
-
-    return $transient;
-}
-
 /* Filter the post class hook with our custom post class function. */
 function postscript_class_post( $classes ) {
 
