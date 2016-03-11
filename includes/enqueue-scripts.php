@@ -66,14 +66,6 @@ function postscript_enqueue_script_urls() {
         if ( isset( $postscript_meta['url_data'] ) ) {
             wp_enqueue_script( "postscript-data-$post_id", $postscript_meta['url_data'], false, false, true );
         }
-
-/*
-
-        if ( has_filter( 'postscript_script_url' ) ) {
-            $postscript_script_url = apply_filters( 'postscript_script_url', $postscript_script_url );
-        }
-
-*/
     }
 }
 add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_urls' );
@@ -88,9 +80,6 @@ add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_urls' );
  */
 function postscript_enqueue_handles() {
     if ( is_singular() && is_main_query() ) {
-
-        // Set transients with arrays of registered scripts/styles.
-        // postscript_get_wp_scripts_transient();
 
         // Custom tax term is the script/style handle.
         $scripts = get_the_terms( get_the_ID(), 'postscript_scripts' );
@@ -122,18 +111,47 @@ add_action( 'wp_enqueue_scripts', 'postscript_enqueue_handles', 100000 );
 /**
  * Sets transient with arrays of front-end registered scripts/styles.
  *
- * Must be run on front-end to pick up 'wp_enqueue_scripts' firings.
- * (In back-end $wp_scripts holds only 'admin_enqueue_scripts' registers.)
- * This must after all other'wp_enqueue_scripts' hooks. So the action below
- * that calls this function fires last (high number = low priority).
+ * The 'wp_head' hook fires after 'wp_enqueue_scripts', so all scripts registered.
  *
  */
 function postscript_set_wp_scripts_transient() {
     global $wp_scripts, $wp_styles;
-    set_transient( 'postscript_wp_scripts', $wp_scripts->registered, 60 * 60 * 4 );
-    set_transient( 'postscript_wp_styles', $wp_styles->registered, 60 * 60 * 4 );
+
+    $postscript_wp_scripts = get_transient( 'postscript_wp_scripts' );
+    $postscript_wp_styles = get_transient( 'postscript_wp_styles' );
+
+    if ( $wp_scripts != $postscript_wp_scripts ) {
+        set_transient( 'postscript_wp_scripts', $wp_scripts->registered, 60 * 60 * 4 );
+    }
+
+    if ( $wp_styles != $postscript_wp_styles ) {
+        set_transient( 'postscript_wp_styles', $wp_styles->registered, 60 * 60 * 4 );
+    }
+
 }
-add_action( 'wp_enqueue_scripts', 'postscript_enqueue_handles', 100001 );
+add_action( 'wp_head', 'postscript_set_wp_scripts_transient' );
+
+/**
+ * Gets transient with arrays of front-end registered scripts or styles.
+ *
+ * If transient doesn't exist, load a post (to fire front-end hooks)
+ * then sets transient.
+ *
+ */
+function postscript_check_wp_scripts_transient( $file_type ) {
+    // If transient not set, run a post to trigger front-end hooks and globals.
+    $scripts = get_transient( 'postscript_wp_scripts' );
+    $styles  = get_transient( 'postscript_wp_styles' );
+
+    if ( ! is_array( $scripts ) || ! is_array( $styles ) ) {
+        delete_transient( 'postscript_wp_scripts' );
+        delete_transient( 'postscript_wp_styles' );
+        postscript_load_latest_post();
+    }
+
+    $transient = get_transient( $file_type );
+    return $transient;
+}
 
 /**
  * Gets transient with arrays of front-end registered scripts or styles.
@@ -144,15 +162,9 @@ add_action( 'wp_enqueue_scripts', 'postscript_enqueue_handles', 100001 );
  */
 function postscript_get_wp_scripts_transient( $file_type = 'postscript_wp_scripts' ) {
     // If transient not set, run a post to trigger front-end hooks and globals.
-    $scripts = get_transient( 'postscript_wp_scripts' );
-    $styles  = get_transient( 'postscript_wp_styles' );
+    postscript_load_latest_post();
 
-    if ( is_array( $scripts ) && is_array( $styles ) ) {
-        $transient = get_transient( $file_type );
-    } else {
-        postscript_load_latest_post();
-        $transient = get_transient( $file_type );
-    }
+    $transient = get_transient( $file_type );
 
     return $transient;
 }
