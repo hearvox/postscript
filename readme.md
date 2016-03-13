@@ -1,4 +1,4 @@
-=== Postscript ===
+# Postscript
 Contributors: hearvox
 Donate link: http://hearingvoices.com/tools
 Tags: script, javascript, styles, stylesheet, css
@@ -10,26 +10,26 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Data visionaries and multi-mediators, make any post sing with scripts and splendid with styles, all from within WordPress.
 
-== Description ==
+## Description
 
-= Enqueue Registered Styles and Scripts (by Handle) =
+### Enqueue Registered Styles and Scripts (by Handle)
 
 Use the Postscript meta box (Edit Post screen) to enqueue registered of styles and script, listed in checkboxes by handle.).
 
-= Enqueue Unregistered Styles, Scripts, and Data Files (by URL) =
+### Enqueue Unregistered Styles, Scripts, and Data Files (by URL)
 
 For each post, you can also enqueue unregistered files, by entering in the meta boxes text fields for:
 * A stylesheet URL.
 * A JavaScript URL.
 * A data URL (e.g, JSON).
 
-= Add Post and Body Classes =
+### Add Post and Body Classes
 
 For each post, you can also add:
 * Body classes, to the HTML `<body>` tag (requires `body_class()` in theme).
 * Post classes, to the WordPress inserted `class="post"` list (requires `post_class()` in theme).
 
-== Installation ==
+## Installation
 
 To install the use the Postscript plugin:
 
@@ -37,17 +37,17 @@ To install the use the Postscript plugin:
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Go to the Setting: Postscript options screen.
 
-== Frequently Asked Questions ==
+## Frequently Asked Questions
 
-= A question that someone might have =
+### A question that someone might have
 
 An answer to that question.
 
-= What about foo bar? =
+### What about foo bar?
 
 Answer to foo bar dilemma.
 
-== Screenshots ==
+## Screenshots
 
 1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
 the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
@@ -55,30 +55,24 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 (or jpg, jpeg, gif).
 2. This is the second screen shot
 
-== Changelog ==
+## Changelog
 
-= 1.0 =
+### 1.0
 * A change since the previous version.
 * Another change.
 
-= 0.5 =
+### 0.5
 * List versions from most recent at top to oldest at bottom.
 
-== Upgrade Notice ==
+## Upgrade Notice
 
-= 1.0 =
+### 1.0
 Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
 
-= 0.5 =
+### 0.5
 This version fixes a security related bug.  Upgrade immediately.
 
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
-
-== A brief Markdown Example ==
+## A brief Markdown Example
 
 Ordered list:
 
