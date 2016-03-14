@@ -2,7 +2,7 @@
 /**
  * Load Scripts and Adds Classes to Posts
  *
- * @link       http://example.com
+ * @link       http://hearingvoices.com/tools/
  * @since      1.0.0
  *
  * @package    Postscript

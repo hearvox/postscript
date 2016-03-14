@@ -3,7 +3,7 @@
 /**
  * Admin Settings Page (Dashboard> Settings> Postscript)
  *
- * @link       http://example.com
+ * @link       http://hearingvoices.com/tools/
  * @since      1.0.0
  *
  * @package    Postscript

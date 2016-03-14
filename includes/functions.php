@@ -3,7 +3,7 @@
 /**
  * General functions for options and registered/selected scripts and styles.
  *
- * @link       http://example.com
+ * @link       http://hearingvoices.com/tools/
  * @since      1.0.0
  *
  * @package    Postscript
