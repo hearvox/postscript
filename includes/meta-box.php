@@ -117,14 +117,14 @@ function postscript_meta_box_callback( $post, $box ) {
     <?php } ?>
     <?php if ( isset ( $opt_allow['url_script'] ) ) { ?>
     <p>
-        <label for="postscript-url-script"><?php _e( 'JS file URL:', 'postscript' ); ?></label><br />
+        <label for="postscript-url-script"><?php _e( 'JS file URL 1:', 'postscript' ); ?></label><br />
         <input class="widefat" type="url" name="postscript_meta[url_script]" id="postscript-url-script" value="<?php if ( isset ( $postscript_meta['url_script'] ) ) { echo esc_url_raw( $postscript_meta['url_script'] ); } ?>" size="30" />
     </p>
     <?php } ?>
-    <?php if ( isset ( $opt_allow['url_data'] ) ) { ?>
+    <?php if ( isset ( $opt_allow['url_script_2'] ) ) { ?>
     <p>
-        <label for="postscript-url-data"><?php _e( 'JSON/data file URL:', 'postscript' ); ?></label><br />
-        <input class="widefat" type="url" name="postscript_meta[url_data]" id="postscript-url-data" value="<?php if ( isset ( $postscript_meta['url_data'] ) ) { echo esc_url_raw( $postscript_meta['url_data'] ); } ?>" size="30" />
+        <label for="postscript-url-script-2"><?php _e( 'JS file URL 2:', 'postscript' ); ?></label><br />
+        <input class="widefat" type="url" name="postscript_meta[url_script_2]" id="postscript-url-script-2" value="<?php if ( isset ( $postscript_meta['url_script_2'] ) ) { echo esc_url_raw( $postscript_meta['url_script_2'] ); } ?>" size="30" />
     </p>
     <?php } ?>
     <?php if ( isset ( $opt_allow['class_body'] ) ) { ?>
@@ -171,7 +171,7 @@ function postscript_save_post_meta( $post_id, $post ) {
     if ( $new_meta_value ) {
         $new_meta_value['url_style']  = esc_url_raw( $new_meta_value['url_style'] );
         $new_meta_value['url_script'] = esc_url_raw( $new_meta_value['url_script'] );
-        $new_meta_value['url_data']   = esc_url_raw( $new_meta_value['url_data'] );
+        $new_meta_value['url_script_2']   = esc_url_raw( $new_meta_value['url_script_2'] );
         $new_meta_value['class_body'] = sanitize_html_class( $new_meta_value['class_body'] );
         $new_meta_value['class_post'] = sanitize_html_class( $new_meta_value['class_post'] );
     }

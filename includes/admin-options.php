@@ -299,8 +299,8 @@ function postscript_allow_fields_callback( $options ) {
         <legend><?php _e( 'Add a text field in Postscript box for:', 'postscript' ); ?></legend>
         <ul class="inside">
             <li><label><input type="checkbox" id="" name="postscript[allow][url_style]" value="on"<?php checked( 'on', isset( $opt['url_style'] ) ? $opt['url_style'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[allow][url_script]" value="on"<?php checked( 'on', isset( $opt['url_script'] ) ? $opt['url_script'] : 'off' ); ?>/> <?php _e( 'Script URL', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[allow][url_data]" value="on"<?php checked( 'on', isset( $opt['url_data'] ) ? $opt['url_data'] : 'off' ); ?>/> <?php _e( 'Data URL', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript[allow][url_script]" value="on"<?php checked( 'on', isset( $opt['url_script'] ) ? $opt['url_script'] : 'off' ); ?>/> <?php _e( 'Script URL 2', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="" name="postscript[allow][url_script_2]" value="on"<?php checked( 'on', isset( $opt['url_script_2'] ) ? $opt['url_script_2'] : 'off' ); ?>/> <?php _e( 'Script URL 2', 'postscript' ); ?></label></li>
             <li><label><input type="checkbox" id="" name="postscript[allow][class_body]" value="on"<?php checked( 'on', isset( $opt['class_body'] ) ? $opt['class_body'] : 'off' ); ?>/> <?php _e( 'Body class*', 'postscript' ); ?></label></li>
             <li><label><input type="checkbox" id="" name="postscript[allow][class_post]" value="on"<?php checked( 'on', isset( $opt['class_post'] ) ? $opt['class_post'] : 'off' ); ?>/> <?php _e( 'Post class*', 'postscript' ); ?></label></li>
         </ul>
@@ -465,9 +465,14 @@ function postscript_script_add_callback() {
 }
 
 /* ------------------------------------------------------------------------ *
- * Displays posts in all allowed post-types (post count link in above tables)
+ * Displays all allowed post-types in post lists for plugin's custom tax term.
+ *
+ * Term's post-count link displays in Settings page table and tax admin screens.
+ *
+ *
  * ------------------------------------------------------------------------ */
 function postscript_pre_get_posts( $query ) {
+    $options = get_option( 'postscript' );
     if ( is_admin() ) {
         if ( get_query_var( 'postscript_scripts' ) || get_query_var( 'postscript_styles' ) ) {
             $query->set( 'post_type', array( 'post','dataviz' ) );

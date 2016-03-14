@@ -14,10 +14,13 @@
  * ------------------------------------------------------------------------ */
 
 /**
- * Enqueues scripts/styles checked in the meta box form (handles are custom tax terms).
+ * Enqueues scripts/styles checked in the meta box form.
  *
- * All front-end handle must register ('wp_enqueue_scripts' hook) before this runs,
- * so the action had a low priority param (high number) so it fires late.
+ * The form's checkboxes are registered handles, stored as custom tax terms.
+ *
+ * All front-end handles must be registered before this runs,
+ * via the same 'wp_enqueue_scripts' action as this function is hooked.
+ * So this action fires late by getting a large number as its priority param.
  *
  */
 function postscript_enqueue_handles() {
@@ -55,7 +58,7 @@ add_action( 'wp_enqueue_scripts', 'postscript_enqueue_handles', 100000 );
  * (
  *     [url_style] => http://example.com/my-post-style.css
  *     [url_script] => http://example.com/my-post-script.js
- *     [url_data] => http://example.com/my-post-json.js
+ *     [url_script_2] => http://example.com/my-post-script-2.js
  *     [class_body] => my-post-body-class
  *     [class_post] => my-post-class
  * )
@@ -76,10 +79,10 @@ function postscript_enqueue_script_urls() {
             wp_enqueue_script( "postscript-script-$post_id", $postscript_meta['url_script'], array(), false, true );
         }
 
-        if ( isset( $postscript_meta['url_data'] ) ) {
+        if ( isset( $postscript_meta['url_script_2'] ) ) {
             // Load second JS last (via dependency param).
-            $dep = ( isset( $postscript_meta['url_data'] ) ) ? "postscript-script-$post_id" : '';
-            wp_enqueue_script( "postscript-data-$post_id", $postscript_meta['url_data'], array( $dep ), false, true );
+            $dep = ( isset( $postscript_meta['url_script_2'] ) ) ? "postscript-script-$post_id" : '';
+            wp_enqueue_script( "postscript-script-2-$post_id", $postscript_meta['url_script_2'], array( $dep ), false, true );
         }
     }
 }
