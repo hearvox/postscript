@@ -80,7 +80,6 @@ function postscript_set_wp_scripts_transient() {
     if ( $wp_styles != $postscript_wp_styles ) {
         set_transient( 'postscript_wp_styles', $wp_styles->registered, 60 * 60 * 4 );
     }
-
 }
 add_action( 'wp_head', 'postscript_set_wp_scripts_transient' );
 
@@ -372,11 +371,11 @@ function postscript_upgrade_options( $options ) {
         'user_roles' => array( 'administrator' ),
         'post_types' => array( 'post' ),
         'allow'      => array(
-            'url_style'  => 'on',
-            'url_script' => 'on',
-            'url_data'   => 'on',
-            'class_body' => 'on',
-            'class_post' => 'on',
+            'url_style'    => 'on',
+            'url_script'   => 'on',
+            'url_script_2' => 'on',
+            'class_body'   => 'on',
+            'class_post'   => 'on',
         )
     );
 

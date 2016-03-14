@@ -59,6 +59,40 @@ add_action( 'load-post-new.php', 'postscript_meta_box_setup' );
 
 /**
  * Creates meta box for the post editor screen.
+ *
+ * Passes $option array to callback.
+ * postscript_get_options( 'postscript' ) returns:
+ * Array
+ * (
+ *     [user_roles] => Array
+ *         (
+ *             [0] => {role_key}
+ *             [1] => {role_key}
+ *         )
+ *
+ *     [post_types] => Array
+ *         (
+ *             [0] => {post_type_key}
+ *             [1] => {post_type_key}
+ *         )
+ *
+ *     [allow] => Array
+ *         (
+ *             [url_style]  => on
+ *             [url_script] => on
+ *             [url_data]   => on
+ *             [class_body] => on
+ *             [class_post] => on
+ *         )
+ *
+ *     [style_add]     => {style_handle}
+ *     [script_add]    => {script_handle}
+ *     [style_remove]  => {style_handle}
+ *     [script_remove] => {script_handle}
+ *     [version]       => 1.0.0
+ * )
+ *
+ * @uses  postscript_get_options Safe way to grab options from database.
  */
 function postscript_add_meta_box() {
     $options = postscript_get_options( 'postscript' );
@@ -193,7 +227,7 @@ function postscript_save_post_meta( $post_id, $post ) {
     }
 
     if ( isset( $_POST['tax_input'] ) ) {
-    // Convert array values to integers.
+    // Convert array values (term IDs) to integers.
     $style_ids  =  array_map ( 'intval', $_POST['tax_input']['postscript_ styles'] );
     $script_ids =  array_map ( 'intval', $_POST['tax_input']['postscript_scripts'] );
         wp_set_object_terms( $post_id, $style_ids, 'postscript_styles', false );
