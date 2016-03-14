@@ -501,7 +501,9 @@ function postscript_pre_get_posts( $query ) {
     $options = get_option( 'postscript' );
     if ( is_admin() ) {
         if ( get_query_var( 'postscript_scripts' ) || get_query_var( 'postscript_styles' ) ) {
-            $query->set('post_type', '' ); // Hack: /wp-admin/edit.php doesn't accept array.
+            $query->set('post_type', '' ); // Hack: to get all post-type to display for term.
+            // /wp-admin/edit.php doesn't accept array (Error: array to string conversion)
+            // https://core.trac.wordpress.org/ticket/30013
         }
     }
 }
