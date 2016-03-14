@@ -79,15 +79,26 @@ function postscript_script_style_reg_handles() {
  */
 function postscript_script_styles_add_remove() {
     $options = get_option( 'postscript' );
-    global $postscript_scripts_reg_handles;
-    global $postscript_styles_reg_handles;
+    // Array of front-end registered scripts (transient set to be $wp_scripts object).
+    $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
+    $postscript_styles_reg  = get_transient( 'postscript_styles_reg' );
+
+    // Array of registered scripts handles (from transient set to be $wp_scripts object).
+    $script_handles = array_values( wp_list_pluck( $postscript_scripts_reg, 'handle' ) );
+    sort( $script_handles ); // Alphabetize.
+
+    $style_handles = array_values( wp_list_pluck( $postscript_styles_reg, 'handle' ) );
+    sort( $style_handles ); // Alphabetize.
+
+    // global $postscript_scripts_reg_handles;
+    // global $postscript_styles_reg_handles;
 
     // Add new script or style custom tax term, if registered handle.
-    if ( isset( $options['script_add'] ) && in_array( $options['script_add'], $postscript_scripts_reg_handles )  ) {
+    if ( isset( $options['script_add'] ) && in_array( $options['script_add'], $script_handles )  ) {
         wp_insert_term( $options['script_add'], 'postscript_scripts' );
     }
 
-    if ( isset( $options['style_add'] ) && in_array( $options['style_add'], $postscript_styles_reg_handles )  ) {
+    if ( isset( $options['style_add'] ) && in_array( $options['style_add'], $style_handles )  ) {
         wp_insert_term( $options['style_add'], 'postscript_styles' );
     }
 
@@ -316,15 +327,19 @@ function postscript_style_add_callback() {
     // $styles_reg  = postscript_get_style_reg_handles(); // Registered style handles.
     // $options = get_option( 'postscript' );
     // global $postscript_styles_reg_handles;
-    $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
-    $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
+
+    // Array of front-end registered style (from transient set to be $wp_styles object).
+    $postscript_styles_reg  = get_transient( 'postscript_styles_reg' );
+    // Array of handles.
+    $style_handles = array_values( wp_list_pluck( $postscript_styles_reg, 'handle' ) );
+    sort( $style_handles ); // Alphabetize.
 
     // Output select menu of (sorted) registered style handles.
     ?>
     <select id="postscript_styles_field" name="postscript[style_add]">
         <option value=''><?php _e( 'Select style to add:', 'postscript' ); ?></option>
         <?php
-        foreach( $postscript_styles_reg_handles as $style_handle ) {
+        foreach( $style_handles as $style_handle ) {
             echo "<option value=\"{$style_handle}\">{$style_handle}</option>";
         }
         ?>
@@ -352,11 +367,10 @@ function postscript_style_add_callback() {
         <tbody>
     <?php
     if ( ! empty( $styles_added ) ) {
-        global $wp_styles;
         foreach ( $styles_added as $style_obj ) {
-            if ( in_array( $style_obj->name, $postscript_styles_reg_handles ) ) {
+            if ( in_array( $style_obj->name, $style_handles ) ) {
                 $style_name   = $style_obj->name;
-                $style_arr    = $wp_styles->registered[ $style_name ];
+                $style_arr    = $postscript_styles_reg[ $style_name ];
                 // Comma-separated list of style dependencies.
                 $deps         = implode( ',', $style_arr->deps );
                 // Make relative URLs full (for core registered scripts in '/wp-admin' or '/wp-includes').
@@ -385,7 +399,6 @@ function postscript_style_add_callback() {
     ?>
         </tbody>
     </table>
-    <p class="wp-ui-text-icon textright"><?php _e( '* <strong>Status</strong> response code links to <code>src</code> file. <strong>Posts</strong> count link lists posts enqueueing the file.', 'postscript' ); ?></p>
     <?php
 }
 
@@ -395,14 +408,20 @@ function postscript_style_add_callback() {
 function postscript_script_add_callback() {
     // $scripts_reg = postscript_get_script_reg_handles(); // Registered script handles.
     // $options = get_option( 'postscript' );
-    global $postscript_scripts_reg_handles;
+    // global $postscript_scripts_reg_handles;
+
+    // Array of front-end registered scripts (transient set to be $wp_scripts object).
+    $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
+    // Array of handles.
+    $script_handles = array_values( wp_list_pluck( $postscript_scripts_reg, 'handle' ) );
+    sort( $script_handles ); // Alphabetize.
 
     // Output select menu of (sorted) registered script handles.
     ?>
     <select id="postscript_scripts_field" name="postscript[script_add]">
         <option value=''><?php _e( 'Select script to add:', 'postscript' ); ?></option>
         <?php
-        foreach( $postscript_scripts_reg_handles as $script_handle ) {
+        foreach( $script_handles as $script_handle ) {
             echo "<option value=\"{$script_handle}\">{$script_handle}</option>";
         }
         ?>
@@ -430,11 +449,15 @@ function postscript_script_add_callback() {
         <tbody>
     <?php
     if ( ! empty( $scripts_added ) ) {
-        global $wp_scripts;
+        // global $wp_scripts;
+
+        // Array of front-end registered scripts (transient set to be $wp_scripts object).
+        $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
+
         foreach ( $scripts_added as $script_obj ) {
-            if ( in_array( $script_obj->name, $postscript_scripts_reg_handles ) ) {
+            if ( in_array( $script_obj->name, $script_handles ) ) {
                 $script_name  = $script_obj->name;
-                $script_arr   = $wp_scripts->registered[ $script_name ];
+                $script_arr   = $postscript_scripts_reg[ $script_name ];
                 // Comma-separated list of style dependencies.
                 $deps         = implode( ',', $script_arr->deps );
                 // Make relative URLs full (for core registered scripts in '/wp-admin' or '/wp-includes').
@@ -463,6 +486,7 @@ function postscript_script_add_callback() {
     ?>
         </tbody>
     </table>
+    <p class="wp-ui-text-icon textright"><?php _e( '* <strong>Status</strong> response code links to <code>src</code> file. <strong>Posts</strong> count link lists posts enqueueing the file.', 'postscript' ); ?></p>
     <?php
 }
 

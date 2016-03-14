@@ -143,7 +143,7 @@ function postscript_get_script_reg_handles() {
  * Makes an alphabetized array of registered style handles.
  */
 function postscript_get_style_reg_handles() {
-    // $wp_styles = wp_styles();
+    $wp_styles = wp_styles();
 
 
     // Array of registered scripts handles (from $wp_scripts object).
