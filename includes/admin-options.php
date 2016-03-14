@@ -68,10 +68,10 @@ function postscript_settings_display() {
 function postscript_script_style_reg_handles() {
     // Make global vars with arrays of registered script and style handles.
     global $postscript_scripts_reg_handles;
-    $postscript_scripts_reg_handles = postscript_script_reg_handles();
+    $postscript_scripts_reg_handles = postscript_get_script_reg_handles();
 
     global $postscript_styles_reg_handles;
-    $postscript_styles_reg_handles = postscript_style_reg_handles();
+    $postscript_styles_reg_handles = postscript_get_style_reg_handles();
 }
 
 /**
@@ -216,7 +216,7 @@ add_action('admin_init', 'postscript_options_init');
  * ------------------------------------------------------------------------ */
 
 function postscript_section_callback() {
-    postscript_get_wp_scripts_transient();
+    // postscript_get_wp_scripts_transient();
     ?>
     <p><?php _e('The Postscript meta box (in the Edit Post screen) lets users enqueue scripts and styles for a single post.', 'postscript' ); ?></p>
     <p><?php _e('Choose which post-types and user-roles display the Postscript box.', 'postscript' ); ?></p>
@@ -315,7 +315,9 @@ function postscript_allow_fields_callback( $options ) {
 function postscript_style_add_callback() {
     // $styles_reg  = postscript_get_style_reg_handles(); // Registered style handles.
     // $options = get_option( 'postscript' );
-    global $postscript_styles_reg_handles;
+    // global $postscript_styles_reg_handles;
+    $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
+    $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
 
     // Output select menu of (sorted) registered style handles.
     ?>

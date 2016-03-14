@@ -127,62 +127,30 @@ function postscript_get_wp_scripts_transient( $file_type = 'postscript_wp_script
 /**
  * Makes an alphabetized array of registered script handles.
  */
+function postscript_get_script_reg_handles() {
+    // $wp_scripts = wp_scripts();
+
+    $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
+
+    // Array of registered scripts handles (from $wp_scripts object).
+    $scripts_reg = array_values( wp_list_pluck( $postscript_scripts_reg, 'handle' ) );
+    sort( $scripts_reg ); // Alphabetize.
+
+    return $scripts_reg;
+}
+
+/**
+ * Makes an alphabetized array of registered style handles.
+ */
 function postscript_get_style_reg_handles() {
-    global $wp_styles;
+    // $wp_styles = wp_styles();
+
 
     // Array of registered scripts handles (from $wp_scripts object).
     $styles_reg = array_values( wp_list_pluck( $wp_styles->registered, 'handle' ) );
     sort( $styles_reg ); // Alphabetize.
 
     return $styles_reg;
-}
-
-/**
- * Makes an alphabetized array of registered script handles.
- */
-function postscript_get_script_reg_handles() {
-    global $wp_scripts;
-
-    // Array of registered scripts handles (from $wp_scripts object).
-    $scripts_reg = array_values( wp_list_pluck( $wp_scripts->registered, 'handle' ) );
-    sort( $scripts_reg ); // Alphabetize.
-
-    return $scripts_reg;
-}
-
-
-/**
- * Makes an alphabetized array of registered script handles.
- */
-function postscript_script_reg_handles() {
-    global $wp_scripts;
-    $script_handles = array();
-
-    // Make array to sort registered scripts by handle (from $wp_scripts object).
-    foreach( $wp_scripts->registered as $script_reg ) {
-        $script_handles[] = $script_reg->handle;
-    }
-
-    sort( $script_handles ); // Alphabetize.
-
-    return $script_handles;
-}
-
-/**
- * Makes an alphabetized array of registered style handles.
- */
-function postscript_style_reg_handles() {
-    global $wp_styles;
-    $style_handles = array();
-
-    // Make array to sort registered styles by handle (from $wp_styles object).
-    foreach( $wp_styles->registered as $style_reg ) {
-        $style_handles[] = $style_reg->handle;
-    }
-
-    sort( $style_handles ); // Alphabetize.
-
-    return $style_handles;
 }
 
 /**

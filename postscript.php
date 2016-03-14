@@ -80,16 +80,63 @@ define( 'STATS_VERSION', '1.0.0' );
  */
 
 /**
- * Sets transient value to array of $wp_scripts global.
+ * Gets registered scripts and styles.
  *
- * 'admin_bar_init' hook files after 'wp_default_scripts' and 'wp_default_styles'.
+ * Gets WordPress default scripts/styles, then those plugin/theme registered.
+ * The'shutdown' hook fires after wp_default_scripts()/_styles()
+ * and after admin had rendered (so enqueued scripts don't affect admin display).
+ *
+ *
+ * @since    1.0.0
  */
-function postscript_wp_default_scripts() {
-    $wp_scripts = wp_scripts();
+function postscript_get_reg_scripts() {
+    /* For future feature to separate defaults from plugin/theme scripts.
+    // Arrays with WordPress default back-end scripts.
+    $wp_scripts_pre = wp_scripts();
+    $wp_styles_pre  = wp_styles();
 
-    set_transient( 'postscript_wp_default_scripts', $wp_scripts->registered, 60 * 60 * 4 );
+    // Default scripts array.
+    $scripts_pre            = $wp_scripts_pre->registered;
+    $postscript_scripts_pre = get_transient( 'postscript_scripts_pre' );
+
+    $styles_pre             = $wp_styles_pre->registered;
+    $postscript_styles_pre  = get_transient( 'postscript_styles_pre' );
+
+    // Set transients with defaults scripts.
+    if ( $scripts_pre != $postscript_scripts_pre ) {
+        set_transient( 'postscript_scripts_pre', $scripts_pre, 60 * 60 * 4 );
+    }
+
+    if ( $styles_pre != $postscript_styles_pre ) {
+        set_transient( 'postscript_styles_pre', $styles_pre, 60 * 60 * 4 );
+    }
+    */
+
+    // Hack to get front-end scripts into memory, from here in the back-end
+    // (in $wp_scripts, $wp_styles) by firing the front-end registration hook.
+    do_action( 'wp_enqueue_scripts' );
+
+    // Arrays now have front-end registered scripts.
+    $wp_scripts_reg = wp_scripts();
+    $wp_styles_reg  = wp_styles();
+
+    // Default and plugin/theme scripts array.
+    $scripts_reg            = $wp_scripts_reg->registered;
+    $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
+
+    $styles_reg             = $wp_styles_reg->registered;
+    $postscript_styles_reg  = get_transient( 'postscript_styles_reg' );
+
+    // Set transients with defaults scripts.
+    if ( $scripts_reg != $postscript_scripts_reg ) {
+        set_transient( 'postscript_scripts_reg', $scripts_reg, 60 * 60 * 4 );
+    }
+
+    if ( $styles_reg != $postscript_styles_reg ) {
+        set_transient( 'postscript_styles_reg', $styles_reg, 60 * 60 * 4 );
+    }
 }
-// add_action( 'admin_bar_init', 'postscript_wp_default_scripts' );
+add_action( 'shutdown', 'postscript_get_reg_scripts' );
 
 /**
  * The code that runs during plugin deactivation.
