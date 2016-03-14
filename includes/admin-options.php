@@ -501,7 +501,7 @@ function postscript_pre_get_posts( $query ) {
     $options = get_option( 'postscript' );
     if ( is_admin() ) {
         if ( get_query_var( 'postscript_scripts' ) || get_query_var( 'postscript_styles' ) ) {
-            $query->set( 'post_type', array( 'post','dataviz' ) );
+            $query->set('post_type', '' ); // Hack: /wp-admin/edit.php doesn't accept array.
         }
     }
 }
