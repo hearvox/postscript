@@ -14,37 +14,50 @@
  * ------------------------------------------------------------------------ */
 
 /**
+ * Enqueues scripts/styles checked in the meta box form (handles are custom tax terms).
+ *
+ * All front-end handle must register ('wp_enqueue_scripts' hook) before this runs,
+ * so the action had a low priority param (high number) so it fires late.
+ *
+ */
+function postscript_enqueue_handles() {
+    if ( is_singular() && is_main_query() ) { // Run only on front-end post.
+
+        // Custom tax term is the script/style handle.
+        $scripts = get_the_terms( get_the_ID(), 'postscript_scripts' );
+        $styles  = get_the_terms( get_the_ID(), 'postscript_styles' );
+
+        // If custom tax terms, check for registered handle, then enqueue.
+        if ( $scripts ) {
+            foreach ( $scripts as $script ) {
+                    $handle = sanitize_key( $script->name );
+                    wp_enqueue_script( sanitize_key( $script->name ) );
+            }
+        }
+
+        if ( $styles ) {
+            foreach ( $styles as $style ) {
+                    wp_enqueue_style( sanitize_key( $style->name ) );
+            }
+        }
+
+    }
+}
+add_action( 'wp_enqueue_scripts', 'postscript_enqueue_handles', 100000 );
+
+/**
  * Enqueues script and style URLs entered in the meta box text fields.
+ *
+ * URLs load after registered files above (larger action priority param).
  *
  * get_post_meta( $post_id, 'postscript_meta', true ) returns:
  * Array
  * (
- *     [user_roles] => Array
- *         (
- *             [0] => {role_key}
- *             [1] => {role_key}
- *         )
- *
- *     [post_types] => Array
- *         (
- *             [0] => {post_type_key}
- *             [1] => {post_type_key}
- *         )
- *
- *     [allow] => Array
- *         (
- *             [url_style]  => on
- *             [url_script] => on
- *             [url_data]   => on
- *             [class_body] => on
- *             [class_post] => on
- *         )
- *
- *     [style_add]     => {style_handle}
- *     [script_add]    => {script_handle}
- *     [style_remove]  => {style_handle}
- *     [script_remove] => {script_handle}
- *     [version]       => 1.0.0
+ *     [url_style] => http://example.com/my-post-style.css
+ *     [url_script] => http://example.com/my-post-script.js
+ *     [url_data] => http://example.com/my-post-json.js
+ *     [class_body] => my-post-body-class
+ *     [class_post] => my-post-class
  * )
  *
  *
@@ -70,45 +83,7 @@ function postscript_enqueue_script_urls() {
         }
     }
 }
-add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_urls' );
-
-/**
- * Enqueues scripts/styles checked in the meta box form (handles are custom tax terms).
- *
- * To get all registered script/styles handles registered for the front-end
- * this must after all other'wp_enqueue_scripts' hooks. So the action below
- * that calls this function fires last (high number = low priority).
- *
- */
-function postscript_enqueue_handles() {
-    if ( is_singular() && is_main_query() ) {
-
-        // Custom tax term is the script/style handle.
-        $scripts = get_the_terms( get_the_ID(), 'postscript_scripts' );
-        $styles  = get_the_terms( get_the_ID(), 'postscript_styles' );
-
-        // If custom tax terms, check for registered handle, then enqueue.
-        if ( $scripts ) {
-            foreach ( $scripts as $script ) {
-                if ( wp_script_is( $script->name, 'registered' ) ) {
-                    wp_enqueue_script( $script->name );
-                }
-            }
-        }
-
-        if ( $styles ) {
-            foreach ( $styles as $style ) {
-                if ( wp_style_is( $style->name, 'registered' ) ) {
-                    wp_enqueue_style( $style->name );
-                }
-            }
-        }
-
-    }
-
-    return;
-}
-add_action( 'wp_enqueue_scripts', 'postscript_enqueue_handles', 100000 );
+add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_urls', 100010 );
 
 /* Filter the post class hook with our custom post class function. */
 function postscript_class_post( $classes ) {
