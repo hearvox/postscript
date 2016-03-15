@@ -70,7 +70,7 @@ add_action( 'plugins_loaded', 'postscript_load_textdomain' );
  * This action is documented in includes/class-post-scripting-activator.php
  */
 function postscript_activate() {
-
+    postscript_get_options();
 }
 
 /**

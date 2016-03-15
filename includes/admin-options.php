@@ -110,14 +110,14 @@ function postscript_options_init() {
 
     add_settings_section(
         'postscript_scripts_styles_section',
-        __( 'Add Scripts and Styles', 'postscript' ),
+        __( 'Add scripts and styles', 'postscript' ),
         'postscript_scripts_styles_section_callback',
         'postscript'
     );
 
     add_settings_section(
         'postscript_script_style_remove_section',
-        __( 'Remove Scripts and Styles', 'postscript' ),
+        __( 'Remove scripts and styles', 'postscript' ),
         'postscript_script_style_remove_section_callback',
         'postscript'
     );
@@ -451,7 +451,10 @@ function postscript_script_add_callback() {
     ?>
         </tbody>
     </table>
-    <p class="wp-ui-text-icon textright"><?php _e( '* <strong>Status</strong> response code links to <code>src</code> file. <strong>Posts</strong> count link lists posts enqueueing the file.', 'postscript' ); ?></p>
+    <p class="wp-ui-text-icon textright">
+        <?php _e( '<strong>Status</strong> response code links to <code>src</code> file.', 'postscript' ); ?><br />
+        <?php _e( '<strong>Posts</strong> count link lists posts enqueueing the file.', 'postscript' ); ?>
+    </p>
     <?php
 }
 

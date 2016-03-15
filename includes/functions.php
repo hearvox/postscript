@@ -179,7 +179,7 @@ function postscript_get_reg_scripts() {
     $styles_reg             = $wp_styles_reg->registered;
     $postscript_styles_reg  = get_transient( 'postscript_styles_reg' );
 
-    // Set transients with defaults scripts.
+    // Set transients with scripts arrays (!= checks for new registrations).
     if ( $scripts_reg != $postscript_scripts_reg ) {
         set_transient( 'postscript_scripts_reg', $scripts_reg, 60 * 60 * 4 );
     }
@@ -347,50 +347,6 @@ function postscript_filter_array() {
 
 }
 
-
-
 /* ------------------------------------------------------------------------ *
- * Functions for post meta.
- * ------------------------------------------------------------------------ */
-
-
-/* ------------------------------------------------------------------------ *
- * Functions for arrays and objects.
- * ------------------------------------------------------------------------ */
-
-/**
- * Sanitizes array, object, or string values (from Jetpack Stats module).
- *
- * @since 0.1
- *
- * @param array|object|string $value value to be sanitized
- * @return array|object|string $value sanitized value
- */
-function postscript_esc_html_deep( $value ) {
-    if ( is_array( $value ) ) {
-        $value = array_map( 'stats_esc_html_deep', $value );
-    } elseif ( is_object( $value ) ) {
-        $vars = get_object_vars( $value );
-        foreach ( $vars as $key => $data ) {
-            $value->{$key} = postscript_esc_html_deep( $data );
-        }
-    } elseif ( is_string( $value ) ) {
-        $value = esc_html( $value );
-    }
-
-    return $value;
-}
-
-/**
- * Convert an object to an array, recursively.
- *
- * https://coderwall.com/p/8mmicq/php-convert-mixed-array-objects-recursively
- */
-function postscript_object_into_array( $obj ) {
-    if (is_object( $obj ) )
-        $obj = get_object_vars( $obj );
-
-    return is_array( $obj ) ? array_map( __FUNCTION__, $obj ) : $obj;
-}
-
-
+ * Functions for post meta.???
+ * ------------------------------------------------------------------------ *

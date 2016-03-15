@@ -16,7 +16,7 @@
 
 /**
  * Removes default display of plugin's custom tax checkboxes.
- * (Replaced by plugin's custom meta box.)
+ * (Replaced by plugin's custom meta box. Save doesn't work if both there.)
  */
 function postscript_remove_meta_boxes() {
     $options = postscript_get_options( 'postscript' );
@@ -192,15 +192,15 @@ function postscript_save_post_meta( $post_id, $post ) {
         return;
     }
 
-    /* Get the post type object. */
+    // Get the post type object.
     $post_type = get_post_type_object( $post->post_type );
 
-    /* Check if the current user has permission to edit the post. */
+    // Check if the current user has permission to edit the post.
     if ( ! current_user_can( $post_type->cap->edit_post, $post_id ) ) {
         return $post_id;
     }
 
-    /* Get and sanitize the posted data. */
+    // Get and sanitize the posted data.
     $new_meta_value = ( isset( $_POST['postscript_meta'] ) ?  $_POST['postscript_meta'] : '' );
     if ( $new_meta_value ) {
         $new_meta_value['url_style']  = esc_url_raw( $new_meta_value['url_style'] );
@@ -213,15 +213,15 @@ function postscript_save_post_meta( $post_id, $post ) {
     $meta_key = 'postscript_meta';
     $meta_value = get_post_meta( $post_id, $meta_key, true );
 
-    /* If a new meta value was added and there was no previous value, add it. */
+    // If a new meta value was added and there was no previous value, add it.
     if ( $new_meta_value && '' == $meta_value ) {
         add_post_meta( $post_id, $meta_key, $new_meta_value, true );
 
-    /* If the new meta value does not match the old value, update it. */
+    // If the new meta value does not match the old value, update it.
     } elseif ( $new_meta_value && $new_meta_value != $meta_value ) {
         update_post_meta( $post_id, $meta_key, $new_meta_value );
 
-    /* If there is no new meta value but an old value exists, delete it. */
+    // If there is no new meta value but an old value exists, delete it.
     } elseif ( '' == $new_meta_value && $meta_value ) {
         delete_post_meta( $post_id, $meta_key, $meta_value );
     }
@@ -234,10 +234,4 @@ function postscript_save_post_meta( $post_id, $post ) {
         wp_set_object_terms( $post_id, $script_ids, 'postscript_scripts', false );
     }
 
-/*
-    if ( isset( $_POST['tax_input'] ) ) {
-        wp_set_object_terms( $post_id, $_POST['tax_input']['postscript_scripts'], 'postscript_scripts', false );
-        wp_set_object_terms( $post_id, $_POST['tax_input']['postscript_styles'], 'postscript_styles', false );
-    }
-*/
 }
