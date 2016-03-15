@@ -11,14 +11,14 @@
  */
 
 /* ------------------------------------------------------------------------ *
- * Functions to get/set options.
+ * Functions to get/set options array.
  * ------------------------------------------------------------------------ */
 
 /**
  * Retrieves an option, and array of plugin settings, from database.
  *
- * Settings screen and option functions based on Jetpack Stats:
- * /jetpack/modules/stats.php
+ * Option functions based on Jetpack Stats:
+ * @link https://github.com/Automattic/jetpack/blob/master/modules/stats.php
  *
  * @since 0.1
  *
@@ -34,45 +34,6 @@ function postscript_get_options() {
     }
 
     return $options;
-}
-
-/**
- * Retrieves a specific setting (an array item) from an option (an array).
- *
- * @since 0.1
- *
- * @uses postscript_get_options()
- * @param array|string $option array item key
- * @return array $options[$option] array item value (or $options[$option][$option_key])
- */
-function postscript_get_option( $option_key = NULL ) {
-    $options = postscript_get_options();
-
-    // Returns valid inner array key ($options[$option_key]).
-    if ( isset( $options ) && $option_key != NULL && isset( $options[ $option_key ] ) ) {
-            return $options[ $option_key ];
-    } else { // Inner array key not valid.
-    return NULL;
-    }
-}
-
-/**
- * Sets a specified setting (array item) in the option (array of plugin settings).
- *
- * @since 0.1
- *
- * @uses postscript_get_options()
- * @uses postscript_set_options()
- * @param string $option array item key of specified setting
- * @param string $value array item value of specified setting
- * @return array $options array of plugin settings
- */
-function postscript_set_option( $option, $value ) {
-    $options = postscript_get_options();
-
-    $options[$option] = $value;
-
-    postscript_set_options( $options );
 }
 
 /**
@@ -121,6 +82,49 @@ function postscript_upgrade_options( $options ) {
     postscript_set_options( $new_options );
 
     return $new_options;
+}
+
+/* ------------------------------------------------------------------------ *
+ * Functions to get/set a specific options array item.
+ * ------------------------------------------------------------------------ */
+
+/**
+ * Retrieves a specific setting (an array item) from an option (an array).
+ *
+ * @since 0.1
+ *
+ * @uses postscript_get_options()
+ * @param array|string $option array item key
+ * @return array $options[$option] array item value (or $options[$option][$option_key])
+ */
+function postscript_get_option( $option_key = NULL ) {
+    $options = postscript_get_options();
+
+    // Returns valid inner array key ($options[$option_key]).
+    if ( isset( $options ) && $option_key != NULL && isset( $options[ $option_key ] ) ) {
+            return $options[ $option_key ];
+    } else { // Inner array key not valid.
+    return NULL;
+    }
+}
+
+/**
+ * Sets a specified setting (array item) in the option (array of plugin settings).
+ *
+ * @since 0.1
+ *
+ * @uses postscript_get_options()
+ * @uses postscript_set_options()
+ * @param string $option array item key of specified setting
+ * @param string $value array item value of specified setting
+ * @return array $options array of plugin settings
+ */
+function postscript_set_option( $option, $value ) {
+    $options = postscript_get_options();
+
+    $options[$option] = $value;
+
+    postscript_set_options( $options );
 }
 
 /* ------------------------------------------------------------------------ *
