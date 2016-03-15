@@ -53,8 +53,8 @@ function postscript_settings_display() {
         </form>
 
         <?php postscript_meta_box_example(); ?>
-        <?php print_test_data(); ?>
 
+        <p class="clear wp-ui-text-icon"><?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?></p>
     </div><!-- .wrap -->
     <?php
 }
@@ -567,46 +567,3 @@ function postscript_scripts_edit_tags( $query ) {
 }
 add_action( 'postscript_scripts_pre_add_form', 'postscript_scripts_edit_tags' );
 add_action( 'postscript_scripts_edit_form_fields', 'postscript_scripts_edit_tags' );
-
-function print_test_data() {
-?>
-<hr class="clear" />
-<aside>
-
-    <h2>Test items</h2>
-    <pre>
-        <?php
-
-        echo 'he-font-opensans: ' . $reg =  ( wp_style_is( 'he-font-opensans', 'registered' ) ) ? 'yo' : 'no'; ?>
-        <hr />
-        <?php
-        $options = get_option( 'postscript' );
-        echo '<br><code>$options = get_option( \'postscript\' )</code>:<br />';
-        print_r( $options );
-        if ( isset( $options['postscript_allow_url'] ) && is_array( $options['postscript_allow_url'] ) ) {
-            echo '<br><code>array_keys( $options[\'postscript_allow_url\'] )</code>:<br />';
-            print_r( array_keys( $options['postscript_allow_url'] ) ); } ?>
-        <hr />
-        <?php // $screen = get_current_screen(); ?>
-        <?php // echo "{$screen->id}\n"; // settings_page_postscript ?>
-        <?php // print_r( $screen ); ?>
-        <hr /><h2>admin styles</h2>
-        <?php global $wp_styles; print_r( $wp_styles ); ?>
-        <hr /><h2>theme styles</h2>
-        <?php // new FakePage; ?>
-        <?php // global $postscript_wp_styles; print_r( get_transient( 'postscript_wp_styles' ) ); ?>
-        <?php
-
-        ?>
-
-
-
-
-
-
-    </pre>
-    <p><?php echo get_num_queries(); ?> queries in <?php timer_stop( 1 ); ?> seconds uses <?php echo round( memory_get_peak_usage() / 1024 / 1024, 3 ); ?> MB peak memory.</p>
-
-</aside>
-<?php
-}
