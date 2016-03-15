@@ -11,6 +11,118 @@
  */
 
 /* ------------------------------------------------------------------------ *
+ * Functions to get/set options.
+ * ------------------------------------------------------------------------ */
+
+/**
+ * Retrieves an option, and array of plugin settings, from database.
+ *
+ * Settings screen and option functions based on Jetpack Stats:
+ * /jetpack/modules/stats.php
+ *
+ * @since 1.0.0
+ *
+ * @uses postscript_upgrade_options()
+ * @return array $options array of plugin settings
+ */
+function postscript_get_options() {
+    $options = get_option( 'postscript' );
+
+    /* Set version if not the latest. */
+    if ( ! isset( $options['version'] ) || $options['version'] < POSTSCRIPT_VERSION ) {
+        $options = postscript_upgrade_options( $options );
+    }
+
+    return $options;
+}
+
+/**
+ * Retrieves a specific setting (an array item) from an option (an array).
+ *
+ * @since 1.0.0
+ *
+ * @uses postscript_get_options()
+ * @param array|string $option array item key
+ * @return array $options[$option] array item value (or $options[$option][$option_key])
+ */
+function postscript_get_option( $option_key = NULL ) {
+    $options = postscript_get_options();
+
+    // Returns valid inner array key ($options[$option_key]).
+    if ( isset( $options ) && $option_key != NULL && isset( $options[ $option_key ] ) ) {
+            return $options[ $option_key ];
+    } else { // Inner array key not valid.
+    return NULL;
+    }
+}
+
+/**
+ * Sets a specified setting (array item) in the option (array of plugin settings).
+ *
+ * @since 1.0.0
+ *
+ * @uses postscript_get_options()
+ * @uses postscript_set_options()
+ * @param string $option array item key of specified setting
+ * @param string $value array item value of specified setting
+ * @return array $options array of plugin settings
+ */
+function postscript_set_option( $option, $value ) {
+    $options = postscript_get_options();
+
+    $options[$option] = $value;
+
+    postscript_set_options( $options );
+}
+
+/**
+ * Sets an option in database (an array of plugin settings).
+ *
+ * Note: update_option() adds option if it doesn't exist.
+ *
+ * @since 1.0.0
+ *
+ * @param array $option array of plugin settings
+ */
+function postscript_set_options( $options ) {
+    update_option( 'postscript', $options );
+}
+
+/**
+ * Makes array of plugin settings, merging default and new values.
+ *
+ * @since 1.0.0
+ *
+ * @uses postscript_set_options()
+ * @param array $options array of plugin settings
+ * @return array $new_options merged array of plugin settings
+ */
+function postscript_upgrade_options( $options ) {
+    $defaults = array(
+        'user_roles' => array( 'administrator' ),
+        'post_types' => array( 'post' ),
+        'allow'      => array(
+            'url_style'    => 'on',
+            'url_script'   => 'on',
+            'url_script_2' => 'on',
+            'class_body'   => 'on',
+            'class_post'   => 'on',
+        )
+    );
+
+    if ( is_array( $options ) && ! empty( $options ) )
+        $new_options = array_merge( $defaults, $options );
+    else
+        $new_options = $defaults;
+
+    $new_options['version'] = POSTSCRIPT_VERSION;
+
+    postscript_set_options( $new_options );
+
+    return $new_options;
+}
+
+/* ------------------------------------------------------------------------ *
  * Functions to set/get transients with front-end script/style arrays.
  * ------------------------------------------------------------------------ */
 
@@ -156,7 +268,7 @@ function postscript_style_handles() {
     $postscript_styles_reg = get_transient( 'postscript_styles_reg' );
 
     // Array of registered scripts handles (from $wp_scripts object).
-    $scripts_reg = array_values( wp_list_pluck( $postscript_styles_reg, 'handle' ) );
+    $styles_reg = array_values( wp_list_pluck( $postscript_styles_reg, 'handle' ) );
     sort( $styles_reg ); // Alphabetize.
 
     return $styles_reg;
@@ -230,117 +342,7 @@ function postscript_filter_array() {
 
 }
 
-/* ------------------------------------------------------------------------ *
- * Functions to get/set options.
- * ------------------------------------------------------------------------ */
 
-/**
- * Retrieves an option, and array of plugin settings, from database.
- *
- * Settings screen and option functions based on Jetpack Stats:
- * /jetpack/modules/stats.php
- *
- * @since 1.0.0
- *
- * @uses postscript_upgrade_options()
- * @return array $options array of plugin settings
- */
-function postscript_get_options() {
-    $options = get_option( 'postscript' );
-
-    /* Set version if not the latest. */
-    if ( ! isset( $options['version'] ) || $options['version'] < POSTSCRIPT_VERSION ) {
-        $options = postscript_upgrade_options( $options );
-    }
-
-    return $options;
-}
-
-/**
- * Retrieves a specific setting (an array item) from an option (an array).
- *
- * @since 1.0.0
- *
- * @uses postscript_get_options()
- * @param array|string $option array item key
- * @return array $options[$option] array item value (or $options[$option][$option_key])
- */
-function postscript_get_option( $option_key = NULL ) {
-    $options = postscript_get_options();
-
-    // Returns valid inner array key ($options[$option_key]).
-    if ( isset( $options ) && $option_key != NULL && isset( $options[ $option_key ] ) ) {
-            return $options[ $option_key ];
-    } else { // Inner array key not valid.
-    return NULL;
-    }
-}
-
-/**
- * Sets a specified setting (array item) in the option (array of plugin settings).
- *
- * @since 1.0.0
- *
- * @uses postscript_get_options()
- * @uses postscript_set_options()
- * @param string $option array item key of specified setting
- * @param string $value array item value of specified setting
- * @return array $options array of plugin settings
- */
-function postscript_set_option( $option, $value ) {
-    $options = postscript_get_options();
-
-    $options[$option] = $value;
-
-    postscript_set_options( $options );
-}
-
-/**
- * Sets an option in database (an array of plugin settings).
- *
- * Note: update_option() adds option if it doesn't exist.
- *
- * @since 1.0.0
- *
- * @param array $option array of plugin settings
- */
-function postscript_set_options( $options ) {
-    update_option( 'postscript', $options );
-}
-
-/**
- * Makes array of plugin settings, merging default and new values.
- *
- * @since 1.0.0
- *
- * @uses postscript_set_options()
- * @param array $options array of plugin settings
- * @return array $new_options merged array of plugin settings
- */
-function postscript_upgrade_options( $options ) {
-    $defaults = array(
-        'user_roles' => array( 'administrator' ),
-        'post_types' => array( 'post' ),
-        'allow'      => array(
-            'url_style'    => 'on',
-            'url_script'   => 'on',
-            'url_script_2' => 'on',
-            'class_body'   => 'on',
-            'class_post'   => 'on',
-        )
-    );
-
-    if ( is_array( $options ) && ! empty( $options ) )
-        $new_options = array_merge( $defaults, $options );
-    else
-        $new_options = $defaults;
-
-    $new_options['version'] = POSTSCRIPT_VERSION;
-
-    postscript_set_options( $new_options );
-
-    return $new_options;
-}
 
 /* ------------------------------------------------------------------------ *
  * Functions for post meta.

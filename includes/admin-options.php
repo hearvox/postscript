@@ -25,7 +25,6 @@ function postscript_settings_menu() {
         'manage_options',
         'postscript',
         'postscript_settings_display' );
-
 }
 add_action('admin_menu', 'postscript_settings_menu');
 
@@ -34,8 +33,8 @@ add_action('admin_menu', 'postscript_settings_menu');
  */
 function postscript_settings_display() {
 
-    // Add or remove user-selected scripts and styles (custom taxonomy terms).
-    postscript_script_styles_add_remove();
+    // Before rendering forms, add or remove any user-selected script and style.
+    postscript_add_remove();
     ?>
     <!-- Create a header in the default WordPress 'wrap' container -->
     <div class="wrap">
@@ -60,23 +59,14 @@ function postscript_settings_display() {
 }
 
 /**
- * Adds or removes user-selected scripts and styles as custom taxonomy terms.
+ * Adds or removes any user-selected script/style in the form submission data.
  */
-function postscript_script_styles_add_remove() {
+function postscript_add_remove() {
     $options = get_option( 'postscript' );
-    // Array of front-end registered scripts (transient set to be $wp_scripts object).
-    $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
-    $postscript_styles_reg  = get_transient( 'postscript_styles_reg' );
 
-    // Array of registered scripts handles (from transient set to be $wp_scripts object).
-    $script_handles = array_values( wp_list_pluck( $postscript_scripts_reg, 'handle' ) );
-    sort( $script_handles ); // Alphabetize.
-
-    $style_handles = array_values( wp_list_pluck( $postscript_styles_reg, 'handle' ) );
-    sort( $style_handles ); // Alphabetize.
-
-    // global $postscript_scripts_reg_handles;
-    // global $postscript_styles_reg_handles;
+    // Arrays of registered script handles.
+    $script_handles = postscript_script_handles();
+    $style_handles = postscript_style_handles();
 
     // Add new script or style custom tax term, if registered handle.
     if ( isset( $options['script_add'] ) && in_array( $options['script_add'], $script_handles )  ) {
@@ -309,13 +299,10 @@ function postscript_allow_fields_callback( $options ) {
  * Outputs HTML select menu of all registered styles.
  */
 function postscript_style_add_callback() {
-    // Array of front-end registered style (from transient set to be $wp_styles object).
-    $postscript_styles_reg  = get_transient( 'postscript_styles_reg' );
-    // Array of handles.
-    $style_handles = array_values( wp_list_pluck( $postscript_styles_reg, 'handle' ) );
-    sort( $style_handles ); // Alphabetize.
+    // Array of registered script handles.
+    $style_handles = postscript_style_handles();
 
-    // Output select menu of (sorted) registered style handles.
+    // Output select menu of (sorted) handles.
     ?>
     <select id="postscript_styles_field" name="postscript[style_add]">
         <option value=''><?php _e( 'Select style to add:', 'postscript' ); ?></option>
@@ -326,12 +313,13 @@ function postscript_style_add_callback() {
         ?>
     </select>
     <?php
-    // Display HTML table with user-added registered styles (with metadata and term posts count).
+    // Get user-selected style handles (stored as tax terms).
     $args = array(
         'hide_empty'             => false,
         'fields'                 => 'all',
     );
     $styles_added = get_terms( 'postscript_styles', $args );
+    // Display table of selected handles (with $wp_styles data and term's post count).
     ?>
     <table class="wp-list-table widefat striped">
         <caption><strong>Styles added</strong></caption>
@@ -347,6 +335,9 @@ function postscript_style_add_callback() {
         </thead>
         <tbody>
     <?php
+    // Array of registered styles' data (transient stores front-end $wp_styles).
+    $postscript_styles_reg  = get_transient( 'postscript_styles_reg' );
+
     if ( ! empty( $styles_added ) ) {
         foreach ( $styles_added as $style_obj ) {
             if ( in_array( $style_obj->name, $style_handles ) ) {
