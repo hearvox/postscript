@@ -11,7 +11,7 @@
  */
 
 /* ------------------------------------------------------------------------ *
- * Fire front-end hooks by loading a post.
+ * Fire front-end hooks by loading a post (for future features).
  * ------------------------------------------------------------------------ */
 
 /**
@@ -61,6 +61,7 @@ function postscript_load_post( $post_id ) {
 /* ------------------------------------------------------------------------ *
  * Functions to set/get transients with front-end script/style arrays.
  * ------------------------------------------------------------------------ */
+
 /**
  * Sets transient with arrays of front-end registered scripts/styles.
  *
@@ -127,9 +128,7 @@ function postscript_get_wp_scripts_transient( $file_type = 'postscript_wp_script
 /**
  * Makes an alphabetized array of registered script handles.
  */
-function postscript_get_script_reg_handles() {
-    // $wp_scripts = wp_scripts();
-
+function postscript_script_handles() {
     $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
 
     // Array of registered scripts handles (from $wp_scripts object).
@@ -137,6 +136,19 @@ function postscript_get_script_reg_handles() {
     sort( $scripts_reg ); // Alphabetize.
 
     return $scripts_reg;
+}
+
+/**
+ * Makes an alphabetized array of registered script handles.
+ */
+function postscript_style_handles() {
+    $postscript_styles_reg = get_transient( 'postscript_styles_reg' );
+
+    // Array of registered scripts handles (from $wp_scripts object).
+    $scripts_reg = array_values( wp_list_pluck( $postscript_styles_reg, 'handle' ) );
+    sort( $styles_reg ); // Alphabetize.
+
+    return $styles_reg;
 }
 
 /**
@@ -260,7 +272,6 @@ function postscript_get_options() {
     if ( ! isset( $options['version'] ) || $options['version'] < POSTSCRIPT_VERSION ) {
         $options = postscript_upgrade_options( $options );
     }
-
 
     return $options;
 }

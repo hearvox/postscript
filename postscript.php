@@ -38,7 +38,11 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'POSTSCRIPT_VERSION', '1.0.0' );
+if ( defined( 'POSTSCRIPT_VERSION' ) ) {
+    return;
+}
+
+define( 'POSTSCRIPT_VERSION', '0.1' );
 
 /**
  * Adds "Settings" link on plugin page (next to "Activate").
@@ -68,16 +72,6 @@ add_action( 'plugins_loaded', 'postscript_load_textdomain' );
 function postscript_activate() {
 
 }
-
-/*
-
-if ( defined( 'STATS_VERSION' ) ) {
-    return;
-}
-
-define( 'STATS_VERSION', '1.0.0' );
-
- */
 
 /**
  * Gets registered scripts and styles.
@@ -229,6 +223,8 @@ function postscript_core_full_urls( $url ) {
 
 /**
  * Adds new hierarchical, private taxonomies (for Scripts and Styles).
+ *
+ * Terms can be any registered script/style handle.
  */
 function postscript_create_taxonomies() {
     //Settings option for allowed post types.
@@ -308,9 +304,17 @@ function postscript_create_taxonomies() {
 }
 add_action( 'init', 'postscript_create_taxonomies', 0 );
 
+/**
+ * Allows only registered handles as custom tax terms.
+ *
+ * @uses  postscript_script_handles() Returns array of registered scripts.
+ * @uses  postscript_style_handles() Returns array of registered styles.
+ * @return  string $term Submitted taxonomy term (or WP_Error admin-notice).
+ */
 function postscript_check_tax_term( $term, $taxonomy) {
     if ( $taxonomy == 'postscript_scripts' ) {
-        if ( wp_script_is( $term, 'registered' ) ) {
+        $script_handles = postscript_script_handles();
+        if ( in_array( $term, $script_handles ) ) {
             return $term;
         } else {
         return new WP_Error( 'invalid_term', __('The script handle you entered is <strong>not</strong> <a href="https://developer.wordpress.org/reference/functions/wp_register_script/">registered</a>.') );
@@ -318,7 +322,8 @@ function postscript_check_tax_term( $term, $taxonomy) {
     }
 
     if ( $taxonomy == 'postscript_styles' ) {
-        if (wp_style_is( $term, 'registered' ) ) {
+        $style_handles  = postscript_style_handles();
+        if ( in_array( $term, $style_handles ) ) {
             return $term;
         } else {
         return new WP_Error( 'invalid_term', __('The style handle you entered is <strong>not</strong> <a href="https://developer.wordpress.org/reference/functions/wp_register_style/">registered</a>.') );
@@ -327,7 +332,7 @@ function postscript_check_tax_term( $term, $taxonomy) {
 
     return $term;
 }
-// add_filter('pre_insert_term', 'postscript_check_tax_term', 20, 2);
+add_filter('pre_insert_term', 'postscript_check_tax_term', 20, 2);
 
 /* ------------------------------------------------------------------------ *
  * Tests and Notes

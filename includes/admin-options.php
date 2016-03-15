@@ -34,9 +34,6 @@ add_action('admin_menu', 'postscript_settings_menu');
  */
 function postscript_settings_display() {
 
-    // Make global vars with arrays of registered script and style handles.
-    postscript_script_style_reg_handles();
-
     // Add or remove user-selected scripts and styles (custom taxonomy terms).
     postscript_script_styles_add_remove();
     ?>
@@ -60,18 +57,6 @@ function postscript_settings_display() {
 
     </div><!-- .wrap -->
     <?php
-}
-
-/**
- * Makes global vars with arrays of registered script and style handles.
- */
-function postscript_script_style_reg_handles() {
-    // Make global vars with arrays of registered script and style handles.
-    global $postscript_scripts_reg_handles;
-    $postscript_scripts_reg_handles = postscript_get_script_reg_handles();
-
-    global $postscript_styles_reg_handles;
-    $postscript_styles_reg_handles = postscript_get_style_reg_handles();
 }
 
 /**
@@ -324,10 +309,6 @@ function postscript_allow_fields_callback( $options ) {
  * Outputs HTML select menu of all registered styles.
  */
 function postscript_style_add_callback() {
-    // $styles_reg  = postscript_get_style_reg_handles(); // Registered style handles.
-    // $options = get_option( 'postscript' );
-    // global $postscript_styles_reg_handles;
-
     // Array of front-end registered style (from transient set to be $wp_styles object).
     $postscript_styles_reg  = get_transient( 'postscript_styles_reg' );
     // Array of handles.
@@ -406,10 +387,6 @@ function postscript_style_add_callback() {
  * Outputs HTML select menu of all registered scripts.
  */
 function postscript_script_add_callback() {
-    // $scripts_reg = postscript_get_script_reg_handles(); // Registered script handles.
-    // $options = get_option( 'postscript' );
-    // global $postscript_scripts_reg_handles;
-
     // Array of front-end registered scripts (transient set to be $wp_scripts object).
     $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
     // Array of handles.
