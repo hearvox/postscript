@@ -42,15 +42,15 @@ add_action( 'admin_menu' , 'postscript_remove_meta_boxes' );
  */
 function postscript_meta_box_setup() {
     $options = postscript_get_options( 'postscript' );
+    $user    = wp_get_current_user();
+    $roles   = $options['user_roles'];
 
-    $user = wp_get_current_user();
-    $roles_allowed = $options['user_roles'];
-
-    if ( array_intersect( $roles_allowed, $user->roles ) ) {
-        /* Add meta boxes on the 'add_meta_boxes' hook. */
+    // Add meta boxes only for allowed user roles.
+    if ( array_intersect( $roles, $user->roles ) ) {
+        // Add meta box.
         add_action( 'add_meta_boxes', 'postscript_add_meta_box' );
 
-        /* Save post meta on the 'save_post' hook. */
+        // Save post meta.
         add_action( 'save_post', 'postscript_save_post_meta', 10, 2 );
     }
 }

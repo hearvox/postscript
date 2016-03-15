@@ -52,8 +52,6 @@ function postscript_settings_display() {
         </form>
 
         <?php postscript_meta_box_example(); ?>
-
-        <p class="clear wp-ui-text-icon"><?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?></p>
     </div><!-- .wrap -->
     <?php
 }
@@ -100,14 +98,8 @@ function postscript_add_remove() {
  */
 function postscript_options_init() {
 
-    // Arrays to pass to $callback functions as add_settings_field() $args (last param).
-    $options = postscript_get_options();                 // Option: 'postscript'.
-
-    /*
-    if ( false == get_option( 'postscript' ) ) {
-        add_option( 'postscript' );
-    }
-     */
+    // Array to pass to $callback functions as add_settings_field() $args (last param).
+    $options = postscript_get_options(); // Option: 'postscript'.
 
     add_settings_section(
         'postscript_settings_section',
@@ -201,20 +193,28 @@ add_action('admin_init', 'postscript_options_init');
  * Section Callbacks
  * ------------------------------------------------------------------------ */
 
+/**
+ * Outputs text for the top of the Settings screen.
+ */
 function postscript_section_callback() {
-    // postscript_get_wp_scripts_transient();
     ?>
     <p><?php _e('The Postscript meta box (in the Edit Post screen) lets users enqueue scripts and styles for a single post.', 'postscript' ); ?></p>
     <p><?php _e('Choose which post-types and user-roles display the Postscript box.', 'postscript' ); ?></p>
     <?php
 }
 
+/**
+ * Outputs text for the top of the Add Scripts/Styles section.
+ */
 function postscript_scripts_styles_section_callback() {
     ?>
     <p><?php _e('Add registered script or style to be listed in the Postscript box.', 'postscript' ); ?></p>
     <?php
 }
 
+/**
+ * Outputs text for the top of the Remove Scripts/Styles section.
+ */
 function postscript_script_style_remove_section_callback() {
     ?>
     <p><?php _e('Remove script or style from the Postscript box.', 'postscript' ); ?></p>
@@ -276,10 +276,10 @@ function postscript_post_types_callback( $options ) {
 }
 
 /**
- * Outputs HTML checkboxes (settings to allow text fields in Postscript box for entering URLs and classes).
+ * Outputs HTML checkboxes (to allow text fields in Postscript box for entering URLs and classes).
  */
 function postscript_allow_fields_callback( $options ) {
-    $opt = $options['allow'];
+    $opt = $options['allow']; // User settings to permit URLs and classes.
     ?>
     <fieldset>
         <legend><?php _e( 'Add a text field in Postscript box for:', 'postscript' ); ?></legend>
@@ -302,7 +302,7 @@ function postscript_style_add_callback() {
     // Array of registered script handles.
     $style_handles = postscript_style_handles();
 
-    // Output select menu of (sorted) handles.
+    // Output HTML select menu of (sorted) handles.
     ?>
     <select id="postscript_styles_field" name="postscript[style_add]">
         <option value=''><?php _e( 'Select style to add:', 'postscript' ); ?></option>
@@ -378,13 +378,10 @@ function postscript_style_add_callback() {
  * Outputs HTML select menu of all registered scripts.
  */
 function postscript_script_add_callback() {
-    // Array of front-end registered scripts (transient set to be $wp_scripts object).
-    $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
-    // Array of handles.
-    $script_handles = array_values( wp_list_pluck( $postscript_scripts_reg, 'handle' ) );
-    sort( $script_handles ); // Alphabetize.
+    // Array of registered script handles.
+    $script_handles = postscript_script_handles();
 
-    // Output select menu of (sorted) registered script handles.
+    // Output HTML select menu of (sorted) registered script handles.
     ?>
     <select id="postscript_scripts_field" name="postscript[script_add]">
         <option value=''><?php _e( 'Select script to add:', 'postscript' ); ?></option>
@@ -395,12 +392,14 @@ function postscript_script_add_callback() {
         ?>
     </select>
     <?php
-    // Display HTML table of user-added registered scripts (with metadata and term posts count).
+    // Get user-selected script handles (stored as tax terms).
     $args = array(
         'hide_empty'             => false,
         'fields'                 => 'all',
     );
     $scripts_added = get_terms( 'postscript_scripts', $args );
+
+    // Display table of selected handles (with $wp_scripts data and term's post count).
     ?>
     <table class="wp-list-table widefat striped">
         <caption><strong>Scripts added</strong></caption>
@@ -416,12 +415,10 @@ function postscript_script_add_callback() {
         </thead>
         <tbody>
     <?php
+    // Array of registered scripts' data (transient stores front-end $wp_scripts).
+    $postscript_scripts_reg  = get_transient( 'postscript_scripts_reg' );
+
     if ( ! empty( $scripts_added ) ) {
-        // global $wp_scripts;
-
-        // Array of front-end registered scripts (transient set to be $wp_scripts object).
-        $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
-
         foreach ( $scripts_added as $script_obj ) {
             if ( in_array( $script_obj->name, $script_handles ) ) {
                 $script_name  = $script_obj->name;
@@ -466,12 +463,14 @@ function postscript_script_add_callback() {
  *
  * ------------------------------------------------------------------------ */
 function postscript_pre_get_posts( $query ) {
-    $options = get_option( 'postscript' );
+    $options = postscript_get_options( 'postscript' );
     if ( is_admin() ) {
         if ( get_query_var( 'postscript_scripts' ) || get_query_var( 'postscript_styles' ) ) {
             $query->set('post_type', '' ); // Hack: to get all post-type to display for term.
-            // /wp-admin/edit.php doesn't accept array (Error: array to string conversion)
+
+            // $query->set('post_type', $options['post_types'] ); // Use this when fixed:
             // https://core.trac.wordpress.org/ticket/30013
+            // /wp-admin/edit.php doesn't accept array (Error: array to string conversion)
         }
     }
 }
@@ -526,12 +525,18 @@ function postscript_style_remove_callback() {
  * @uses  postscript_meta_box_callback()
  */
 function postscript_meta_box_example() {
-    $options     = get_option( 'postscript' );
-    $box['args'] = $options; // Need $options as in ['args'] array, as in meta box.
-    $fake_post   = (object) array( 'ID' => '-1'); // Need a non-existent post object id.
+    $options     = postscript_get_options( 'postscript' );
+    $box['args'] = $options; // Meta box stores $options as an ['args'] array.
+    $fake_post   = (object) array( 'ID' => '-1'); // Meta box needs a post object id.
     ?>
     <hr />
-    <p><?php _e('The meta box displays like this on the Edit Post screen:', 'postscript' ); ?>
+    <h2><?php _e('Postscript meta box example', 'postscript' ); ?></h2>
+    <p>
+        <?php _e('If user-role is: ', 'postscript' ); ?><?php echo implode( $options['user_roles'], ', ' ); ?><br />
+        <?php _e('If post-type is: ', 'postscript' ); ?><?php echo implode( $options['post_types'], ', ' ); ?><br />
+        <?php _e('This meta box displays on the Edit Post screen:', 'postscript' ); ?>
+    <p>
+
     <div id="postscript-meta" class="postbox postbox-container">
         <div id="categorydiv" class="postbox ">
         <h2 class="hndle ui-sortable-handle"><span>Postscript</span></h2>
@@ -540,21 +545,7 @@ function postscript_meta_box_example() {
             </div><!-- .inside -->
         </div><!-- .postbox -->
     </div><!-- .postbox-container -->
+
+    <p class="clear wp-ui-text-icon"><?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?></p>
     <?php
 }
-
-
-/* ------------------------------------------------------------------------ *
- * Customizes edit-tags screens, via hooks (in /wp-admin: /edit-tags.php, /edit-tags-form.php).
- * ------------------------------------------------------------------------ */
-function postscript_styles_edit_tags( $query ) {
-    _e( 'This form only allows a registered style handle as Name and Slug.', 'postscript') ;
-}
-add_action( 'postscript_styles_pre_add_form', 'postscript_styles_edit_tags' );
-add_action( 'postscript_styles_edit_form_fields', 'postscript_styles_edit_tags' );
-
-function postscript_scripts_edit_tags( $query ) {
-    _e( 'This form only allows a registered script handle as Name and Slug.', 'postscript') ;
-}
-add_action( 'postscript_scripts_pre_add_form', 'postscript_scripts_edit_tags' );
-add_action( 'postscript_scripts_edit_form_fields', 'postscript_scripts_edit_tags' );

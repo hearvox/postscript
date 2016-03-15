@@ -162,6 +162,10 @@ function postscript_core_full_urls( $url ) {
     return $url;
 }
 
+/* ------------------------------------------------------------------------ *
+ * Custom Taxonomies: stores user-selected registered script/style handles.
+ * ------------------------------------------------------------------------ */
+
 /**
  * Adds new hierarchical, private taxonomies (for Scripts and Styles).
  *
@@ -274,3 +278,26 @@ function postscript_check_tax_term( $term, $taxonomy) {
     return $term;
 }
 add_filter('pre_insert_term', 'postscript_check_tax_term', 20, 2);
+
+/* ------------------------------------------------------------------------ *
+ * Customizes Taxonomy screens text (/wp-admin: /edit-tags.php, /edit-tags-form.php).
+ * ------------------------------------------------------------------------ */
+
+/**
+ * Text for top of 'postscript_scripts' taxonomy terms screen
+ */
+function postscript_scripts_edit_tags( $query ) {
+    _e( 'This form only allows a registered script handle as Name and Slug.', 'postscript') ;
+}
+add_action( 'postscript_scripts_pre_add_form', 'postscript_scripts_edit_tags' );
+add_action( 'postscript_scripts_edit_form_fields', 'postscript_scripts_edit_tags' );
+
+/**
+ * Text for top of 'postscript_styles' taxonomy terms screen
+ */
+function postscript_styles_edit_tags( $query ) {
+    _e( 'This form only allows a registered style handle as Name and Slug.', 'postscript') ;
+}
+add_action( 'postscript_styles_pre_add_form', 'postscript_styles_edit_tags' );
+add_action( 'postscript_styles_edit_form_fields', 'postscript_styles_edit_tags' );
+
