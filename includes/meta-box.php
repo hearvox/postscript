@@ -4,7 +4,7 @@
  * The post editor functionality of the plugin.
  *
  * @link       http://hearingvoices.com/tools/
- * @since      1.0.0
+ * @since 0.1
  *
  * @package    Postscript
  * @subpackage Postscript/includes

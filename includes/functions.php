@@ -4,7 +4,7 @@
  * General functions for options and registered/selected scripts and styles.
  *
  * @link       http://hearingvoices.com/tools/
- * @since      1.0.0
+ * @since 0.1
  *
  * @package    Postscript
  * @subpackage Postscript/includes
@@ -20,7 +20,7 @@
  * Settings screen and option functions based on Jetpack Stats:
  * /jetpack/modules/stats.php
  *
- * @since 1.0.0
+ * @since 0.1
  *
  * @uses postscript_upgrade_options()
  * @return array $options array of plugin settings
@@ -39,7 +39,7 @@ function postscript_get_options() {
 /**
  * Retrieves a specific setting (an array item) from an option (an array).
  *
- * @since 1.0.0
+ * @since 0.1
  *
  * @uses postscript_get_options()
  * @param array|string $option array item key
@@ -59,7 +59,7 @@ function postscript_get_option( $option_key = NULL ) {
 /**
  * Sets a specified setting (array item) in the option (array of plugin settings).
  *
- * @since 1.0.0
+ * @since 0.1
  *
  * @uses postscript_get_options()
  * @uses postscript_set_options()
@@ -80,7 +80,7 @@ function postscript_set_option( $option, $value ) {
  *
  * Note: update_option() adds option if it doesn't exist.
  *
- * @since 1.0.0
+ * @since 0.1
  *
  * @param array $option array of plugin settings
  */
@@ -91,7 +91,7 @@ function postscript_set_options( $options ) {
 /**
  * Makes array of plugin settings, merging default and new values.
  *
- * @since 1.0.0
+ * @since 0.1
  *
  * @uses postscript_set_options()
  * @param array $options array of plugin settings
@@ -110,10 +110,11 @@ function postscript_upgrade_options( $options ) {
         )
     );
 
-    if ( is_array( $options ) && ! empty( $options ) )
+    if ( is_array( $options ) && ! empty( $options ) ) {
         $new_options = array_merge( $defaults, $options );
-    else
+    } else {
         $new_options = $defaults;
+    }
 
     $new_options['version'] = POSTSCRIPT_VERSION;
 
@@ -134,7 +135,7 @@ function postscript_upgrade_options( $options ) {
  * and after admin had rendered (so enqueued scripts don't affect admin display).
  *
  *
- * @since    1.0.0
+ * @since 0.1
  */
 function postscript_get_reg_scripts() {
     /* For future feature to separate defaults from plugin/theme scripts.
@@ -289,7 +290,7 @@ function postscript_style_handles() {
  * See function: postscript_wp_scripts_styles_transient()
  * In plugin file: /includes/enqueue_scripts.php
  *
- * @since    1.0.0
+ * @since 0.1
  *
  * @return  mixed Array of header items; HTML of body content.
  */
@@ -311,7 +312,7 @@ function postscript_load_latest_post() {
 /**
  * Runs post (to fire 'wp_enqueue_scripts' hooks).
  *
- * @since    1.0.0
+ * @since 0.1
  * @param integer $post_id ID of post to fetch
  * @return  mixed Either header array and body HTML or error object is URL not valid
  */
@@ -356,7 +357,7 @@ function postscript_filter_array() {
 /**
  * Sanitizes array, object, or string values (from Jetpack Stats module).
  *
- * @since 1.0.0
+ * @since 0.1
  *
  * @param array|object|string $value value to be sanitized
  * @return array|object|string $value sanitized value

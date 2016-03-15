@@ -5,7 +5,7 @@
  *
  *
  * @link       http://example.com
- * @since      1.0.0
+ * @since 0.1
  *
  * @package    Postscript
  */
@@ -18,7 +18,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 /**
  * Removes plugin's data.
  *
- * @since 1.0.0
+ * @since 0.1
  */
 if ( function_exists( 'delete_post_meta_by_key' ) ) {
     $meta_key = 'postscript_meta';
@@ -40,7 +40,7 @@ if ( function_exists( 'delete_option' ) ) {
 /**
  * Removes plugin's post meta from database.
  *
- * @since 1.0.0
+ * @since 0.1
  */
 function postscript_remove_meta( $meta_key ) {
     delete_post_meta_by_key ( $meta_key );
@@ -49,7 +49,7 @@ function postscript_remove_meta( $meta_key ) {
 /**
  * Removes plugin's custom taxonomy terms from database.
  *
- * @since 1.0.0
+ * @since 0.1
  */
 function postscript_remove_tax_terms( $tax ) {
     $terms = get_terms( $tax );
@@ -66,7 +66,7 @@ function postscript_remove_tax_terms( $tax ) {
 /**
  * Unregisters plugin's custom taxonomy.
  *
- * @since 1.0.0
+ * @since 0.1
  */
 function postscript_unregister_tax( $tax ) {
     global $wp_taxonomies;
@@ -80,7 +80,7 @@ function postscript_unregister_tax( $tax ) {
 /**
  * Removes plugin's option from database.
  *
- * @since 1.0.0
+ * @since 0.1
  */
 function postscript_remove_option( $option ) {
     delete_option( $option_name );

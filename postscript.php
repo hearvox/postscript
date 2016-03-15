@@ -58,7 +58,7 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'postscript_pl
 /**
  * Load the plugin text domain for translation.
  *
- * @since    1.0.0
+ * @since 0.1
  */
 function postscript_load_textdomain() {
     load_plugin_textdomain( 'postscript', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
@@ -95,7 +95,7 @@ function postscript_deactivate() {
  * then kicking off the plugin from this point in the file does
  * not affect the page life cycle.
  *
- * @since    1.0.0
+ * @since 0.1
  */
 function run_postscript() {
 
