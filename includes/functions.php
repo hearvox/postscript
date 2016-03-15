@@ -11,6 +11,159 @@
  */
 
 /* ------------------------------------------------------------------------ *
+ * Functions to set/get transients with front-end script/style arrays.
+ * ------------------------------------------------------------------------ */
+
+/**
+ * Gets registered scripts and styles.
+ *
+ * Gets WordPress default scripts/styles, then those plugin/theme registered.
+ * The'shutdown' hook fires after wp_default_scripts()/_styles()
+ * and after admin had rendered (so enqueued scripts don't affect admin display).
+ *
+ *
+ * @since    1.0.0
+ */
+function postscript_get_reg_scripts() {
+    /* For future feature to separate defaults from plugin/theme scripts.
+    // Arrays with WordPress default back-end scripts.
+    $wp_scripts_pre = wp_scripts();
+    $wp_styles_pre  = wp_styles();
+
+    // Default scripts array.
+    $scripts_pre            = $wp_scripts_pre->registered;
+    $postscript_scripts_pre = get_transient( 'postscript_scripts_pre' );
+
+    $styles_pre             = $wp_styles_pre->registered;
+    $postscript_styles_pre  = get_transient( 'postscript_styles_pre' );
+
+    // Set transients with defaults scripts.
+    if ( $scripts_pre != $postscript_scripts_pre ) {
+        set_transient( 'postscript_scripts_pre', $scripts_pre, 60 * 60 * 4 );
+    }
+
+    if ( $styles_pre != $postscript_styles_pre ) {
+        set_transient( 'postscript_styles_pre', $styles_pre, 60 * 60 * 4 );
+    }
+    */
+
+    // Hack to get front-end scripts into memory, from here in the back-end
+    // (in $wp_scripts, $wp_styles) by firing the front-end registration hook.
+    do_action( 'wp_enqueue_scripts' );
+
+    // Arrays now have front-end registered scripts.
+    $wp_scripts_reg = wp_scripts();
+    $wp_styles_reg  = wp_styles();
+
+    // Default and plugin/theme scripts array.
+    $scripts_reg            = $wp_scripts_reg->registered;
+    $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
+
+    $styles_reg             = $wp_styles_reg->registered;
+    $postscript_styles_reg  = get_transient( 'postscript_styles_reg' );
+
+    // Set transients with defaults scripts.
+    if ( $scripts_reg != $postscript_scripts_reg ) {
+        set_transient( 'postscript_scripts_reg', $scripts_reg, 60 * 60 * 4 );
+    }
+
+    if ( $styles_reg != $postscript_styles_reg ) {
+        set_transient( 'postscript_styles_reg', $styles_reg, 60 * 60 * 4 );
+    }
+}
+add_action( 'shutdown', 'postscript_get_reg_scripts' );
+
+/**
+ * Sets transient with arrays of front-end registered scripts/styles.
+ *
+ * The 'wp_head' hook fires after 'wp_enqueue_scripts', so all scripts registered.
+ *
+ */
+function postscript_set_wp_scripts_transient() {
+    global $wp_scripts, $wp_styles;
+
+    $postscript_wp_scripts = get_transient( 'postscript_wp_scripts' );
+    $postscript_wp_styles = get_transient( 'postscript_wp_styles' );
+
+    if ( $wp_scripts != $postscript_wp_scripts ) {
+        set_transient( 'postscript_wp_scripts', $wp_scripts->registered, 60 * 60 * 4 );
+    }
+
+    if ( $wp_styles != $postscript_wp_styles ) {
+        set_transient( 'postscript_wp_styles', $wp_styles->registered, 60 * 60 * 4 );
+    }
+}
+// add_action( 'wp_head', 'postscript_set_wp_scripts_transient' );
+
+/**
+ * Gets transient with arrays of front-end registered scripts or styles.
+ *
+ * If transient doesn't exist, load a post (to fire front-end hooks)
+ * then sets transient.
+ *
+ */
+function postscript_check_wp_scripts_transient( $file_type ) {
+    // If transient not set, run a post to trigger front-end hooks and globals.
+    $scripts = get_transient( 'postscript_wp_scripts' );
+    $styles  = get_transient( 'postscript_wp_styles' );
+
+    if ( ! is_array( $scripts ) || ! is_array( $styles ) ) {
+        delete_transient( 'postscript_wp_scripts' );
+        delete_transient( 'postscript_wp_styles' );
+        postscript_load_latest_post();
+    }
+
+    $transient = get_transient( $file_type );
+    return $transient;
+}
+
+/**
+ * Gets transient with arrays of front-end registered scripts or styles.
+ *
+ * @uses postscript_load_latest_post() Loads post
+ * @param string $file_type Name of transient
+ */
+function postscript_get_wp_scripts_transient( $file_type = 'postscript_wp_scripts' ) {
+    // Load a post to fire 'wp_head' and all 'wp_enqueue_scripts' hooks.
+    postscript_load_latest_post();
+
+    $transient = get_transient( $file_type );
+
+    return $transient;
+}
+
+/* ------------------------------------------------------------------------ *
+ * Functions for returning arrays of registered script/style handles.
+ * ------------------------------------------------------------------------ */
+
+/**
+ * Makes an alphabetized array of registered script handles.
+ */
+function postscript_script_handles() {
+    $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
+
+    // Array of registered scripts handles (from $wp_scripts object).
+    $scripts_reg = array_values( wp_list_pluck( $postscript_scripts_reg, 'handle' ) );
+    sort( $scripts_reg ); // Alphabetize.
+
+    return $scripts_reg;
+}
+
+/**
+ * Makes an alphabetized array of registered script handles.
+ */
+function postscript_style_handles() {
+    $postscript_styles_reg = get_transient( 'postscript_styles_reg' );
+
+    // Array of registered scripts handles (from $wp_scripts object).
+    $scripts_reg = array_values( wp_list_pluck( $postscript_styles_reg, 'handle' ) );
+    sort( $styles_reg ); // Alphabetize.
+
+    return $styles_reg;
+}
+
+
+/* ------------------------------------------------------------------------ *
  * Fire front-end hooks by loading a post (for future features).
  * ------------------------------------------------------------------------ */
 
@@ -58,113 +211,6 @@ function postscript_load_post( $post_id ) {
     return $response;
 }
 
-/* ------------------------------------------------------------------------ *
- * Functions to set/get transients with front-end script/style arrays.
- * ------------------------------------------------------------------------ */
-
-/**
- * Sets transient with arrays of front-end registered scripts/styles.
- *
- * The 'wp_head' hook fires after 'wp_enqueue_scripts', so all scripts registered.
- *
- */
-function postscript_set_wp_scripts_transient() {
-    global $wp_scripts, $wp_styles;
-
-    $postscript_wp_scripts = get_transient( 'postscript_wp_scripts' );
-    $postscript_wp_styles = get_transient( 'postscript_wp_styles' );
-
-    if ( $wp_scripts != $postscript_wp_scripts ) {
-        set_transient( 'postscript_wp_scripts', $wp_scripts->registered, 60 * 60 * 4 );
-    }
-
-    if ( $wp_styles != $postscript_wp_styles ) {
-        set_transient( 'postscript_wp_styles', $wp_styles->registered, 60 * 60 * 4 );
-    }
-}
-add_action( 'wp_head', 'postscript_set_wp_scripts_transient' );
-
-/**
- * Gets transient with arrays of front-end registered scripts or styles.
- *
- * If transient doesn't exist, load a post (to fire front-end hooks)
- * then sets transient.
- *
- */
-function postscript_check_wp_scripts_transient( $file_type ) {
-    // If transient not set, run a post to trigger front-end hooks and globals.
-    $scripts = get_transient( 'postscript_wp_scripts' );
-    $styles  = get_transient( 'postscript_wp_styles' );
-
-    if ( ! is_array( $scripts ) || ! is_array( $styles ) ) {
-        delete_transient( 'postscript_wp_scripts' );
-        delete_transient( 'postscript_wp_styles' );
-        postscript_load_latest_post();
-    }
-
-    $transient = get_transient( $file_type );
-    return $transient;
-}
-
-/**
- * Gets transient with arrays of front-end registered scripts or styles.
- *
- * @uses postscript_load_latest_post() Loads post
- * @param string $file_type Name of transient
- */
-function postscript_get_wp_scripts_transient( $file_type = 'postscript_wp_scripts' ) {
-    // Load a post to fire 'wp_head' and all 'wp_enqueue_scripts' hooks.
-    postscript_load_latest_post();
-
-    $transient = get_transient( $file_type );
-
-    return $transient;
-}
-
-/* ------------------------------------------------------------------------ *
- * Functions for getting registered scripts and styles.
- * ------------------------------------------------------------------------ */
-
-/**
- * Makes an alphabetized array of registered script handles.
- */
-function postscript_script_handles() {
-    $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
-
-    // Array of registered scripts handles (from $wp_scripts object).
-    $scripts_reg = array_values( wp_list_pluck( $postscript_scripts_reg, 'handle' ) );
-    sort( $scripts_reg ); // Alphabetize.
-
-    return $scripts_reg;
-}
-
-/**
- * Makes an alphabetized array of registered script handles.
- */
-function postscript_style_handles() {
-    $postscript_styles_reg = get_transient( 'postscript_styles_reg' );
-
-    // Array of registered scripts handles (from $wp_scripts object).
-    $scripts_reg = array_values( wp_list_pluck( $postscript_styles_reg, 'handle' ) );
-    sort( $styles_reg ); // Alphabetize.
-
-    return $styles_reg;
-}
-
-/**
- * Makes an alphabetized array of registered style handles.
- */
-function postscript_get_style_reg_handles() {
-    $wp_styles = wp_styles();
-
-
-    // Array of registered scripts handles (from $wp_scripts object).
-    $styles_reg = array_values( wp_list_pluck( $wp_styles->registered, 'handle' ) );
-    sort( $styles_reg ); // Alphabetize.
-
-    return $styles_reg;
-}
-
 /**
  * Return only matching array elements..
  */
@@ -184,74 +230,8 @@ function postscript_filter_array() {
 
 }
 
-/**
- * Outputs HTML select element populated with registered script handles (alphabetized).
- */
-function postscript_scripts_reg_select() {
-    global $wp_scripts;
-    $scripts_data = '';
-    $postscript_scripts_reg_handles = array();
-
-    // Make array to sort registered scripts by handle (from $wp_scripts object).
-    foreach( $wp_scripts->registered as $script_reg ) {
-        $postscript_scripts_reg_handles[] = $script_reg->handle;
-    }
-    sort( $postscript_scripts_reg_handles );
-
-    // $options = get_option( 'postscript_scripts_option' );
-    ?>
-    <select id="postscript_scripts" name="postscript[scripts]">
-        <option value=''><?php _e( 'Select a script:', 'postscript' ); ?></option>
-        <?php
-        foreach( $postscript_scripts_reg_handles as $script_handle ) {
-            echo "<option value=\"{$script_handle}\">{$script_handle}</option>";
-        }
-        ?>
-    </select>
-    <?php
-}
-
 /* ------------------------------------------------------------------------ *
- * Functions for arrays and objects.
- * ------------------------------------------------------------------------ */
-
-/**
- * Sanitizes array, object, or string values (from Jetpack Stats module).
- *
- * @since 1.0.0
- *
- * @param array|object|string $value value to be sanitized
- * @return array|object|string $value sanitized value
- */
-function postscript_esc_html_deep( $value ) {
-    if ( is_array( $value ) ) {
-        $value = array_map( 'stats_esc_html_deep', $value );
-    } elseif ( is_object( $value ) ) {
-        $vars = get_object_vars( $value );
-        foreach ( $vars as $key => $data ) {
-            $value->{$key} = postscript_esc_html_deep( $data );
-        }
-    } elseif ( is_string( $value ) ) {
-        $value = esc_html( $value );
-    }
-
-    return $value;
-}
-
-/**
- * Convert an object to an array, recursively.
- *
- * https://coderwall.com/p/8mmicq/php-convert-mixed-array-objects-recursively
- */
-function postscript_object_into_array( $obj ) {
-    if (is_object( $obj ) )
-        $obj = get_object_vars( $obj );
-
-    return is_array( $obj ) ? array_map( __FUNCTION__, $obj ) : $obj;
-}
-
-/* ------------------------------------------------------------------------ *
- * Utility functions for options.
+ * Functions to get/set options.
  * ------------------------------------------------------------------------ */
 
 /**
@@ -362,97 +342,48 @@ function postscript_upgrade_options( $options ) {
     return $new_options;
 }
 
-/**
- * Sets and option (array) with form-submitted setting values (array items).
- *
- * @since 1.0.0
- *
- * @uses postscript_set_options()
- */
-function postscript_configuration_load() {
-    if ( isset( $_POST['action'] ) && $_POST['action'] == 'save_options' && $_POST['_wpnonce'] == wp_create_nonce( 'postscript' ) ) {
-        $options = postscript_get_options();
-        $options['script_url']  = isset( $_POST['script_url']  ) && $_POST['script_url'];
-        $options['style_url'] = isset( $_POST['style_url'] ) && $_POST['style_url'];
+/* ------------------------------------------------------------------------ *
+ * Functions for post meta.
+ * ------------------------------------------------------------------------ */
 
-        $options['roles'] = array( 'administrator' );
-        foreach ( get_editable_roles() as $role => $details ) { // Get user roles.
-            if ( isset( $_POST["role_$role"] ) && $_POST["role_$role"] ) { // Set only if valid user role.
-                $options['roles'][] = $role;
-            }
-        }
-
-        $options['post_types'] = array();
-        foreach ( get_post_types() as $post_type ) { // Get post types.
-            if ( isset( $_POST["post_type_$post_type"] ) && $_POST["post_type_$post_type"] ) { // Set only if valid post type.
-                $options['post_types'][] = $post_type;
-            }
-        }
-
-        $options['scripts'] = array();
-        foreach ( postscript_reg_script_handles() as $script ) { // Get registered script handles.
-            if ( isset( $_POST["script_$script"] ) && $_POST["script_$script"] ) { // Set only if valid handle.
-                $options['scripts'][] = $script;
-            }
-        }
-
-        $options['styles'] = array();
-        foreach ( postscript_reg_style_handles() as $style ) { // Get registered style handles.
-            if ( isset( $_POST["style_$style"] ) && $_POST["style_$style"] ) { // Set only if valid handle.
-                $options['styles'][] = $style;
-            }
-        }
-
-        postscript_set_options( $options );
-        postscript_configuration_screen();
-        // postscript_jp_update_blog();
-        // Jetpack::state( 'message', 'module_configured' );
-        // wp_safe_redirect( Jetpack::module_configuration_url( 'stats' ) );
-        exit;
-    }
-}
 
 /* ------------------------------------------------------------------------ *
- * Utility functions for post meta.
+ * Functions for arrays and objects.
  * ------------------------------------------------------------------------ */
 
 /**
- * Retrieves an option, and array of plugin settings, from database.
- *
- * Settings screen and option functions based on Jetpack Stats:
- * /jetpack/modules/stats.php
+ * Sanitizes array, object, or string values (from Jetpack Stats module).
  *
  * @since 1.0.0
  *
- * @uses postscript_upgrade_options()
- * @return array $options array of plugin settings
+ * @param array|object|string $value value to be sanitized
+ * @return array|object|string $value sanitized value
  */
-function postscript_get_post_meta_all() {
-    $options = get_option( 'postscript' );
-
-    // Set version if not the latest.
-    if ( ! isset( $options['version'] ) || $options['version'] < POSTSCRIPT_VERSION ) {
-        $options = postscript_upgrade_options( $options );
+function postscript_esc_html_deep( $value ) {
+    if ( is_array( $value ) ) {
+        $value = array_map( 'stats_esc_html_deep', $value );
+    } elseif ( is_object( $value ) ) {
+        $vars = get_object_vars( $value );
+        foreach ( $vars as $key => $data ) {
+            $value->{$key} = postscript_esc_html_deep( $data );
+        }
+    } elseif ( is_string( $value ) ) {
+        $value = esc_html( $value );
     }
 
-    return $options;
+    return $value;
 }
 
 /**
- * Retrieves a specific setting (an array item) from an option (an array).
+ * Convert an object to an array, recursively.
  *
- * @since 1.0.0
- *
- * @uses postscript_get_options()
- * @param array|object|string $option array item key
- * @return array $options[$option] array item value
+ * https://coderwall.com/p/8mmicq/php-convert-mixed-array-objects-recursively
  */
-function postscript_get_post_meta_one( $option ) {
-    $options = postscript_get_options();
+function postscript_object_into_array( $obj ) {
+    if (is_object( $obj ) )
+        $obj = get_object_vars( $obj );
 
-    if ( isset( $options[$option] ) ) {
-        return $options[$option];
-    }
-
-    return null;
+    return is_array( $obj ) ? array_map( __FUNCTION__, $obj ) : $obj;
 }
+
+
