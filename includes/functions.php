@@ -172,14 +172,6 @@ function postscript_filter_array() {
 
 }
 
-function ps_script_is( $script, $list = 'registered') {
-    if ( wp_script_is( $script, $list ) ) {
-        echo 'yo';
-    } else {
-    echo 'no';
-    }
-}
-
 /**
  * Outputs HTML select element populated with registered script handles (alphabetized).
  */

@@ -5,7 +5,7 @@ Plugin Name:       Postscript
 Plugin URI:        http://hearingvoices.com/tools/
 Plugin URI:        http://hearingvoices.com/tools/
 Description:       Allows users to enqueue scripts and styles for individual posts. Use <a href="options-general.php?page=postscript">Settings</a> to select registered JS/CSS files, also to dis/allow unregistered URLs and <code>body_class()</code>/<code>post_class()</code> classes.
-Version:           1.0.0
+Version:           0.1
 Author:            Barrett Golding
 Author URI:        http://rjionline.org/
 License:           GPL-2.0+
