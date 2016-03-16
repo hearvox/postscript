@@ -142,28 +142,6 @@ function postscript_set_option( $option, $value ) {
  * @since 0.1
  */
 function postscript_get_reg_scripts() {
-    /* For future feature to separate defaults from plugin/theme scripts.
-    // Arrays with WordPress default back-end scripts.
-    $wp_scripts_pre = wp_scripts();
-    $wp_styles_pre  = wp_styles();
-
-    // Default scripts array.
-    $scripts_pre            = $wp_scripts_pre->registered;
-    $postscript_scripts_pre = get_transient( 'postscript_scripts_pre' );
-
-    $styles_pre             = $wp_styles_pre->registered;
-    $postscript_styles_pre  = get_transient( 'postscript_styles_pre' );
-
-    // Set transients with defaults scripts.
-    if ( $scripts_pre != $postscript_scripts_pre ) {
-        set_transient( 'postscript_scripts_pre', $scripts_pre, 60 * 60 * 4 );
-    }
-
-    if ( $styles_pre != $postscript_styles_pre ) {
-        set_transient( 'postscript_styles_pre', $styles_pre, 60 * 60 * 4 );
-    }
-    */
-
     // Hack to get front-end scripts into memory, from here in the back-end
     // (in $wp_scripts, $wp_styles) by firing the front-end registration hook.
     do_action( 'wp_enqueue_scripts' );
@@ -187,6 +165,35 @@ function postscript_get_reg_scripts() {
     if ( $styles_reg != $postscript_styles_reg ) {
         set_transient( 'postscript_styles_reg', $styles_reg, 60 * 60 * 4 );
     }
+
+    /* For future feature to separate defaults from plugin/theme scripts.
+    // Get arrays of only back-end and only front-end scripts
+    // by comparing before and after actions arrays.
+    $wp_scripts_front = array_diff( $wp_scripts_reg, $wp_scripts_pre);
+    $wp_scripts_back = array_intersect( $wp_scripts_reg, $wp_scripts_pre);
+
+    // THIS GOES ABOVE AT TOP OF FN, ABOVE do_action().
+    // Arrays with WordPress default and back-end scripts.
+    $wp_scripts_pre = wp_scripts();
+    $wp_styles_pre  = wp_styles();
+
+    // Default scripts array.
+    $scripts_pre            = $wp_scripts_pre->registered;
+    $postscript_scripts_pre = get_transient( 'postscript_scripts_pre' );
+
+    $styles_pre             = $wp_styles_pre->registered;
+    $postscript_styles_pre  = get_transient( 'postscript_styles_pre' );
+
+    // Set transients with defaults scripts.
+    if ( $scripts_pre != $postscript_scripts_pre ) {
+        set_transient( 'postscript_scripts_pre', $scripts_pre, 60 * 60 * 4 );
+    }
+
+    if ( $styles_pre != $postscript_styles_pre ) {
+        set_transient( 'postscript_styles_pre', $styles_pre, 60 * 60 * 4 );
+    }
+    */
+
 }
 add_action( 'shutdown', 'postscript_get_reg_scripts' );
 
