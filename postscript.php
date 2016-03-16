@@ -4,7 +4,7 @@
 Plugin Name:       Postscript
 Plugin URI:        http://hearingvoices.com/tools/
 Plugin URI:        http://hearingvoices.com/tools/
-Description:       For data visionaries and multi-mediators. Allows users to enqueue scripts and styles for individual posts. Use <a href="options-general.php?page=postscript">Settings</a> select the registered JS/CSS files to allow, and to permit adding unregistered JS/CSS URLs and <code>body_class()</code>/<code>post_class()</code> classes.
+Description:       For data visionaries and multi-mediators. Enqueue scripts and styles for individual posts (from the Edit Post screen). Also add classes to body tag and <code>post_class()</code>. Choose options on the <a href="options-general.php?page=postscript">Settings</a> screen for roles and post-types, and for which scripts, styles, and classes to allow.
 Version:           0.1
 Author:            Barrett Golding
 Author URI:        http://rjionline.org/

@@ -122,21 +122,23 @@ function postscript_meta_box_callback( $post, $box ) {
     // Print checklist of admin-settings selected styles and scripts (custom tax terms), with checked on top.
     ?>
     <?php wp_nonce_field( basename( __FILE__ ), 'postscript_meta_nonce' ); ?>
-    <?php if ( get_terms( 'postscript_scripts', array( 'hide_empty' => false ) ) ) { ?>
-    <p>
-        <h3 class="hndle"><span><?php _e('Load Scripts', 'postscript' ); ?></span></h3>
-        <ul id="postscript_styleschecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-            <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_scripts', 'selected_cats' => true, 'checked_ontop' => true ) ); ?>
-        </ul>
-    </p>
-    <?php } ?>
     <?php if ( get_terms( 'postscript_styles', array( 'hide_empty' => false ) ) ) { ?>
     <p>
         <h3 class="hndle"><span><?php _e('Load Styles', 'postscript' ); ?></span></h3>
-        <ul id="postscript_scriptschecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
+        <ul id="postscript_styleschecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
             <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_styles', 'selected_cats' => true, 'checked_ontop' => true ) ); ?>
         </ul>
     </p>
+    <hr />
+    <?php } ?>
+    <?php if ( get_terms( 'postscript_scripts', array( 'hide_empty' => false ) ) ) { ?>
+    <p>
+        <h3 class="hndle"><span><?php _e('Load Scripts', 'postscript' ); ?></span></h3>
+        <ul id="postscript_scriptschecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
+            <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'postscript_scripts', 'selected_cats' => true, 'checked_ontop' => true ) ); ?>
+        </ul>
+    </p>
+    <hr />
     <?php } ?>
     <?php
     // Display text fields for: URLs (style and script) and classes (body and post).
@@ -160,6 +162,9 @@ function postscript_meta_box_callback( $post, $box ) {
         <label for="postscript-url-script-2"><?php _e( 'JS file URL 2:', 'postscript' ); ?></label><br />
         <input class="widefat" type="url" name="postscript_meta[url_script_2]" id="postscript-url-script-2" value="<?php if ( isset ( $postscript_meta['url_script_2'] ) ) { echo esc_url_raw( $postscript_meta['url_script_2'] ); } ?>" size="30" />
     </p>
+    <?php } ?>
+    <?php if ( isset ( $opt_allow['class_body'] ) || isset ( $opt_allow['class_post'] ) ) { ?>
+    <hr />
     <?php } ?>
     <?php if ( isset ( $opt_allow['class_body'] ) ) { ?>
     <p>
@@ -228,7 +233,7 @@ function postscript_save_post_meta( $post_id, $post ) {
 
     if ( isset( $_POST['tax_input'] ) ) {
     // Convert array values (term IDs) to integers.
-    $style_ids  =  array_map ( 'intval', $_POST['tax_input']['postscript_ styles'] );
+    $style_ids  =  array_map ( 'intval', $_POST['tax_input']['postscript_styles'] );
     $script_ids =  array_map ( 'intval', $_POST['tax_input']['postscript_scripts'] );
         wp_set_object_terms( $post_id, $style_ids, 'postscript_styles', false );
         wp_set_object_terms( $post_id, $script_ids, 'postscript_scripts', false );
