@@ -535,8 +535,8 @@ function postscript_meta_box_example() {
     <hr />
     <h2><?php _e('Postscript meta box example', 'postscript' ); ?></h2>
     <p>
-        <?php _e('If user-role is: ', 'postscript' ); ?><?php echo implode( $options['user_roles'], ', ' ); ?><br />
-        <?php _e('If post-type is: ', 'postscript' ); ?><?php echo implode( $options['post_types'], ', ' ); ?><br />
+        <?php _e('&bull; For user-role(s): ', 'postscript' ); ?><?php echo implode( $options['user_roles'], ', ' ); ?><br />
+        <?php _e('&bull; For post-type(s): ', 'postscript' ); ?><?php echo implode( $options['post_types'], ', ' ); ?><br />
         <?php _e('This meta box displays on the Edit Post screen:', 'postscript' ); ?>
     <p>
 
