@@ -60,7 +60,7 @@ function postscript_settings_display() {
  * Adds or removes any user-selected script/style in the form submission data.
  */
 function postscript_add_remove() {
-    $options = get_option( 'postscript' );
+    $options = postscript_get_options();
 
     // Arrays of registered script handles.
     $script_handles = postscript_script_handles();
@@ -466,7 +466,7 @@ function postscript_script_add_callback() {
  *
  * ------------------------------------------------------------------------ */
 function postscript_pre_get_posts( $query ) {
-    $options = postscript_get_options( 'postscript' );
+    $options = postscript_get_options();
     if ( is_admin() ) {
         if ( get_query_var( 'postscript_scripts' ) || get_query_var( 'postscript_styles' ) ) {
             $query->set('post_type', '' ); // Hack: to get all post-type to display for term.
