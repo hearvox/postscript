@@ -30,17 +30,18 @@ function postscript_enqueue_handles() {
         $scripts = get_the_terms( get_the_ID(), 'postscript_scripts' );
         $styles  = get_the_terms( get_the_ID(), 'postscript_styles' );
 
-        // If custom tax terms, check for registered handle, then enqueue.
+        // If custom tax terms, sanitize then enqueue handle.
         if ( $scripts ) {
             foreach ( $scripts as $script ) {
-                    $handle = sanitize_key( $script->name );
-                    wp_enqueue_script( sanitize_key( $script->name ) );
+                $handle = sanitize_key( $script->name );
+                wp_enqueue_script( sanitize_key( $handle ) );
             }
         }
 
         if ( $styles ) {
             foreach ( $styles as $style ) {
-                    wp_enqueue_style( sanitize_key( $style->name ) );
+                $handle = sanitize_key( $style->name );
+                wp_enqueue_style( sanitize_key( $handle ) );
             }
         }
 
