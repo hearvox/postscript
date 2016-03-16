@@ -36,21 +36,15 @@ function postscript_settings_display() {
     // Before rendering forms, add or remove any user-selected script and style.
     postscript_add_remove();
     ?>
-    <!-- Create a header in the default WordPress 'wrap' container -->
     <div class="wrap">
-        <!-- Add the icon to the page -->
         <h2><?php _e('Postscript settings', 'postscript' ); ?></h2>
-
-        <!-- Make a call to the WordPress function for rendering errors when settings are saved. -->
-        <?php // settings_errors(); ?>
-
-        <!-- Create the form that will be used to render our options -->
+        <!-- Create the form that will be used to render our options. -->
         <form method="post" action="options.php">
             <?php settings_fields( 'postscript' ); ?>
             <?php do_settings_sections( 'postscript' ); ?>
             <?php submit_button(); ?>
         </form>
-
+        <!-- Render post meta box as it displays in Edit Post, based on settings. -->
         <?php postscript_meta_box_example(); ?>
     </div><!-- .wrap -->
     <?php
@@ -58,6 +52,8 @@ function postscript_settings_display() {
 
 /**
  * Adds or removes any user-selected script/style in the form submission data.
+ *
+ * @uses  postscript_get_options() Safely gets site option.
  */
 function postscript_add_remove() {
     $options = postscript_get_options();
@@ -297,9 +293,11 @@ function postscript_allow_fields_callback( $options ) {
 
 /**
  * Outputs HTML select menu of all registered styles.
+ *
+ * @uses  postscript_style_handles() Array of registered style handles.
  */
 function postscript_style_add_callback() {
-    // Array of registered script handles.
+    // Array of alphabetized, front-end registered script handles.
     $style_handles = postscript_style_handles();
 
     // Output HTML select menu of (sorted) handles.
@@ -335,7 +333,7 @@ function postscript_style_add_callback() {
         </thead>
         <tbody>
     <?php
-    // Array of registered styles' data (transient stores front-end $wp_styles).
+    // Array of registered styles' data (the transient holds front-end $wp_styles).
     $postscript_styles_reg  = get_transient( 'postscript_styles_reg' );
 
     if ( ! empty( $styles_added ) ) {
@@ -376,9 +374,11 @@ function postscript_style_add_callback() {
 
 /**
  * Outputs HTML select menu of all registered scripts.
+ *
+ * @uses  postscript_script_handles() Array of registered script handles.
  */
 function postscript_script_add_callback() {
-    // Array of registered script handles.
+    // Array of alphabetized front-end registered script handles.
     $script_handles = postscript_script_handles();
 
     // Output HTML select menu of (sorted) registered script handles.
@@ -458,13 +458,13 @@ function postscript_script_add_callback() {
     <?php
 }
 
-/* ------------------------------------------------------------------------ *
+/**
  * Displays all allowed post-types in post lists for plugin's custom tax term.
  *
- * Term's post-count link displays in Settings page table and tax admin screens.
+ * erm's post-count link displays in Settings page table and tax admin screens.
  *
- *
- * ------------------------------------------------------------------------ */
+ * @uses  postscript_get_options() Safely gets site option.
+ */
 function postscript_pre_get_posts( $query ) {
     $options = postscript_get_options();
     if ( is_admin() ) {
@@ -525,7 +525,7 @@ function postscript_style_remove_callback() {
  * Render example of Edit Post screen meta box, based on settings using post's meta box fn.
  *
  * @see   /includes/meta-box.php
- * @uses  postscript_meta_box_callback()
+ * @uses  postscript_get_options() Safely gets site option.
  */
 function postscript_meta_box_example() {
     $options     = postscript_get_options( 'postscript' );

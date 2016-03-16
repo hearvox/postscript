@@ -28,6 +28,7 @@ function postscript_create_taxonomies() {
 }
 add_action( 'init', 'postscript_create_taxonomies', 0 );
 
+// Tax doesn't regsiter with firing 'init'.
 do_action( 'init' );
 
 /**
