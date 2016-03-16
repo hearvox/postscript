@@ -28,6 +28,8 @@ function postscript_create_taxonomies() {
 }
 add_action( 'init', 'postscript_create_taxonomies', 0 );
 
+do_action( 'init' );
+
 /**
  * Remove plugin taxonomies and their terms.
  *
