@@ -4,37 +4,14 @@
  * The post editor functionality of the plugin.
  *
  * @link       http://hearingvoices.com/tools/
- * @since 0.1
+ * @since      0.1
  *
  * @package    Postscript
  * @subpackage Postscript/includes
  */
 
 /* ------------------------------------------------------------------------ *
- * Meta Box for the Edit screen.
- * ------------------------------------------------------------------------ */
-
-/**
- * Removes default display of plugin's custom tax checkboxes.
- * (Replaced by plugin's custom meta box. Save doesn't work if both there.)
- */
-function postscript_remove_meta_boxes() {
-    $options = postscript_get_options( 'postscript' );
-
-    foreach ( $options['post_types'] as $post_type ) {
-        remove_meta_box( 'postscript_scriptsdiv', $post_type, 'normal' );
-        remove_meta_box( 'postscript_stylesdiv', $post_type, 'normal' );
-    }
-}
-add_action( 'admin_menu' , 'postscript_remove_meta_boxes' );
-
-
-
-// $postscript_options = get_option( 'postscript' );
-
-
-/* ------------------------------------------------------------------------ *
- * Meta Box for Post Editor
+ * Meta Box for the Post Edit screen.
  * ------------------------------------------------------------------------ */
 
 /**
@@ -60,8 +37,8 @@ add_action( 'load-post-new.php', 'postscript_meta_box_setup' );
 /**
  * Creates meta box for the post editor screen.
  *
- * Passes $option array to callback.
- * postscript_get_options( 'postscript' ) returns:
+ * Passes array of user-setting options to callback.
+  * postscript_get_options() returns:
  * Array
  * (
  *     [user_roles] => Array
@@ -92,10 +69,10 @@ add_action( 'load-post-new.php', 'postscript_meta_box_setup' );
  *     [version]       => 1.0.0
  * )
  *
- * @uses  postscript_get_options Safe way to grab options from database.
+ * @uses postscript_get_options() Safely gets option from database.
  */
 function postscript_add_meta_box() {
-    $options = postscript_get_options( 'postscript' );
+    $options = postscript_get_options();
 
     add_meta_box(
         'postscript-meta',
@@ -111,15 +88,19 @@ function postscript_add_meta_box() {
 /**
  * Builds HTML form for the post meta box.
  *
- * Callback function for add_meta_box() -- params below.
- * Used by postscript_add_post_meta_boxes().
- * @param object $post Object containing the current post
- * @param array $box Array of meta box id, title, callback, and args elements
+ * Form elements are checkboxes to select script/style handles (stored as tax terms),
+ * and text fields for entering body/post classes (stored in same post-meta array).
+ *
+ * Form elements are printed only if allowed on Setting page.
+ * Callback function passes array of settings-options in args ($box).
+ *
+ * @param  object $post Object containing the current post.
+ * @param  array $box Array of meta box id, title, callback, and args elements.
  * @return string HTML of meta box
  */
 function postscript_meta_box_callback( $post, $box ) {
     $post_id = $post->ID;
-    // Print checklist of admin-settings selected styles and scripts (custom tax terms), with checked on top.
+    // Print checklist of selected styles and scripts (custom tax terms), with checked on top.
     ?>
     <?php wp_nonce_field( basename( __FILE__ ), 'postscript_meta_nonce' ); ?>
     <?php if ( get_terms( 'postscript_styles', array( 'hide_empty' => false ) ) ) { ?>
@@ -141,7 +122,7 @@ function postscript_meta_box_callback( $post, $box ) {
     <hr />
     <?php } ?>
     <?php
-    // Display text fields for: URLs (style and script) and classes (body and post).
+    // Display text fields for: URLs (style/script) and classes (body/post).
     $opt_allow = $box['args']['allow'];
     $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
     ?>
@@ -183,7 +164,7 @@ function postscript_meta_box_callback( $post, $box ) {
 }
 
 /**
- * Saves the meta box form data.
+ * Saves the meta box form data upon submission.
  */
 function postscript_save_post_meta( $post_id, $post ) {
 
@@ -197,7 +178,7 @@ function postscript_save_post_meta( $post_id, $post ) {
         return;
     }
 
-    // Get the post type object.
+    // Get the post type object (to match with current user capability).
     $post_type = get_post_type_object( $post->post_type );
 
     // Check if the current user has permission to edit the post.
@@ -205,7 +186,7 @@ function postscript_save_post_meta( $post_id, $post ) {
         return $post_id;
     }
 
-    // Get and sanitize the posted data.
+    // Get and sanitize the posted form data.
     $new_meta_value = ( isset( $_POST['postscript_meta'] ) ?  $_POST['postscript_meta'] : '' );
     if ( $new_meta_value ) {
         $new_meta_value['url_style']  = esc_url_raw( $new_meta_value['url_style'] );
@@ -232,7 +213,7 @@ function postscript_save_post_meta( $post_id, $post ) {
     }
 
     if ( isset( $_POST['tax_input'] ) ) {
-    // Convert array values (term IDs) to integers.
+    // Convert array values (term IDs) from number strings to integers.
     $style_ids  =  array_map ( 'intval', $_POST['tax_input']['postscript_styles'] );
     $script_ids =  array_map ( 'intval', $_POST['tax_input']['postscript_scripts'] );
         wp_set_object_terms( $post_id, $style_ids, 'postscript_styles', false );
@@ -240,3 +221,17 @@ function postscript_save_post_meta( $post_id, $post ) {
     }
 
 }
+
+/**
+ * Removes default display of plugin's custom tax checkboxes.
+ * (Handled by plugin's meta box. Save won't work if both tax forms are in form.)
+ */
+function postscript_remove_meta_boxes() {
+    $options = postscript_get_options( 'postscript' );
+
+    foreach ( $options['post_types'] as $post_type ) {
+        remove_meta_box( 'postscript_scriptsdiv', $post_type, 'normal' );
+        remove_meta_box( 'postscript_stylesdiv', $post_type, 'normal' );
+    }
+}
+add_action( 'admin_menu' , 'postscript_remove_meta_boxes' );
