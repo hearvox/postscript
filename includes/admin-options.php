@@ -99,7 +99,7 @@ function postscript_options_init() {
 
     add_settings_section(
         'postscript_settings_section',
-        __( 'Postcript box visibility', 'postscript' ),
+        __( 'Postcript meta box', 'postscript' ),
         'postscript_section_callback',
         'postscript'
     );
@@ -194,8 +194,8 @@ add_action('admin_init', 'postscript_options_init');
  */
 function postscript_section_callback() {
     ?>
-    <p><?php _e('The Postscript meta box (in the Edit Post screen) lets users enqueue scripts and styles for a single post.', 'postscript' ); ?></p>
-    <p><?php _e('Choose which post-types and user-roles display the Postscript box.', 'postscript' ); ?></p>
+    <p><?php _e('Postscript lets you enqueue scripts and styles for a single post in the Edit Post screen.', 'postscript' ); ?></p>
+    <p><?php _e('Choose the post-types and user-roles that display the Postscript box:', 'postscript' ); ?></p>
     <?php
 }
 
@@ -453,7 +453,7 @@ function postscript_script_add_callback() {
     </table>
     <p class="wp-ui-text-icon textright">
         <?php _e( '<strong>Status</strong> response code links to <code>src</code> file.', 'postscript' ); ?><br />
-        <?php _e( '<strong>Posts</strong> count link lists posts enqueueing the file.', 'postscript' ); ?>
+        <?php _e( '<strong>Posts-count</strong> links to list of posts using the file.', 'postscript' ); ?>
     </p>
     <?php
 }
@@ -533,14 +533,14 @@ function postscript_meta_box_example() {
     $fake_post   = (object) array( 'ID' => '-1'); // Meta box needs a post object id.
     ?>
     <hr />
-    <h2><?php _e('Postscript meta box example', 'postscript' ); ?></h2>
+    <h2><?php _e('Postscript box example', 'postscript' ); ?></h2>
     <p>
         <?php _e('&bull; For user-role(s): ', 'postscript' ); ?><?php echo implode( $options['user_roles'], ', ' ); ?><br />
         <?php _e('&bull; For post-type(s): ', 'postscript' ); ?><?php echo implode( $options['post_types'], ', ' ); ?><br />
         <?php _e('This meta box displays on the Edit Post screen:', 'postscript' ); ?>
     <p>
 
-    <div id="postscript-meta" class="postbox postbox-container">
+    <div id="postscript-meta" class="postbox-container">
         <div id="categorydiv" class="postbox ">
         <h2 class="hndle ui-sortable-handle"><span>Postscript</span></h2>
             <div class="inside">
