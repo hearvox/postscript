@@ -320,7 +320,7 @@ function postscript_style_add_callback() {
     // Display table of selected handles (with $wp_styles data and term's post count).
     ?>
     <table class="wp-list-table widefat striped">
-        <caption><strong>Styles added</strong></caption>
+        <caption><strong><?php _e( 'Styles added', 'postscript' ); ?></strong></caption>
         <thead>
             <tr>
                 <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Handle', 'postscript' ); ?></th>
@@ -402,7 +402,7 @@ function postscript_script_add_callback() {
     // Display table of selected handles (with $wp_scripts data and term's post count).
     ?>
     <table class="wp-list-table widefat striped">
-        <caption><strong>Scripts added</strong></caption>
+        <caption><strong><?php _e( 'Scripts added', 'postscript' ); ?></strong></caption>
         <thead>
             <tr>
                 <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Handle', 'postscript' ); ?></th>
@@ -431,7 +431,7 @@ function postscript_script_add_callback() {
                 $status_code  = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
                 // Tax term post count, linked to list of posts (if count>0).
                 $count  = $script_obj->count;
-                $posts_count  = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscript_styles=$script_name\">$count</a>" : $count;
+                $posts_count  = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscript_scripts=$script_name\">$count</a>" : $count;
             ?>
             <tr>
                 <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $script_name; ?></label></th>
@@ -469,7 +469,7 @@ function postscript_pre_get_posts( $query ) {
     $options = postscript_get_options();
     if ( is_admin() ) {
         if ( get_query_var( 'postscript_scripts' ) || get_query_var( 'postscript_styles' ) ) {
-            $query->set('post_type', '' ); // Hack: to get all post-type to display for term.
+            $query->set('post_type', 'any' ); // Hack: to get all post-type to display for term.
 
             // $query->set('post_type', $options['post_types'] ); // Use this when fixed:
             // https://core.trac.wordpress.org/ticket/30013
