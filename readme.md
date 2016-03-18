@@ -43,6 +43,10 @@ To install the use the Postscript plugin:
 
 An answer to that question.
 
+## Contribute
+
+Postscript is now on [GitHub](https://github.com/hearvox/postscript). Pull Requests welcome.
+
 ### What about foo bar?
 
 Answer to foo bar dilemma.
