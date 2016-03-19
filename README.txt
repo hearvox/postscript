@@ -8,9 +8,7 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Data visionaries and multi-mediators, make any post sing with scripts and splendid with styles, all from within WordPress.
-
-**Attention:** This plugin is still *in developmemnt*. Not ready for public sue yet.
+For Data-visionaries and Multi-mediators: Make posts sing with scripts and styles, all from within WordPress.
 
 == Description ==
 
@@ -36,59 +34,65 @@ For each post, you can also add:
 To install the use the Postscript plugin:
 
 1. Upload the `postscript` directory and content to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Go to the Setting: Postscript options screen.
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Go to the Setting > Postscript options screen to select allowed scripts and styles.
 
 == Frequently Asked Questions ==
 
-= A question that someone might have =
-
-An answer to that question.
-
-= What about foo bar? =
-
-Answer to foo bar dilemma.
+= Question? =
+Answer.
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
+1. Caption of 1st screenshot.
+2. screenshot-1.png, sreenshot-2.png
+3. This screen shot description corresponds to screenshot-3.png. Note that the screenshot is taken from
 the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`.
 
 == Changelog ==
 
-= 1.0.0 =
-
-* Initial release
+= 0.1.0 =
+* Initial test version.
 
 == Upgrade Notice ==
 
-= 1.0.0 =
-(placeholder)
+= 0.5.0 =
+Visible on update notice in plugin or update page.
 
-== A brief Markdown Example ==
+== Translations ==
 
-Ordered list:
+* English - default, always included
 
-1. Some feature
-1. Another feature
-1. Something else about the plugin
+*Note:* This plugin is built to be easily translatable. Please contribute a translation in your language. 
 
-Unordered list:
+The WordPress.org Polyglots Team maintains a comprehensive [Translator’s Handbook](https://make.wordpress.org/polyglots/handbook/). All text strings in this plugin are localized, following the guidelines of the Wordpress.org Plugin Handbook's [Internationalization section](https://developer.wordpress.org/plugins/internationalization/).
 
-* something
-* something else
-* third thing
+(The additional sections display in "Other Notes" /other_notes/.)
 
-Here's a link to [WordPress](http://wordpress.org/ "Your favorite software") and one to [Markdown's Syntax Documentation][markdown syntax].
-Titles are optional, naturally.
+== Tech Notes ==
 
-[markdown syntax]: http://daringfireball.net/projects/markdown/syntax
-            "Markdown is what the parser uses to process much of the readme file"
+= Default Scripts and Styles =
 
-Markdown uses email style notation for blockquotes and I've been told:
-> Asterisks for *emphasis*. Double it up  for **strong**.
+notes for this section...
+[wp_enqueue_script()](https://developer.wordpress.org/reference/functions/wp_enqueue_script/)
+"Default Scripts Included and Registered by WordPress"
+Complete list: inspect $GLOBALS['wp_scripts']. Registered scripts might change per requested page. 
 
-`<?php code(); // goes in backticks ?>`
+Registrations are conditionally loaded and stored in memory, based on site section (admin, login, or front-end). 
+
+Default scripts are not added via wp_register_script., and added to WP_Scripts class via [wp_default_scripts()](https://developer.wordpress.org/reference/functions/wp_default_scripts/) and [wp_default_styles()](https://developer.wordpress.org/reference/functions/wp_default_styles/).
+
+[add_thickbox()](https://developer.wordpress.org/reference/functions/add_thickbox/)
+[ThickBox](https://codex.wordpress.org/Javascript_Reference/ThickBox)
+
+= E.g., Thickbox =
+one of the points of this plugin.
+WordPress makes use of a modified version of the ThickBox jQuery library
+
+= Future Features =
+/support/
+
+== Credits ==
+Thanks:
+This plugin was developed during a fellowship at the [Reynolds Journalism Institute](https://www.rjionline.org).
