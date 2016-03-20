@@ -17,16 +17,64 @@
 /**
  * Adds submenu item to Settings dashboard menu.
  *
+ * Sets Settings page screen ID: 'settings_page_postscript'.
+ *
  */
 function postscript_settings_menu() {
-    add_options_page(
+    $postscript_options_page = add_options_page(
         __('Postscript: Enqueue Scripts and Style', 'postscript' ),
         __( 'Postscript', 'postscript' ),
         'manage_options',
         'postscript',
-        'postscript_settings_display' );
+        'postscript_settings_display'
+    );
+
+    // Adds my_help_tab when my_admin_page loads
+    add_action( "load-$postscript_options_page", 'postscript_help_tab');
 }
 add_action('admin_menu', 'postscript_settings_menu');
+
+function postscript_help_tab() {
+    $current_screen = get_current_screen();
+
+    // Overview
+    $current_screen->add_help_tab(
+        array(
+            'id'        => 'home',
+            'title'     => __( 'Home', 'jetpack' ),
+            'content'   =>
+                '<p><strong>' . __( 'Jetpack by WordPress.com', 'jetpack' ) . '</strong></p>' .
+                '<p>' . __( 'Jetpack supercharges your self-hosted WordPress site with the awesome cloud power of WordPress.com.', 'jetpack' ) . '</p>' .
+                '<p>' . __( 'On this page, you are able to view the modules available within Jetpack, learn more about them, and activate or deactivate them as needed.', 'jetpack' ) . '</p>',
+        )
+    );
+
+    // Screen Content
+    if ( current_user_can( 'manage_options' ) ) {
+        $current_screen->add_help_tab(
+            array(
+                'id'        => 'settings',
+                'title'     => __( 'Settings', 'jetpack' ),
+                'content'   =>
+                    '<p><strong>' . __( 'Jetpack by WordPress.com',                                              'jetpack' ) . '</strong></p>' .
+                    '<p>' . __( 'You can activate or deactivate individual Jetpack modules to suit your needs.', 'jetpack' ) . '</p>' .
+                    '<ol>' .
+                        '<li>' . __( 'Each module has an Activate or Deactivate link so you can toggle one individually.',                                                      'jetpack' ) . '</li>' .
+                        '<li>' . __( 'Using the checkboxes next to each module, you can select multiple modules to toggle via the Bulk Actions menu at the top of the list.',   'jetpack' ) . '</li>' .
+                    '</ol>' .
+                    '<p>' . __( 'Using the tools on the right, you can search for specific modules, filter by module categories or which are active, or change the sorting order.', 'jetpack' ) . '</p>'
+            )
+        );
+    }
+
+    // Help Sidebar
+    $current_screen->set_help_sidebar(
+        '<p><strong>' . __( 'For more information:', 'jetpack' ) . '</strong></p>' .
+        '<p><a href="http://jetpack.me/faq/" target="_blank">'     . __( 'Jetpack FAQ',     'jetpack' ) . '</a></p>' .
+        '<p><a href="http://jetpack.me/support/" target="_blank">' . __( 'Jetpack Support', 'jetpack' ) . '</a></p>' .
+        '<p><a href="xxx">' . __( 'Jetpack Debugging Center', 'jetpack' ) . '</a></p>'
+    );
+}
 
 /**
  * Renders settings menu page.
@@ -37,7 +85,7 @@ function postscript_settings_display() {
     postscript_add_remove();
     ?>
     <div class="wrap">
-        <h2><?php _e('Postscript settings', 'postscript' ); ?></h2>
+        <h2>Postscript (v <?php echo POSTSCRIPT_VERSION; ?>) <?php _e('Settings', 'postscript' ); ?></h2>
         <!-- Create the form that will be used to render our options. -->
         <form method="post" action="options.php">
             <?php settings_fields( 'postscript' ); ?>
@@ -597,7 +645,9 @@ function postscript_meta_box_example() {
     <p class="clear wp-ui-text-icon"><?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?></p>
 
     <pre>
-        <?php print_r( get_option( 'postscript' ) ); ?>
+        <?php // print_r( get_option( 'postscript' ) ); ?>
+        <?php echo $_GET['page']; ?>
+
     </pre>
     <?php
 }
