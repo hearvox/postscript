@@ -38,36 +38,6 @@ add_action( 'load-post-new.php', 'postscript_meta_box_setup' );
  * Creates meta box for the post editor screen.
  *
  * Passes array of user-setting options to callback.
-  * postscript_get_options() returns:
- * Array
- * (
- *     [user_roles] => Array
- *         (
- *             [0] => {role_key}
- *             [1] => {role_key}
- *         )
- *
- *     [post_types] => Array
- *         (
- *             [0] => {post_type_key}
- *             [1] => {post_type_key}
- *         )
- *
- *     [allow] => Array
- *         (
- *             [url_style]  => on
- *             [url_script] => on
- *             [url_data]   => on
- *             [class_body] => on
- *             [class_post] => on
- *         )
- *
- *     [style_add]     => {style_handle}
- *     [script_add]    => {script_handle}
- *     [style_remove]  => {style_handle}
- *     [script_remove] => {script_handle}
- *     [version]       => 1.0.0
- * )
  *
  * @uses postscript_get_options() Safely gets option from database.
  */
@@ -92,7 +62,35 @@ function postscript_add_meta_box() {
  * and text fields for entering body/post classes (stored in same post-meta array).
  *
  * Form elements are printed only if allowed on Setting page.
- * Callback function passes array of settings-options in args ($box).
+ * Callback function passes array of settings-options in args ($box):
+ * Array
+ * (   // Settings used by meta-box:
+ *     [user_roles] => Array
+ *         (
+ *             [0] => {role_key}
+ *             [1] => {role_key}
+ *         )
+ *
+ *     [post_types] => Array
+ *         (
+ *             [0] => {post_type_key}
+ *             [1] => {post_type_key}
+ *         )
+ *
+ *     [allow] => Array
+ *         (
+ *             [urls_script] => 1
+ *             [urls_style]  => 1
+ *             [class_body] => on
+ *             [class_post] => on
+ *         )
+ *     // Not used by meta-box:
+ *     [add_script]    => {style_handle}
+ *     [add_style]     => {script_handle}
+ *     [remove_script] => {style_handle}
+ *     [remove_style]  => {script_handle}
+ *     [version]       => 1.0.0
+ * )
  *
  * @param  object $post Object containing the current post.
  * @param  array $box Array of meta box id, title, callback, and args elements.
@@ -126,34 +124,37 @@ function postscript_meta_box_callback( $post, $box ) {
     $opt_allow = $box['args']['allow'];
     $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
     ?>
-    <?php if ( isset ( $opt_allow['url_style'] ) ) { ?>
+    <?php if ( isset ( $opt_allow['urls_style'] ) && 1 === intval( $opt_allow['urls_style'] )  ) { // Admin setting allows style URL text field. ?>
     <p>
         <label for="postscript-url-style"><?php _e( 'CSS stylesheet URL:', 'postscript' ); ?></label><br />
         <input class="widefat" type="url" name="postscript_meta[url_style]" id="postscript-url-style" value="<?php if ( isset ( $postscript_meta['url_style'] ) ) { echo esc_url_raw( $postscript_meta['url_style'] ); } ?>" size="30" />
     </p>
     <?php } ?>
-    <?php if ( isset ( $opt_allow['url_script'] ) ) { ?>
+    <?php if ( isset ( $opt_allow['urls_script'] ) ) { // Admin setting allows script URL text field. ?>
+        <?php $urls_script = intval( $opt_allow['urls_script'] ); ?>
+        <?php if ( $urls_script ) { ?>
     <p>
-        <label for="postscript-url-script"><?php _e( 'JS file URL 1:', 'postscript' ); ?></label><br />
+        <label for="postscript-url-script"><?php _e( 'JavaScript URL:', 'postscript' ); ?></label><br />
         <input class="widefat" type="url" name="postscript_meta[url_script]" id="postscript-url-script" value="<?php if ( isset ( $postscript_meta['url_script'] ) ) { echo esc_url_raw( $postscript_meta['url_script'] ); } ?>" size="30" />
     </p>
-    <?php } ?>
-    <?php if ( isset ( $opt_allow['url_script_2'] ) ) { ?>
+        <?php } ?>
+        <?php if ( 2 === $urls_script ) { // Admin setting allows second script URL text field. ?>
     <p>
-        <label for="postscript-url-script-2"><?php _e( 'JS file URL 2:', 'postscript' ); ?></label><br />
+        <label for="postscript-url-script-2"><?php _e( 'JavaScript URL 2:', 'postscript' ); ?></label><br />
         <input class="widefat" type="url" name="postscript_meta[url_script_2]" id="postscript-url-script-2" value="<?php if ( isset ( $postscript_meta['url_script_2'] ) ) { echo esc_url_raw( $postscript_meta['url_script_2'] ); } ?>" size="30" />
     </p>
+        <?php } ?>
     <?php } ?>
-    <?php if ( isset ( $opt_allow['class_body'] ) || isset ( $opt_allow['class_post'] ) ) { ?>
+    <?php if ( isset ( $opt_allow['class_body'] ) || isset ( $opt_allow['class_post'] ) ) { // Whether to print <hr>.?>
     <hr />
     <?php } ?>
-    <?php if ( isset ( $opt_allow['class_body'] ) ) { ?>
+    <?php if ( isset ( $opt_allow['class_body'] ) ) { // Admin setting allows body_class() text field. ?>
     <p>
         <label for="postscript-class-body"><?php _e( 'Body class:', 'postscript' ); ?></label><br />
         <input class="widefat" type="text" name="postscript_meta[class_body]" id="postscript-class-body" value="<?php if ( isset ( $postscript_meta['class_body'] ) ) { echo sanitize_html_class( $postscript_meta['class_body'] ); } ?>" size="30" />
     </p>
     <?php } ?>
-    <?php if ( isset ( $opt_allow['class_post'] ) ) { ?>
+    <?php if ( isset ( $opt_allow['class_post'] ) ) { // Admin setting allows post_class() text field. ?>
     <p>
         <label for="postscript-class-post"><?php _e( 'Post class:', 'postscript' ); ?></label><br />
         <input class="widefat" type="text" name="postscript_meta[class_post]" id="postscript-class-post" value="<?php if ( isset ( $postscript_meta['class_post'] ) ) { echo sanitize_html_class( $postscript_meta['class_post'] ); } ?>" size="30" />
