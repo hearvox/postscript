@@ -147,7 +147,7 @@ function postscript_options_init() {
 
     add_settings_field(
         'postscript_style_add',
-        __( 'Add a Style', 'postscript' ),
+        __( '<label for="postscript-add-style">Add a Style</label>', 'postscript' ),
         'postscript_style_add_callback',
         'postscript',
         'postscript_scripts_styles_section'
@@ -155,7 +155,7 @@ function postscript_options_init() {
 
     add_settings_field(
         'postscript_script_add',
-        __( 'Add a Script', 'postscript' ),
+        __( '<label for="postscript-add-script">Add a Script</label>', 'postscript' ),
         'postscript_script_add_callback',
         'postscript',
         'postscript_scripts_styles_section'
@@ -163,7 +163,7 @@ function postscript_options_init() {
 
     add_settings_field(
         'postscript_style_remove',
-        __( 'Remove a Style', 'postscript' ),
+        __( '<label for="postscript-remove-style">Remove a Style</label>', 'postscript' ),
         'postscript_style_remove_callback',
         'postscript',
         'postscript_script_style_remove_section'
@@ -171,7 +171,7 @@ function postscript_options_init() {
 
     add_settings_field(
         'postscript_script_remove',
-        __( 'Remove a Script', 'postscript' ),
+        __( '<label for="postscript-remove-script">Remove a Script</label>', 'postscript' ),
         'postscript_script_remove_callback',
         'postscript',
         'postscript_script_style_remove_section'
@@ -280,11 +280,12 @@ function postscript_allow_fields_callback( $options ) {
     <fieldset>
         <legend><?php _e( 'Add a text field in Postscript box for:', 'postscript' ); ?></legend>
         <ul class="inside">
-            <li><label><input type="checkbox" id="" name="postscript[allow][url_style]" value="on"<?php checked( 'on', isset( $opt['url_style'] ) ? $opt['url_style'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[allow][url_script]" value="on"<?php checked( 'on', isset( $opt['url_script'] ) ? $opt['url_script'] : 'off' ); ?>/> <?php _e( 'Script URL 2', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[allow][url_script_2]" value="on"<?php checked( 'on', isset( $opt['url_script_2'] ) ? $opt['url_script_2'] : 'off' ); ?>/> <?php _e( 'Script URL 2', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[allow][class_body]" value="on"<?php checked( 'on', isset( $opt['class_body'] ) ? $opt['class_body'] : 'off' ); ?>/> <?php _e( 'Body class*', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="" name="postscript[allow][class_post]" value="on"<?php checked( 'on', isset( $opt['class_post'] ) ? $opt['class_post'] : 'off' ); ?>/> <?php _e( 'Post class*', 'postscript' ); ?></label></li>
+            <li><input type="radio" id="postscript-allow-url-style-0" name="postscript[allow][urls_style]" value="0"<?php checked( '0', isset( $opt['url_style'] ) ? $opt['url_style'] : '' ); ?>/><label for="postscript-allow-url-style-0">0</label> <input type="radio" id="postscript-allow-url-style-1" name="postscript[allow][urls_style]" value="1"<?php checked( $opt['urls_style'], '1' ); ?>/><label for="postscript-allow-url-style-1">1å</label> <?php _e( 'Style URL(s)', 'postscript' ); ?><label for="postscript-allow-url-style-0"></label></li>
+            <li><label><input type="checkbox" id="postscript-allow-url-style" name="postscript[allow][url_style]" value="on"<?php checked( 'on', isset( $opt['url_style'] ) ? $opt['url_style'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="postscript-allow-url-script" name="postscript[allow][url_script]" value="on"<?php checked( 'on', isset( $opt['url_script'] ) ? $opt['url_script'] : 'off' ); ?>/> <?php _e( 'Script URL 2', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="postscript-allow-url-script-2" name="postscript[allow][url_script_2]" value="on"<?php checked( 'on', isset( $opt['url_script_2'] ) ? $opt['url_script_2'] : 'off' ); ?>/> <?php _e( 'Script URL 2', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="postscript-allow-class-body" name="postscript[allow][class_body]" value="on"<?php checked( 'on', isset( $opt['class_body'] ) ? $opt['class_body'] : 'off' ); ?>/> <?php _e( 'Body class*', 'postscript' ); ?></label></li>
+            <li><label><input type="checkbox" id="postscript-allow-class-post" name="postscript[allow][class_post]" value="on"<?php checked( 'on', isset( $opt['class_post'] ) ? $opt['class_post'] : 'off' ); ?>/> <?php _e( 'Post class*', 'postscript' ); ?></label></li>
         </ul>
         <p class="wp-ui-text-icon"><?php _e( 'Requires <code>body_class()</code>/<code>post_class()</code> in theme.', 'postscript' ); ?></p>
     </fieldset>
@@ -302,7 +303,7 @@ function postscript_style_add_callback() {
 
     // Output HTML select menu of (sorted) handles.
     ?>
-    <select id="postscript_styles_field" name="postscript[style_add]">
+    <select id="postscript-add-style" name="postscript[style_add]">
         <option value=''><?php _e( 'Select style to add:', 'postscript' ); ?></option>
         <?php
         foreach( $style_handles as $style_handle ) {
@@ -383,7 +384,7 @@ function postscript_script_add_callback() {
 
     // Output HTML select menu of (sorted) registered script handles.
     ?>
-    <select id="postscript_scripts_field" name="postscript[script_add]">
+    <select id="postscript-add-script" name="postscript[script_add]">
         <option value=''><?php _e( 'Select script to add:', 'postscript' ); ?></option>
         <?php
         foreach( $script_handles as $script_handle ) {
@@ -492,6 +493,7 @@ function postscript_script_remove_callback() {
         'show_count'        => 1,
         'hide_empty'        => 0,
         'value_field'       => 'name',
+        'id'                => 'postscript-remove-script',
     );
     ?>
     <ul class="clear">
@@ -499,6 +501,7 @@ function postscript_script_remove_callback() {
     </ul>
     <?php
 }
+
 
 /**
  * Outputs HTML select menu of all registered style (tax term).
@@ -513,6 +516,7 @@ function postscript_style_remove_callback() {
         'show_count'        => 1,
         'hide_empty'        => 0,
         'value_field'       => 'name',
+        'id'                => 'postscript-remove-style',
     );
     ?>
     <ul class="clear">
