@@ -445,7 +445,7 @@ function postscript_add_script_callback() {
                 <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $script_name; ?></label></th>
                 <td><?php echo $script_arr->ver; ?></td>
                 <td><?php echo $deps; ?></td>
-                <td><?php echo $script_arr->args; ?></td>
+                <td><?php echo $script_arr->args; // Style media: 'screen', 'print', or 'all'.  ?></td>
                 <td><?php echo $status_code; ?></td>
                 <td><?php echo $posts_count; ?></td>
             </tr>
@@ -644,11 +644,5 @@ function postscript_meta_box_example() {
     </div><!-- .postbox-container -->
 
     <p class="clear wp-ui-text-icon"><?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?></p>
-
-    <pre>
-        <?php // print_r( get_option( 'postscript' ) ); ?>
-        <?php echo $_GET['page']; ?>
-
-    </pre>
     <?php
 }
