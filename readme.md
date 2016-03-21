@@ -25,7 +25,7 @@ For each post, you can also enqueue unregistered files, by entering in the meta 
 ### Add Post and Body Classes
 
 And for each post, you can add:
-* Body class(es), to the HTML `<body>` tag (requires `body_class()` in theme).
+* Body class(es), to the HTML `&lt;body&lt;` tag (requires `body_class()` in theme).
 * Post class(es), to `class="post"` list (inserted by WordPress, requires `post_class()` in theme).
 
 See [the screenshots](https://wordpress.org/plugins/postscript/screenshots/).
@@ -47,8 +47,8 @@ Tell us in the [support fourm](https://wordpress.org/support/plugin/postscript) 
 * Pass parameters to registered scripts (via [`wp_localize_script()`](https://developer.wordpress.org/reference/functions/wp_localize_script/)).
 * List all post's enqueues in the Edit Post screen.
 * Live preview of Draft posts in the Customizer, with its new phone and tablet views.
-* Add custom <style> in the document <head> (via [`wp_add_inline_style()`](https://developer.wordpress.org/reference/functions/wp_add_inline_style/)).
-* Add custom <script> in the document <head> (`wp_add_inline_script()` coming in WordPress 4.5).
+* Add custom &lt;style&gt; in the document &lt;head&gt; (via [`wp_add_inline_style()`](https://developer.wordpress.org/reference/functions/wp_add_inline_style/)).
+* Add custom &lt;script&gt; in the document &lt;head&gt; (`wp_add_inline_script()` coming in WordPress 4.5).
 * Add Page Templete dropdown to Posts (and CPTs).
 * Add file-modification timestamp as script/style's version number (as cache buster).
 * AJAX check for file-exists for user-entered URLs.
