@@ -40,12 +40,12 @@ function postscript_help_tab() {
     // Overview
     $current_screen->add_help_tab(
         array(
-            'id'        => 'home',
-            'title'     => __( 'Home', 'jetpack' ),
+            'id'        => 'settings',
+            'title'     => __( 'Settings', 'postscript' ),
             'content'   =>
-                '<p><strong>' . __( 'Jetpack by WordPress.com', 'jetpack' ) . '</strong></p>' .
-                '<p>' . __( 'Jetpack supercharges your self-hosted WordPress site with the awesome cloud power of WordPress.com.', 'jetpack' ) . '</p>' .
-                '<p>' . __( 'On this page, you are able to view the modules available within Jetpack, learn more about them, and activate or deactivate them as needed.', 'jetpack' ) . '</p>',
+                '<p><strong>' . __( 'Posscript: Enqueue Scripts and Styles Per-Post', 'postscript' ) . '</strong></p>' .
+                '<p>' . __( 'Use these settings to add <em>registered</em> script and style handles that users can enqueue from the Edit Post screen. You can also enqueue URLs of <em>unregistered</em> files (one stylesheet and up to two scripts.', 'postscript' ) . '</p>' .
+                '<p>' . __( 'And you can allow users to add classes to <code>post_class()</code> and <code>body_class()</code>.', 'postscript' ) . '</p>',
         )
     );
 
@@ -53,26 +53,26 @@ function postscript_help_tab() {
     if ( current_user_can( 'manage_options' ) ) {
         $current_screen->add_help_tab(
             array(
-                'id'        => 'settings',
-                'title'     => __( 'Settings', 'jetpack' ),
+                'id'        => 'tech',
+                'title'     => __( 'Tech Notes', 'postscript' ),
                 'content'   =>
-                    '<p><strong>' . __( 'Jetpack by WordPress.com',                                              'jetpack' ) . '</strong></p>' .
-                    '<p>' . __( 'You can activate or deactivate individual Jetpack modules to suit your needs.', 'jetpack' ) . '</p>' .
-                    '<ol>' .
-                        '<li>' . __( 'Each module has an Activate or Deactivate link so you can toggle one individually.',                                                      'jetpack' ) . '</li>' .
-                        '<li>' . __( 'Using the checkboxes next to each module, you can select multiple modules to toggle via the Bulk Actions menu at the top of the list.',   'jetpack' ) . '</li>' .
-                    '</ol>' .
-                    '<p>' . __( 'Using the tools on the right, you can search for specific modules, filter by module categories or which are active, or change the sorting order.', 'jetpack' ) . '</p>'
+                    '<ul>' .
+                        '<li>' . __( 'Handles are stored in custom taxonomies.', 'postscript' ) . '</li>' .
+                        '<li>' . __( 'Only registered handles can be added as taxonomy terms.', 'postscript' ) . '</li>' .
+                        '<li>' . __( 'Post-counts for terms track which posts enqueue which handles.', 'postscript' ) . '</li>' .
+                        '<li>' . __( 'Post-counts for terms track which posts enqueue which handles.', 'postscript' ) . '</li>' .
+                        '<li>' . __( 'The <a href="#metabox">example</a> below shows how your settings effect the Edit Post screen\'s meta box.', 'postscript' ) . '</li>' .
+                    '</ul>',
             )
         );
     }
 
     // Help Sidebar
     $current_screen->set_help_sidebar(
-        '<p><strong>' . __( 'For more information:', 'jetpack' ) . '</strong></p>' .
-        '<p><a href="http://jetpack.me/faq/" target="_blank">'     . __( 'Jetpack FAQ',     'jetpack' ) . '</a></p>' .
-        '<p><a href="http://jetpack.me/support/" target="_blank">' . __( 'Jetpack Support', 'jetpack' ) . '</a></p>' .
-        '<p><a href="xxx">' . __( 'Jetpack Debugging Center', 'jetpack' ) . '</a></p>'
+        '<p><strong>' . __( 'Reference:', 'postscript' ) . '</strong></p>' .
+        '<p><a href="https://codex.wordpress.org/Function_Reference/wp_register_script">'     . __( 'Register scripts',     'postscript' ) . '</a></p>' .
+        '<p><a href="https://developer.wordpress.org/reference/functions/wp_enqueue_script/#defaults" target="_blank">' . __( 'Default scripts', 'postscript' ) . '</a></p>' .
+        '<p><a href="http://hearingvoices.com/tools/postscript/">' . __( 'Postscript plugin', 'jetpack' ) . '</a></p>'
     );
 }
 
@@ -460,10 +460,6 @@ function postscript_add_script_callback() {
     ?>
         </tbody>
     </table>
-    <p class="wp-ui-text-icon textright">
-        <?php _e( '<strong>Status</strong> response code links to <code>src</code> file.', 'postscript' ); ?><br />
-        <?php _e( '<strong>Posts-count</strong> links to list of posts using the file.', 'postscript' ); ?>
-    </p>
     <?php
 }
 
@@ -545,6 +541,10 @@ function postscript_add_style_callback() {
     ?>
         </tbody>
     </table>
+    <p class="wp-ui-text-icon textright">
+        <?php _e( '<strong>Status</strong> response code links to <code>src</code> file.', 'postscript' ); ?><br />
+        <?php _e( '<strong>Posts-count</strong> links to list of posts using the file.', 'postscript' ); ?>
+    </p>
     <?php
 }
 
@@ -626,7 +626,7 @@ function postscript_meta_box_example() {
     $fake_post   = (object) array( 'ID' => '-1'); // Meta box needs a post object id.
     ?>
     <hr />
-    <h2><?php _e('Postscript box example', 'postscript' ); ?></h2>
+    <h2 id="metabox"><?php _e('Postscript box example', 'postscript' ); ?></h2>
     <p>
         <?php _e('&bull; For user-role(s): ', 'postscript' ); ?><?php echo implode( $options['user_roles'], ', ' ); ?><br />
         <?php _e('&bull; For post-type(s): ', 'postscript' ); ?><?php echo implode( $options['post_types'], ', ' ); ?><br />
