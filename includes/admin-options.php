@@ -372,7 +372,6 @@ function postscript_allow_fields_callback( $options ) {
                     <option value="1"<?php selected( '1', isset( $opt['urls_style'] ) ? $opt['urls_style'] : '' ); ?>>1</option>
                 </select> <label for="postscript-urls-style"><?php _e( 'Style URL', 'postscript' ); ?></label>
             </li>
-            <li><label><input type="checkbox" id="postscript-allow-url-style" name="postscript[allow][url_style]" value="on"<?php checked( 'on', isset( $opt['url_style'] ) ? $opt['url_style'] : 'off' ); ?>/> <?php _e( 'Style URL', 'postscript' ); ?></label></li>
             <li><label><input type="checkbox" id="postscript-allow-class-body" name="postscript[allow][class_body]" value="on"<?php checked( 'on', isset( $opt['class_body'] ) ? $opt['class_body'] : 'off' ); ?>/> <?php _e( 'Body class*', 'postscript' ); ?></label></li>
             <li><label><input type="checkbox" id="postscript-allow-class-post" name="postscript[allow][class_post]" value="on"<?php checked( 'on', isset( $opt['class_post'] ) ? $opt['class_post'] : 'off' ); ?>/> <?php _e( 'Post class*', 'postscript' ); ?></label></li>
         </ul>
@@ -433,7 +432,7 @@ function postscript_add_script_callback() {
                 $script_name  = $script_obj->name;
                 $script_arr   = $postscript_scripts_reg[ $script_name ];
                 // Comma-separated list of style dependencies.
-                $deps         = implode( ',', $script_arr->deps );
+                $deps         = implode( ', ', $script_arr->deps );
                 // Make relative URLs full (for core registered scripts in '/wp-admin' or '/wp-includes').
                 $src          = ( $script_arr->src ) ? postscript_core_full_urls( $script_arr->src ) : '';
                 // Check URL status response code, if script has a 'src' set.
@@ -514,20 +513,22 @@ function postscript_add_style_callback() {
                 $style_name   = $style_obj->name;
                 $style_arr    = $postscript_styles_reg[ $style_name ];
                 // Comma-separated list of style dependencies.
-                $deps         = implode( ',', $style_arr->deps );
+                $deps = implode( ',', $style_arr->deps );
+                // Does script load in footer?
+                $footer = ( isset(  $script_arr->extra['group'] ) ) ? $script_arr->extra['group'] : '';
                 // Make relative URLs full (for core registered scripts in '/wp-admin' or '/wp-includes').
-                $src          = ( $style_arr->src ) ? postscript_core_full_urls( $style_arr->src ) : '';
+                $src = ( $style_arr->src ) ? postscript_core_full_urls( $style_arr->src ) : '';
                 // Check URL status response code, if script has a 'src' set.
-                $status_code  = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
+                $status_code = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
                 // Tax term post count, linked to list of posts (if count>0).
-                $count  = $style_obj->count;
-                $posts_count  = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscript_styles=$style_name\">$count</a>" : $count;
+                $count = $style_obj->count;
+                $posts_count = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscript_styles=$style_name\">$count</a>" : $count;
             ?>
             <tr>
                 <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $style_name; ?></label></th>
                 <td><?php echo $style_arr->ver; ?></td>
                 <td><?php echo $deps; ?></td>
-                <td><?php echo $style_arr->args; ?></td>
+                <td><?php echo $footer; ?></td>
                 <td><?php echo $status_code; ?></td>
                 <td><?php echo $posts_count; ?></td>
             </tr>

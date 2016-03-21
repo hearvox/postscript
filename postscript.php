@@ -133,6 +133,11 @@ function postscript_url_exists( $url = '' ) {
         $url = get_bloginfo( 'wpurl' ) . $url;
     }
 
+    // Make protocol-relative URLs absolute  (i.e., from "//example.com" to "https://example.com" )
+    if ( substr( $url, 0, 2 ) === '//' ) {
+        $url = 'https:' . $url;
+    }
+
     if ( has_filter( 'postscript_url_exists' ) ) {
         $url = apply_filters( 'postscript_url_exists', $url );
     }
