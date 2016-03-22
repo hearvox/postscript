@@ -3,8 +3,8 @@
 /**
  * General functions for options and registered/selected scripts and styles.
  *
- * @link       http://hearingvoices.com/tools/
- * @since 0.1
+ * @link    http://hearingvoices.com/tools/
+ * @since   0.1.0
  *
  * @package    Postscript
  * @subpackage Postscript/includes
@@ -20,10 +20,10 @@
  * Option functions based on Jetpack Stats:
  * @link https://github.com/Automattic/jetpack/blob/master/modules/stats.php
  *
- * @since 0.1
+ * @since   0.1.0
  *
- * @uses postscript_upgrade_options()
- * @return array $options array of plugin settings
+ * @uses    postscript_upgrade_options()
+ * @return  array   $options    Array of plugin settings
  */
 function postscript_get_options() {
     $options = get_option( 'postscript' );
@@ -41,9 +41,9 @@ function postscript_get_options() {
  *
  * Note: update_option() adds option if it doesn't exist.
  *
- * @since 0.1
+ * @since   0.1.0
  *
- * @param array $option array of plugin settings
+ * @param   array   $option     Array of plugin settings
  */
 function postscript_set_options( $options ) {
     update_option( 'postscript', $options );
@@ -52,11 +52,11 @@ function postscript_set_options( $options ) {
 /**
  * Makes array of plugin settings, merging default and new values.
  *
- * @since 0.1
+ * @since   0.1.0
  *
- * @uses postscript_set_options()
- * @param array $options array of plugin settings
- * @return array $new_options merged array of plugin settings
+ * @uses    postscript_set_options()
+ * @param   array   $options        Array of plugin settings
+ * @return  array   $new_options    Merged array of plugin settings
  */
 function postscript_upgrade_options( $options ) {
     $defaults = array(
@@ -90,11 +90,11 @@ function postscript_upgrade_options( $options ) {
 /**
  * Retrieves a specific setting (an array item) from an option (an array).
  *
- * @since 0.1
+ * @since   0.1.0
  *
- * @uses postscript_get_options()
- * @param array|string $option array item key
- * @return array $options[$option] array item value (or $options[$option][$option_key])
+ * @uses    postscript_get_options()
+ * @param   array|string    $option     Array item key
+ * @return  array           $option_key Array item value
  */
 function postscript_get_option( $option_key = NULL ) {
     $options = postscript_get_options();
@@ -110,13 +110,12 @@ function postscript_get_option( $option_key = NULL ) {
 /**
  * Sets a specified setting (array item) in the option (array of plugin settings).
  *
- * @since 0.1
+ * @since   0.1.0
  *
- * @uses postscript_get_options()
- * @uses postscript_set_options()
- * @param string $option array item key of specified setting
- * @param string $value array item value of specified setting
- * @return array $options array of plugin settings
+ * @uses    postscript_set_options()
+ * @param   string  $option     Array item key of specified setting
+ * @param   string  $value      Array item value of specified setting
+ * @return  array   $options    Array of plugin settings
  */
 function postscript_set_option( $option, $value ) {
     $options = postscript_get_options();
@@ -134,11 +133,10 @@ function postscript_set_option( $option, $value ) {
  * Gets registered scripts and styles.
  *
  * Gets WordPress default scripts/styles, then those plugin/theme registered.
- * The'shutdown' hook fires after wp_default_scripts()/_styles()
+ * The 'shutdown' hook fires after wp_default_scripts()/_styles()
  * and after admin had rendered (so enqueued scripts don't affect admin display).
  *
- *
- * @since 0.1
+ * @since   0.1.0
  */
 function postscript_get_reg_scripts() {
     // Hack to get front-end scripts into memory, from here in the back-end
@@ -196,65 +194,6 @@ function postscript_get_reg_scripts() {
 }
 add_action( 'shutdown', 'postscript_get_reg_scripts' );
 
-/**
- * Sets transient with arrays of front-end registered scripts/styles.
- *
- * The 'wp_head' hook fires after 'wp_enqueue_scripts', so all scripts registered.
- *
- */
-function postscript_set_wp_scripts_transient() {
-    global $wp_scripts, $wp_styles;
-
-    $postscript_wp_scripts = get_transient( 'postscript_wp_scripts' );
-    $postscript_wp_styles = get_transient( 'postscript_wp_styles' );
-
-    if ( $wp_scripts != $postscript_wp_scripts ) {
-        set_transient( 'postscript_wp_scripts', $wp_scripts->registered, 60 * 60 * 4 );
-    }
-
-    if ( $wp_styles != $postscript_wp_styles ) {
-        set_transient( 'postscript_wp_styles', $wp_styles->registered, 60 * 60 * 4 );
-    }
-}
-// add_action( 'wp_head', 'postscript_set_wp_scripts_transient' );
-
-/**
- * Gets transient with arrays of front-end registered scripts or styles.
- *
- * If transient doesn't exist, load a post (to fire front-end hooks)
- * then sets transient.
- *
- */
-function postscript_check_wp_scripts_transient( $file_type ) {
-    // If transient not set, run a post to trigger front-end hooks and globals.
-    $scripts = get_transient( 'postscript_wp_scripts' );
-    $styles  = get_transient( 'postscript_wp_styles' );
-
-    if ( ! is_array( $scripts ) || ! is_array( $styles ) ) {
-        delete_transient( 'postscript_wp_scripts' );
-        delete_transient( 'postscript_wp_styles' );
-        postscript_load_latest_post();
-    }
-
-    $transient = get_transient( $file_type );
-    return $transient;
-}
-
-/**
- * Gets transient with arrays of front-end registered scripts or styles.
- *
- * @uses postscript_load_latest_post() Loads post
- * @param string $file_type Name of transient
- */
-function postscript_get_wp_scripts_transient( $file_type = 'postscript_wp_scripts' ) {
-    // Load a post to fire 'wp_head' and all 'wp_enqueue_scripts' hooks.
-    postscript_load_latest_post();
-
-    $transient = get_transient( $file_type );
-
-    return $transient;
-}
-
 /* ------------------------------------------------------------------------ *
  * Functions for returning arrays of registered script/style handles.
  * ------------------------------------------------------------------------ */
@@ -285,70 +224,56 @@ function postscript_style_handles() {
     return $styles_reg;
 }
 
-
 /* ------------------------------------------------------------------------ *
- * Fire front-end hooks by loading a post (for future features).
+ * Functions to check URLs.
  * ------------------------------------------------------------------------ */
-
 /**
- * Retrieves the latest post (to set transients with registered scripts/styles) .
+ * Checks if URL exists.
  *
- * We need to get all scripts/styles registered on the front-end.
- * To do that we need to fire all the 'wp_enqueue_scripts' hooks.
- * So we get any post, which runs a plugin function, which sets
- * the globals $wp_scripts and $wp_styles globals as transients.
- * See function: postscript_wp_scripts_styles_transient()
- * In plugin file: /includes/enqueue_scripts.php
- *
- * @since 0.1
- *
- * @return  mixed Array of header items; HTML of body content.
+ * @param  $url         URL to be checked.
+ * @return int|string   URL Sstatus repsonse code number, or WP error on failure.
  */
-function postscript_load_latest_post() {
-    $args = array(
-        'posts_per_page' => 1,
-        'cache_results'  => false,
-        'fields'         => 'ids',
-        'post_status'    => 'publish',
-    );
-    $latest_post = new WP_Query( $args );
-    $latest_post_id = $latest_post->posts[0];
-
-    $response = postscript_load_post( $latest_post_id );
-
-    return $response;
-}
-
-/**
- * Runs post (to fire 'wp_enqueue_scripts' hooks).
- *
- * @since 0.1
- * @param integer $post_id ID of post to fetch
- * @return  mixed Either header array and body HTML or error object is URL not valid
- */
-function postscript_load_post( $post_id ) {
-
-    $latest_post_url = get_permalink( $post_id ) ?  : NULL;
-    $response = wp_remote_get( $latest_post_url );
-
-    return $response;
-}
-
-/**
- * Return only matching array elements..
- */
-function postscript_filter_array() {
-
-    global $wp_scripts;
-    $script_handles = array();
-
-    // Make array to sort registered scripts by handle (from $wp_scripts object).
-    foreach( $wp_scripts->registered as $script_reg ) {
-        $script_handles[] = $script_reg->handle;
+function postscript_url_exists( $url = '' ) {
+    // Make absolute URLs for WP core scripts (from their registered relative 'src' URLs)
+    if ( substr( $url, 0, 13 ) === '/wp-includes/' || substr( $url, 0, 10 ) === '/wp-admin/' ) {
+        $url = get_bloginfo( 'wpurl' ) . $url;
     }
 
-    sort( $script_handles ); // Alphabetize.
+    // Make protocol-relative URLs absolute  (i.e., from "//example.com" to "https://example.com" )
+    if ( substr( $url, 0, 2 ) === '//' ) {
+        $url = 'https:' . $url;
+    }
 
-    return $script_handles;
+    if ( has_filter( 'postscript_url_exists' ) ) {
+        $url = apply_filters( 'postscript_url_exists', $url );
+    }
 
+    // Sanitize
+    $url = esc_url_raw( $url );
+
+    // Get URL header
+    $response = wp_remote_head( $url );
+    if ( is_wp_error( $response ) ) {
+        return 'Error: ' . is_wp_error( $response );
+    }
+
+    // Request success, return header response code
+    return wp_remote_retrieve_response_code( $response );
+}
+
+/**
+ * Makes full URL from relative /wp-includes and /wp-admin URLs.
+ *
+ * This function is included in the above, but
+ *
+ * @param  $url     URL to be checked for relative path (in WP core).
+ * @return string   Absolute path URL for WP core file, otherwise passed $url.
+ */
+function postscript_core_full_urls( $url ) {
+    // Make absolute URLs for WP core scripts (from their registered relative 'src' URLs)
+    if ( substr( $url, 0, 13 ) === '/wp-includes/' || substr( $url, 0, 10 ) === '/wp-admin/' ) {
+        $url = get_bloginfo( 'wpurl' ) . $url;
+    }
+
+    return $url;
 }

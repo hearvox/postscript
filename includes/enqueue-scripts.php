@@ -2,8 +2,8 @@
 /**
  * Load Scripts and Adds Classes to Posts
  *
- * @link       http://hearingvoices.com/tools/
- * @since 0.1
+ * @link    http://hearingvoices.com/tools/
+ * @since   0.1.0
  *
  * @package    Postscript
  * @subpackage Postscript/includes
@@ -21,7 +21,6 @@
  * All front-end handles must be registered before this runs,
  * via the same 'wp_enqueue_scripts' action as this function is hooked.
  * So this action fires late by getting a large number as its priority param.
- *
  */
 function postscript_enqueue_handles() {
     if ( is_singular() && is_main_query() ) { // Run only on front-end post.
@@ -89,40 +88,48 @@ function postscript_enqueue_script_urls() {
 }
 add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_urls', 100010 );
 
-/* Filter the post class hook with our custom post class function. */
-function postscript_class_post( $classes ) {
-
-    $post_id = get_the_ID();
-
-    if ( ! empty( $post_id ) ) {
-
-    /* Get the custom post class. */
-    $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
-
-    /* If a post class was input, sanitize it and add it to the post class array. */
-    if ( ! empty( $postscript_meta['class_post'] ) )
-        $classes[] = sanitize_html_class( $postscript_meta['class_post'] );
-    }
-
-    return $classes;
-}
-add_filter( 'post_class', 'postscript_class_post' );
-
-/* Filter the post class hook with our custom post class function. */
+/**
+ * Adds user-entered class(es) to the body tag.
+ *
+ * @return  array $classes  WordPress defaults and user-added classes
+ */
 function postscript_class_body( $classes ) {
 
     $post_id = get_the_ID();
 
     if ( ! empty( $post_id ) ) {
+        // Get the custom post class.
+        $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
 
-    /* Get the custom post class. */
-    $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
-
-    /* If a post class was input, sanitize it and add it to the post class array. */
-    if ( ! empty( $postscript_meta['class_body'] ) )
-        $classes[] = sanitize_html_class( $postscript_meta['class_body'] );
+        // If a post class was input, sanitize it and add it to the body class array.
+        if ( ! empty( $postscript_meta['class_body'] ) ) {
+            $classes[] = sanitize_html_class( $postscript_meta['class_body'] );
+        }
     }
 
     return $classes;
 }
 add_filter( 'body_class', 'postscript_class_body' );
+
+
+/**
+ * Adds user-entered class(es) to the post class list.
+ *
+ * @return  array $classes  WordPress defaults and user-added classes
+ */
+function postscript_class_post( $classes ) {
+    $post_id = get_the_ID();
+
+    if ( ! empty( $post_id ) ) {
+        // Get the custom post class.
+        $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
+
+        // If a post class was input, sanitize it and add it to the post class array.
+        if ( ! empty( $postscript_meta['class_post'] ) ) {
+            $classes[] = sanitize_html_class( $postscript_meta['class_post'] );
+        }
+    }
+
+    return $classes;
+}
+add_filter( 'post_class', 'postscript_class_post' );

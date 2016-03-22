@@ -5,7 +5,7 @@
  *
  *
  * @link       http://hearingvoices.com/tools/
- * @since 0.1
+ * @since   0.1.0
  *
  * @package    Postscript
  */
@@ -20,7 +20,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
  *
  * Plugin now activated so tax registration no longer exists.
  *
- * @since 0.1
+ * @since   0.1.0
  */
 function postscript_create_taxonomies() {
     register_taxonomy( 'postscript_scripts', null );
@@ -34,7 +34,7 @@ do_action( 'init' );
 /**
  * Remove plugin taxonomies and their terms.
  *
- * @since 0.1
+ * @since   0.1.0
  */
 if ( function_exists( 'wp_delete_term' ) ) {
     global $wp_taxonomies;
@@ -75,7 +75,7 @@ if ( function_exists( 'wp_delete_term' ) ) {
 /**
  * Removes plugin post meta.
  *
- * @since 0.1
+ * @since   0.1.0
  */
 if ( function_exists( 'delete_post_meta_by_key' ) ) {
     delete_post_meta_by_key ( 'postscript_meta' );
@@ -84,7 +84,7 @@ if ( function_exists( 'delete_post_meta_by_key' ) ) {
 /**
  * Removes plugin option from database.
  *
- * @since 0.1
+ * @since   0.1.0
  */
 if ( function_exists( 'delete_option' ) ) {
     delete_option( 'postscript' );

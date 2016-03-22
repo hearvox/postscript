@@ -58,7 +58,7 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'postscript_pl
 /**
  * Load the plugin text domain for translation.
  *
- * @since 0.1
+ * @since   0.1.0
  */
 function postscript_load_textdomain() {
     load_plugin_textdomain( 'postscript', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
@@ -67,43 +67,22 @@ add_action( 'plugins_loaded', 'postscript_load_textdomain' );
 
 /**
  * Sets default settings option upon activation, if options doesn't exist.
- * This action is documented in includes/class-post-scripting-activator.php
+ *
+ * @uses postscript_get_options()   Safely get site option, check plugin version.
  */
 function postscript_activate() {
     postscript_get_options();
 }
+register_activation_hook( __FILE__, 'postscript_activate' );
 
 /**
- * The code that runs during plugin deactivation.
+ * The code that runs during plugin deactivation (not currently used).
  */
+/*
 function postscript_deactivate() {
 }
-
-// register_activation_hook( __FILE__, 'postscript_activate' );
-// register_deactivation_hook( __FILE__, 'postscript_deactivate' );
-
-/**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-// require plugin_dir_path( __FILE__ ) . 'includes/class-post-scripting.php';
-
-/**
- * Begins execution of the plugin.
- *
- * Since everything within the plugin is registered via hooks,
- * then kicking off the plugin from this point in the file does
- * not affect the page life cycle.
- *
- * @since 0.1
- */
-function run_postscript() {
-
-	$plugin = new Postscript();
-	$plugin->run();
-
-}
-// run_postscript();
+register_deactivation_hook( __FILE__, 'postscript_deactivate' );
+*/
 
 /* ------------------------------------------------------------------------ *
  * Required Plugin Files
@@ -122,49 +101,6 @@ if ( ! function_exists( 'wp_terms_checklist' ) ) {
 
 if ( ! function_exists( 'get_editable_roles' ) ) { // Need WP_User class.
     require_once( ABSPATH . 'wp-admin/includes/user.php' );
-}
-
-/**
- * Checks if URL exists.
- */
-function postscript_url_exists( $url = '' ) {
-    // Make absolute URLs for WP core scripts (from their registered relative 'src' URLs)
-    if ( substr( $url, 0, 13 ) === '/wp-includes/' || substr( $url, 0, 10 ) === '/wp-admin/' ) {
-        $url = get_bloginfo( 'wpurl' ) . $url;
-    }
-
-    // Make protocol-relative URLs absolute  (i.e., from "//example.com" to "https://example.com" )
-    if ( substr( $url, 0, 2 ) === '//' ) {
-        $url = 'https:' . $url;
-    }
-
-    if ( has_filter( 'postscript_url_exists' ) ) {
-        $url = apply_filters( 'postscript_url_exists', $url );
-    }
-
-    // Sanitize
-    $url = esc_url_raw( $url );
-
-    // Get URL header
-    $response = wp_remote_head( $url );
-    if ( is_wp_error( $response ) ) {
-        return 'Error: ' . is_wp_error( $response );
-    }
-
-    // Request success, return header response code
-    return wp_remote_retrieve_response_code( $response );
-}
-
-/**
- * Makes full URL from relative /wp-includes and /wp-admin URLs.
- */
-function postscript_core_full_urls( $url ) {
-    // Make absolute URLs for WP core scripts (from their registered relative 'src' URLs)
-    if ( substr( $url, 0, 13 ) === '/wp-includes/' || substr( $url, 0, 10 ) === '/wp-admin/' ) {
-        $url = get_bloginfo( 'wpurl' ) . $url;
-    }
-
-    return $url;
 }
 
 /* ------------------------------------------------------------------------ *

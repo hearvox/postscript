@@ -4,7 +4,7 @@
  * Admin Settings Page (Dashboard> Settings> Postscript)
  *
  * @link       http://hearingvoices.com/tools/
- * @since 0.1
+ * @since   0.1.0
  *
  * @package    Postscript
  * @subpackage Postscript/includes
@@ -18,7 +18,6 @@
  * Adds submenu item to Settings dashboard menu.
  *
  * Sets Settings page screen ID: 'settings_page_postscript'.
- *
  */
 function postscript_settings_menu() {
     $postscript_options_page = add_options_page(
@@ -29,27 +28,32 @@ function postscript_settings_menu() {
         'postscript_settings_display'
     );
 
-    // Adds my_help_tab when my_admin_page loads
+    // Adds contextual Help tab on Settings page.
     add_action( "load-$postscript_options_page", 'postscript_help_tab');
 }
 add_action('admin_menu', 'postscript_settings_menu');
 
+/**
+ * Adds tabs, sidebar, and content to contextual Help tab on Settings page.
+ *
+ * Sets Settings page screen ID: 'settings_page_postscript'.
+ */
 function postscript_help_tab() {
     $current_screen = get_current_screen();
 
-    // Overview
+    // Default tab.
     $current_screen->add_help_tab(
         array(
             'id'        => 'settings',
             'title'     => __( 'Settings', 'postscript' ),
             'content'   =>
-                '<p><strong>' . __( 'Posscript: Enqueue Scripts and Styles Per-Post', 'postscript' ) . '</strong></p>' .
+                '<p><strong>' . __( 'Postcript: Enqueue Scripts and Styles Per-Post', 'postscript' ) . '</strong></p>' .
                 '<p>' . __( 'Use these settings to add <em>registered</em> script and style handles that users can enqueue from the Edit Post screen. You can also enqueue URLs of <em>unregistered</em> files (one stylesheet and up to two scripts.', 'postscript' ) . '</p>' .
                 '<p>' . __( 'And you can allow users to add classes to <code>post_class()</code> and <code>body_class()</code>.', 'postscript' ) . '</p>',
         )
     );
 
-    // Screen Content
+    // Second tab.
     if ( current_user_can( 'manage_options' ) ) {
         $current_screen->add_help_tab(
             array(
@@ -67,7 +71,7 @@ function postscript_help_tab() {
         );
     }
 
-    // Help Sidebar
+    // Sidebar.
     $current_screen->set_help_sidebar(
         '<p><strong>' . __( 'Reference:', 'postscript' ) . '</strong></p>' .
         '<p><a href="https://codex.wordpress.org/Function_Reference/wp_register_script">'     . __( 'Register scripts',     'postscript' ) . '</a></p>' .
@@ -301,7 +305,7 @@ function postscript_remove_script_style_section_callback() {
  */
 
 /**
- * Outputs HTML checkboxes of user roles (used to determine if Postscript box displays).
+ * Outputs HTML checkboxes of user roles (to choose which roles display Postscript meta box).
  */
 function postscript_user_roles_callback( $options ) {
     // Need WP_User class.
@@ -328,7 +332,7 @@ function postscript_user_roles_callback( $options ) {
 }
 
 /**
- * Outputs HTML checkboxes of post types (used to determine if Postscript box displays).
+ * Outputs HTML checkboxes of post types (to choose which post-types display Postscript meta box).
  */
 function postscript_post_types_callback( $options ) {
     ?>
@@ -383,7 +387,7 @@ function postscript_allow_fields_callback( $options ) {
 /**
  * Outputs HTML select menu of all registered scripts.
  *
- * @uses  postscript_script_handles() Array of registered script handles.
+ * @uses    postscript_script_handles() Array of registered style handles
  */
 function postscript_add_script_callback() {
     // Array of alphabetized front-end registered script handles.
@@ -465,7 +469,7 @@ function postscript_add_script_callback() {
 /**
  * Outputs HTML select menu of all registered styles.
  *
- * @uses  postscript_style_handles() Array of registered style handles.
+ * @uses    postscript_style_handles()  Array of registered style handles
  */
 function postscript_add_style_callback() {
     // Array of alphabetized, front-end registered script handles.
@@ -552,9 +556,9 @@ function postscript_add_style_callback() {
 /**
  * Displays all allowed post-types in post lists for plugin's custom tax term.
  *
- * erm's post-count link displays in Settings page table and tax admin screens.
+ * Term's post-count link displays in Settings page table and tax admin screens.
  *
- * @uses  postscript_get_options() Safely gets site option.
+ * @uses  postscript_get_options()  Safely gets site option.
  */
 function postscript_pre_get_posts( $query ) {
     $options = postscript_get_options();
@@ -619,7 +623,7 @@ function postscript_remove_style_callback() {
  * Render example of Edit Post screen meta box, based on settings using post's meta box fn.
  *
  * @see   /includes/meta-box.php
- * @uses  postscript_get_options() Safely gets site option.
+ * @uses  postscript_get_options()  Safely gets site option
  */
 function postscript_meta_box_example() {
     $options     = postscript_get_options( 'postscript' );
