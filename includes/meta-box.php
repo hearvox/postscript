@@ -3,8 +3,8 @@
 /**
  * The post editor functionality of the plugin.
  *
- * @link       http://hearingvoices.com/tools/
- * @since      0.1
+ * @link    http://hearingvoices.com/tools/
+ * @since   0.1.0
  *
  * @package    Postscript
  * @subpackage Postscript/includes
@@ -39,7 +39,7 @@ add_action( 'load-post-new.php', 'postscript_meta_box_setup' );
  *
  * Passes array of user-setting options to callback.
  *
- * @uses postscript_get_options() Safely gets option from database.
+ * @uses postscript_get_options()   Safely gets option from database.
  */
 function postscript_add_meta_box() {
     $options = postscript_get_options();
@@ -92,9 +92,8 @@ function postscript_add_meta_box() {
  *     [version]       => 1.0.0
  * )
  *
- * @param  object $post Object containing the current post.
- * @param  array $box Array of meta box id, title, callback, and args elements.
- * @return string HTML of meta box
+ * @param  Object $post Object containing the current post.
+ * @param  array  $box  Array of meta box id, title, callback, and args elements.
  */
 function postscript_meta_box_callback( $post, $box ) {
     $post_id = $post->ID;
@@ -160,7 +159,6 @@ function postscript_meta_box_callback( $post, $box ) {
         <input class="widefat" type="text" name="postscript_meta[class_post]" id="postscript-class-post" value="<?php if ( isset ( $postscript_meta['class_post'] ) ) { echo sanitize_html_class( $postscript_meta['class_post'] ); } ?>" size="30" />
     </p>
     <?php
-    // print_r($box);
     }
 }
 
