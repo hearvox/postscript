@@ -63,8 +63,8 @@ function postscript_upgrade_options( $options ) {
         'user_roles' => array( 'administrator' ),
         'post_types' => array( 'post' ),
         'allow'      => array(
-            'urls_script'    => '1',
-            'urls_script'    => '1',
+            'urls_script'  => '1',
+            'urls_style'   => '1',
             'class_body'   => 'on',
             'class_post'   => 'on',
         )
