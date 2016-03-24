@@ -188,11 +188,11 @@ function postscript_save_post_meta( $post_id, $post ) {
     // Get and sanitize the posted form data.
     $new_meta_value = ( isset( $_POST['postscript_meta'] ) ?  $_POST['postscript_meta'] : '' );
     if ( $new_meta_value ) {
-        $new_meta_value['url_style']  = esc_url_raw( $new_meta_value['url_style'] );
-        $new_meta_value['url_script'] = esc_url_raw( $new_meta_value['url_script'] );
-        $new_meta_value['url_script_2']   = esc_url_raw( $new_meta_value['url_script_2'] );
-        $new_meta_value['class_body'] = sanitize_html_class( $new_meta_value['class_body'] );
-        $new_meta_value['class_post'] = sanitize_html_class( $new_meta_value['class_post'] );
+        $new_meta_value['url_style']    = esc_url_raw( $new_meta_value['url_style'] );
+        $new_meta_value['url_script']   = esc_url_raw( $new_meta_value['url_script'] );
+        $new_meta_value['url_script_2'] = esc_url_raw( $new_meta_value['url_script_2'] );
+        $new_meta_value['class_body']   = sanitize_html_class( $new_meta_value['class_body'] );
+        $new_meta_value['class_post']   = sanitize_html_class( $new_meta_value['class_post'] );
     }
 
     $meta_key = 'postscript_meta';

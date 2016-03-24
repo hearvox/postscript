@@ -72,17 +72,17 @@ function postscript_enqueue_script_urls() {
 
         // Style/script handles made from string: "postscript-style-{$post_id}".
         if ( isset( $postscript_meta['url_style'] ) ) {
-            wp_enqueue_style( "postscript-style-$post_id", $postscript_meta['url_style'], array() );
+            wp_enqueue_style( "postscript-style-$post_id", esc_url_raw( $postscript_meta['url_style'] ), array() );
         }
 
         if ( isset( $postscript_meta['url_script'] ) ) {
-            wp_enqueue_script( "postscript-script-$post_id", $postscript_meta['url_script'], array(), false, true );
+            wp_enqueue_script( "postscript-script-$post_id", esc_url_raw( $postscript_meta['url_script'] ), array(), false, true );
         }
 
         if ( isset( $postscript_meta['url_script_2'] ) ) {
             // Load second JS last (via dependency param).
             $dep = ( isset( $postscript_meta['url_script_2'] ) ) ? "postscript-script-$post_id" : '';
-            wp_enqueue_script( "postscript-script-2-$post_id", $postscript_meta['url_script_2'], array( $dep ), false, true );
+            wp_enqueue_script( "postscript-script-2-$post_id", esc_url_raw( $postscript_meta['url_script_2'] ), array( $dep ), false, true );
         }
     }
 }
