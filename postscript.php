@@ -140,7 +140,6 @@ function postscript_create_taxonomies() {
             'edit_terms'   => 'manage_options',
             'delete_terms' => 'manage_options',
             'assign_terms' => 'edit_posts'
-
         ),
         'rewrite'           => array( 'slug' => 'postscript_scripts' ),
     );
@@ -176,7 +175,6 @@ function postscript_create_taxonomies() {
             'edit_terms'   => 'manage_options',
             'delete_terms' => 'manage_options',
             'assign_terms' => 'edit_posts'
-
         ),
         'rewrite'           => array( 'slug' => 'postscript_styles' ),
     );
@@ -241,4 +239,3 @@ function postscript_styles_edit_tags( $query ) {
 }
 add_action( 'postscript_styles_pre_add_form', 'postscript_styles_edit_tags' );
 add_action( 'postscript_styles_edit_form_fields', 'postscript_styles_edit_tags' );
-

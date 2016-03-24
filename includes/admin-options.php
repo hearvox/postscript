@@ -647,6 +647,6 @@ function postscript_meta_box_example() {
         </div><!-- .postbox -->
     </div><!-- .postbox-container -->
 
-    <p class="clear wp-ui-text-icon"><?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?></p>
+    <p class="clear wp-ui-text-icon"><?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?>. The top-right <a href="#contextual-help-link">Help tab</a> has details on Postscript features.</p>
     <?php
 }
