@@ -4,7 +4,7 @@ Donate link: http://hearingvoices.com/tools/postscript
 Tags: script, javascript, styles, stylesheet, css
 Requires at least: 3.3
 Tested up to: 4.4
-Stable tag: 0.1.0
+Stable tag: 0.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,19 +65,17 @@ Tell us in the [support fourm](https://wordpress.org/support/plugin/postscript) 
 
 ## Changelog
 
-### 1.0
-* Initial public release.
+### 0.3.1
+* Beta version.
+* Test upgrade option function based on version number.
 
 ### 0.1.0
-* Beta version.
+* Alpha version.
 
 ## Upgrade Notice
 
-### 1.0
-Initial public release.
-
 ### 0.1.0
-* Beta version.
+* Alpha version.
 
 ## Tech Notes
 
