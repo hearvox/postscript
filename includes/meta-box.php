@@ -191,8 +191,6 @@ function postscript_save_post_meta( $post_id, $post ) {
     // If any user-submitted form fields have a value (implode() reduces array to string of values).
     $form_data  = ( isset( $_POST['postscript_meta'] ) && implode( $_POST['postscript_meta'] ) ) ? $_POST['postscript_meta'] : null;
 
-    update_post_meta( $post_id, 'postscript_formdata', $form_data );
-
     // Add post-meta, if none exists, and if user entered new form data.
     if ( $form_data && '' == $meta_value ) {
         add_post_meta( $post_id, $meta_key, $form_data, true );
