@@ -63,23 +63,25 @@ add_action( 'wp_enqueue_scripts', 'postscript_enqueue_handles', 100000 );
  *     [class_post] => my-post-class
  * )
  *
- *
+ * @uses postscript_get_options()   Safely gets option from database.
  */
 function postscript_enqueue_script_urls() {
     if ( is_singular() && is_main_query() ) {
-        $post_id = get_the_id();
+        $post_id         = get_the_id();
         $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
+        $options         = postscript_get_options();
 
-        // Style/script handles made from string: "postscript-style-{$post_id}".
-        if ( isset( $postscript_meta['url_style'] ) ) {
+        // If the post has a Style/Script URL value and the user-settings allow enqueue by URL.
+        if ( isset( $postscript_meta['url_style'] ) && $options['allow']['urls_style'] ) {
+            // Style/script handles made from string: "postscript-style-{$post_id}".
             wp_enqueue_style( "postscript-style-$post_id", esc_url_raw( $postscript_meta['url_style'] ), array() );
         }
 
-        if ( isset( $postscript_meta['url_script'] ) ) {
+        if ( isset( $postscript_meta['url_script'] ) && $options['allow']['urls_script'] ) {
             wp_enqueue_script( "postscript-script-$post_id", esc_url_raw( $postscript_meta['url_script'] ), array(), false, true );
         }
 
-        if ( isset( $postscript_meta['url_script_2'] ) ) {
+        if ( isset( $postscript_meta['url_script_2'] ) && $options['allow']['urls_script'] == '2' ) {
             // Load second JS last (via dependency param).
             $dep = ( isset( $postscript_meta['url_script_2'] ) ) ? "postscript-script-$post_id" : '';
             wp_enqueue_script( "postscript-script-2-$post_id", esc_url_raw( $postscript_meta['url_script_2'] ), array( $dep ), false, true );
@@ -91,13 +93,14 @@ add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_urls', 100010 );
 /**
  * Adds user-entered class(es) to the body tag.
  *
+ * @uses postscript_get_options()   Safely gets option from database.
  * @return  array $classes  WordPress defaults and user-added classes
  */
 function postscript_class_body( $classes ) {
-
     $post_id = get_the_ID();
+    $options = postscript_get_options();
 
-    if ( ! empty( $post_id ) ) {
+    if ( ! empty( $post_id ) && isset( $options['allow']['class_body'] ) ) {
         // Get the custom post class.
         $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
 
@@ -115,12 +118,14 @@ add_filter( 'body_class', 'postscript_class_body' );
 /**
  * Adds user-entered class(es) to the post class list.
  *
+ * @uses postscript_get_options()   Safely gets option from database.
  * @return  array $classes  WordPress defaults and user-added classes
  */
 function postscript_class_post( $classes ) {
     $post_id = get_the_ID();
+    $options = postscript_get_options();
 
-    if ( ! empty( $post_id ) ) {
+    if ( ! empty( $post_id ) && isset( $options['allow']['class_post'] ) ) {
         // Get the custom post class.
         $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
 

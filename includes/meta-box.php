@@ -18,7 +18,7 @@
  * Displays meta box on post editor screen (both new and edit pages).
  */
 function postscript_meta_box_setup() {
-    $options = postscript_get_options( 'postscript' );
+    $options = postscript_get_options();
     $user    = wp_get_current_user();
     $roles   = $options['user_roles'];
 
@@ -158,10 +158,6 @@ function postscript_meta_box_callback( $post, $box ) {
         <label for="postscript-class-post"><?php _e( 'Post class:', 'postscript' ); ?></label><br />
         <input class="widefat" type="text" name="postscript_meta[class_post]" id="postscript-class-post" value="<?php if ( isset ( $postscript_meta['class_post'] ) ) { echo sanitize_html_class( $postscript_meta['class_post'] ); } ?>" size="30" />
     </p>
-
-    <pre>formdata = <?php echo $formdata =  ( ! empty(get_post_meta( get_the_ID(), 'postscript_formdata' ) ) ) ?  print_r( get_post_meta( get_the_ID(), 'postscript_formdata', false ) ) : 'none'; ?></pre>
-    <pre>postmeta = <?php echo $postmeta =  ( ! empty(get_post_meta( get_the_ID(), 'postscript_meta' ) ) ) ?  print_r( get_post_meta( get_the_ID(), 'postscript_meta', false ) ) : 'none'; ?></pre>
-
     <?php
     }
 }
