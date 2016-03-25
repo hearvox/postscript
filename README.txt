@@ -1,7 +1,7 @@
 === Postscript ===
 Contributors: hearvox
 Donate link: http://hearingvoices.com/tools
-Tags: script, javascript, styles, stylesheet, css
+Tags: script, javascript, style, styles, stylesheet, css, class
 Requires at least: 3.3
 Tested up to: 4.4
 Stable tag: 0.3.1
