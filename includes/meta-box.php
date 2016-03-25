@@ -159,12 +159,8 @@ function postscript_meta_box_callback( $post, $box ) {
         <input class="widefat" type="text" name="postscript_meta[class_post]" id="postscript-class-post" value="<?php if ( isset ( $postscript_meta['class_post'] ) ) { echo sanitize_html_class( $postscript_meta['class_post'] ); } ?>" size="30" />
     </p>
 
-    <p>postdata = <?php echo $postdata = ( isset( $_POST['postscript_meta'] ) ?  print_r( $_POST['postscript_meta'], false ) : 'none' ); ?></p>
-
-    <p>postmeta = <?php echo $postmeta =  ( ! empty(get_post_meta( get_the_ID(), 'postscript_meta' ) ) ) ?  print_r( get_post_meta( get_the_ID(), 'postscript_meta', false ) ) : 'none'; ?></p>
-
-
-    <p>tax_input = <?php echo $tax_input = ( isset( $_POST['tax_input'] ) ?  print_r( $_POST['tax_input'], false ) : 'none' ); ?></p>
+    <pre>formdata = <?php echo $formdata =  ( ! empty(get_post_meta( get_the_ID(), 'postscript_formdata' ) ) ) ?  print_r( get_post_meta( get_the_ID(), 'postscript_formdata', false ) ) : 'none'; ?></pre>
+    <pre>postmeta = <?php echo $postmeta =  ( ! empty(get_post_meta( get_the_ID(), 'postscript_meta' ) ) ) ?  print_r( get_post_meta( get_the_ID(), 'postscript_meta', false ) ) : 'none'; ?></pre>
 
     <?php
     }
@@ -193,41 +189,31 @@ function postscript_save_post_meta( $post_id, $post ) {
         return $post_id;
     }
 
-    $meta_key       = 'postscript_meta';
-    $meta_value     = get_post_meta( $post_id, $meta_key, true );
-    $new_meta_value = '';
+    $meta_key   = 'postscript_meta';
+    $meta_value = get_post_meta( $post_id, $meta_key, true );
 
-    // Get and sanitize the posted form data.
-    if ( isset( $_POST['postscript_meta'] ) ) {
-        $form_data = $_POST['postscript_meta'];
+    // If any user-submitted form fields have a value (implode() reduces array to string of values).
+    $form_data  = ( isset( $_POST['postscript_meta'] ) && implode( $_POST['postscript_meta'] ) ) ? $_POST['postscript_meta'] : null;
 
-        //Build array from form data for postmeta value.
-        $new_meta_value['url_style']    = isset( $form_data['url_style'] ) ? esc_url_raw( $form_data['url_style'] ) : '';
-        $new_meta_value['url_script']   = isset( $form_data['url_style'] ) ? esc_url_raw( $form_data['url_script'] ) : '';
-        $new_meta_value['url_script_2'] = isset( $form_data['url_script_2'] ) ? esc_url_raw( $form_data['url_script_2'] ) : '';
-        $new_meta_value['class_body']   = ( ! empty( $form_data['class_body'] ) ) ? sanitize_html_class( $form_data['class_body'] ) : '';
-        $new_meta_value['class_post']   = ( ! empty( $form_data['class_post'] ) ) ? sanitize_html_class( $form_data['class_post'] ) : '';
+    update_post_meta( $post_id, 'postscript_formdata', $form_data );
 
-        // If all items in array aren't empty, update it.
-            update_post_meta( $post_id, $meta_key, $new_meta_value );
+    // Add post-meta, if none exists, and if user entered new form data.
+    if ( $form_data && '' == $meta_value ) {
+        add_post_meta( $post_id, $meta_key, $form_data, true );
 
-    } else {
-        // delete_post_meta( $post_id, $meta_key );
-    }
-/*
-    // If a new meta value was added and there was no previous value, add it.
-    if ( $new_meta_value && '' == $meta_value ) {
-        add_post_meta( $post_id, $meta_key, $new_meta_value, true );
+    // Update post-meta if user changed existing post-meta values in form.
+    } elseif ( $form_data && $form_data != $meta_value ) {
+        update_post_meta( $post_id, $meta_key, $form_data );
 
-    // If the new meta value does not match the old value, update it.
-    } elseif ( $new_meta_value && $new_meta_value != $meta_value ) {
-        update_post_meta( $post_id, $meta_key, $new_meta_value );
-
-    // If there is no new meta value but an old value exists, delete it.
-    } elseif ( '' == $new_meta_value && $meta_value ) {
+    // Delete existing post-meta if user cleared all post-meta values from form.
+    } elseif ( null == $form_data && $meta_value ) {
         delete_post_meta( $post_id, $meta_key );
+
+    // Any other possibilities?
+    } else {
+        return;
     }
-*/
+
     if ( isset( $_POST['tax_input'] ) ) {
     // Convert array values (term IDs) from number strings to integers.
         if ( isset( $_POST['tax_input']['postscript_styles'] ) && is_array( $_POST['tax_input']['postscript_styles'] ) ) {
