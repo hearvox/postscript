@@ -575,6 +575,25 @@ function postscript_pre_get_posts( $query ) {
 add_action( 'pre_get_posts', 'postscript_pre_get_posts' );
 
 /**
+ * Adds an Admin Notice to the tax term screen (post list: edit.php?postscript_scripts={term}).
+ */
+function postscript_tax_term_screen( $query ) {
+    if ( is_admin() ) {
+        if ( get_query_var( 'postscript_scripts' ) || get_query_var( 'postscript_styles' ) ) {
+            $term_script = ( get_query_var( 'postscript_scripts' ) ) ? get_query_var( 'postscript_scripts' ) : '';
+            $term_style  = ( get_query_var( 'postscript_styles' ) ) ? get_query_var( 'postscript_styles' ) : '';
+
+        ?>
+        <div class="notice notice-info is-dismissible">
+            <p><?php _e( 'These post use Postscript to enqueue the handle: "', 'postscript' ); ?><?php echo $term_script . $term_style; ?>".</p>
+        </div>
+        <?php
+        }
+    }
+}
+add_action( 'admin_notices', 'postscript_tax_term_screen' );
+
+/**
  * Outputs HTML select menu of all registered scripts.
  */
 function postscript_remove_script_callback() {
