@@ -1,20 +1,16 @@
 # Postscript
-Contributors: hearvox
-Donate link: http://hearingvoices.com/tools/postscript
-Tags: script, javascript, styles, stylesheet, css
-Requires at least: 3.3
-Tested up to: 4.4
-Stable tag: 0.3.1
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Data visionaries and multi-mediators, make any post sing with scripts and splendid with styles, all from within WordPress.
 
 ## Description
 
+No more shoehorning stylesheets and JavaScripts into the post content box. No more custom code for each post. No more loading scripts on every page you just need for a few. Postscript lets you easily add libraries or single-post script and style files post-by-post.
+
+The plugin uses the WordPress "enqueue" methods, which means you can control dependencies (whn registering scripts), improve site performance by putting styles in the head and scripts in the footer, and eliminate loading multiple copies of the same library (jQuery, I'm looking at you).
+
 ### Enqueue Registered Styles and Scripts (by Handle)
 
-Use the Postscript meta box (Edit Post screen) to enqueue registered of styles and script, listed in checkboxes by handle.).
+Use the Postscript meta box (Edit Post screen) to enqueue registered of styles and scripts (listed in checkboxes by handle.).
 
 ### Enqueue Unregistered Styles, Scripts, and Data Files (by URL)
 
@@ -37,6 +33,10 @@ To install the use the Postscript plugin:
 1. Upload the `postscript` directory and content to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Go to the Setting: Postscript options screen.
+
+### Credits
+
+Thanks:This plugin was developed as part of a [Reynolds Journalism Institute](https://www.rjionline.org) fellowship.
 
 ## Frequently Asked Questions
 
@@ -94,10 +94,3 @@ This plugin improves site performance by only enqueuing scripts only when spefic
 
 ### Contribute
 Postscript is now on [GitHub](https://github.com/hearvox/postscript). Pull Requests welcome.
-
-### Credits
-
-Thanks:
-
-* This plugin was developed as part of a [Reynolds Journalism Institute](https://www.rjionline.org) fellowship.
-
