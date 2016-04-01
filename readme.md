@@ -92,23 +92,23 @@ WordPress ships with a modified [ThickBox jQuery library](https://codex.wordpres
 
 This plugin improves site performance by only enqueuing scripts only when speficially requested for an individual post, by checking the Thickbox Script and Styles handles in the **Postscript** box. See [the screenshots](https://wordpress.org/plugins/postscript/screenshots/).
 
-## Settings: Tech Notes
+## Tech Notes: Settings
 
-Settings (`/includes/admin-options.php`) use the WordPress Settings API.
+Admin settings are in `/includes/admin-options.php` and use the WordPress Settings API.
 
 ### Choose post-types and User-roles
-Admins (capability: 'manage-options') use checkboxes to choose which post-types (`get_post_types()`, `'public'` only) and user-roles (`get_editable_roles()`) display the Postscript meta box on their *Edit Post* screens.
+Admins (`manage-options`) use checkboxes to choose which user-roles and post-types and display the Postscript meta box on their *Edit Post* screens. Choices are pulled from `get_editable_roles()` and `get_post_types( 'public' => true )`.
 
-The defaults are user-role: "Administrator" (can't be unchecked) and post-type: "Post". Post-types are passed to `add_meta_box()` and `register_taxonomy()`, see Custom Taxonomies below.
+Defaults: user-role "Administrator" and post-type "Post". (Post-types are used by `add_meta_box()` and `register_taxonomy()`.)
 
 ### Permit URLs and classes
 Admins use checkboxes to allow text fields in the meta box for entering:
 * An URL to enqueue 1 stylesheet.
-* URLs to enqueue 1–2 JavaScript files (default: 1).
-* Class(es) for `body_class()`.
-* Class(es) for `post_class()`.
+* URLs to enqueue 1–2 JavaScript files.
+* A class name for `body_class()`.
+* A class name for `post_class()`.
 
-These are allowed by default when activating the plugin.
+Defaults: stylesheet, JavaScript (1), post and body classes allowed.
 
 ### Options
 Selected post-types, user-roles, allowed URLs and class are saved as arrays in a single site-option, named `'postscript'. Custom functions (`/includes/functions.php`) get, set, upgrade, and create defaults for this option.
