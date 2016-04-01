@@ -92,9 +92,8 @@ WordPress ships with a modified [ThickBox jQuery library](https://codex.wordpres
 
 This plugin improves site performance by only enqueuing scripts only when speficially requested for an individual post, by checking the Thickbox Script and Styles handles in the **Postscript** box. See [the screenshots](https://wordpress.org/plugins/postscript/screenshots/).
 
-## Tech Notes: Settings
-
-Admin settings use the WordPress Settings API. Functions for the settings page and "Help" tab are in `/includes/admin-options.php`.
+## Tech Notes: Site-option for meta box settings
+Admin settings use the WordPress Settings API. Settings page and "Help" tab functions are in `/includes/admin-options.php`.
 
 ### Choose post-types and User-roles
 Admins (`manage-options`) have checkboxes to choose which user-roles and post-types display the Postscript meta box in their *Edit Post* screens. Choices are pulled from `get_editable_roles()` and `get_post_types( 'public' => true )`. Post-types are passed to `add_meta_box()` and `register_taxonomy()`.
@@ -110,52 +109,37 @@ Admins use checkboxes to allow text fields in the meta box for entering:
 
 Defaults allow: 1 CSS and 1 JS URL, post and body classes.
 
-### Options
+### Option functions
 A single site-option, named `'postscript', stores the settings above in arrays. Custom functions get, set, add defaults to, and upgrade this option (`/includes/functions.php`).
 
 ### Select registered script/style handles
-Admins use select-menus on the settings pages to add and remove registered handles from the meta-box. A table displays data for selected handles: dependencies, footer setting, and checks the source URL's status response code.
+Admins use select-menus on the settings pages to add or remove registered handles from the meta-box. A table displays each selected handle's dependencies, footer-setting, post-count, and status response code of its URL.
 
-Only front-end handles are allowable. Transients store the list of front-end registrations. The select-menu pulls the handles from these transients using `wp_list_pluck()`.
+The select-menu gets the handles from transients which store front-end registrations.
 
-### Transients: Store front-end registered scripts/styles
-The `wp_enqueue_scripts` hook registers front-end scripts/styles. The variables `$wp_scripts` and `$wp_styles` store theses registration data in memory.
+## Tech Notes: Transients for front-end registered scripts/styles
+The `wp_enqueue_scripts` hook registers front-end scripts/styles. The `$wp_scripts` and `$wp_styles` variables store this registration data in memory.
 
-So this plugin needs to access front-end memory from the back-end. To do that a function fires the hook (`do_action( 'wp_enqueue_scripts' )`) and stores the variables as the transients `'postscript_scripts_reg'` and `'postscript_styles_reg'`.
+So this plugin needs to access front-end memory from the back-end. To do that a function fires the hook -- `do_action( 'wp_enqueue_scripts' )` -- then stores the variables as transients, `'postscript_scripts_reg'` and `'postscript_styles_reg'`.
 
-The transients have all the WordPress defaults, registered via `wp_default_scripts()` and `wp_default_styles()`, but do not have registrations via the `admin_enqueue_scripts` or `login_enqueue_scripts` hooks. The function that fires `'wp_enqueue_scripts'`  is hooked to `shutdown` -- earlier hooks affect the admin display (likely due to front-end handles enqueued on the back-end).
+This function hooks on `shutdown` (earlier hooks affect the admin display). The transients contain all the WordPress defaults, registered via `wp_default_scripts()` and `wp_default_styles()`, but do not have registrations via the `admin_enqueue_scripts` or `login_enqueue_scripts` hooks. Transient functions are in: `/includes/functions.php`.
 
+## Tech Notes: Custom taxonomies for selected handles
+Two custom taxonomies, `'postscript_scripts'` and `'postscript_styles'`, store admin-selected handles. As a sanity check, a function, hooked to `'pre_insert_term'`, adds new terms only if they match a front-end registered handle (in one the above transients).
 
+On the settings screen, WordPress taxonomy display a term's post-count linked to a list all posts that use a particular term/handle. The term posts-list screen displays all allowed post types, by applying the site-option's' 'post_types' array to the `'pre_get_posts'` hook. Taxonomy functions are in the main plugin file: `postscript.php`.
 
-### Custom taxonomies: Store selected handles
-Admin-selected handles
+## Tech Notes: Post meta box for adding scripts, styles, and classes
+The Postscript meta box displays admin-allowed handles as checkboxes using `wp_terms_checklist()`. These are the scripts/styles that can be enqueued. Checked boxes are saved as the post's taxonomy terms. (The default taxonomy meta boxes do not display, so the Edit Post form would doesn't have two checkbox sets for the same taxonomy.)
 
-pre_insert_term
-post_class() class="...postscripts-thickbox poststyles-thickbox"
+The meta box also has text fields for script/style URLs to be enqueued and for body/post classes. URLs and class names get saved as post-meta as an array in a single custom field, named `'postscript_meta'`. Meta box and post-meta functions are in: `/includes/meta-box.php`.
 
+## Tech Notes: Enqueueing handles and adding classes to a Post
+Functions hooked to `wp_enqueue_scripts` enqueue a post's handles (custom taxonomy terms) and URLs (from post-meta), after `sanitize_key()` and `esc_url_raw()` sanity checks. Functions hooked to `body_class` and `post_class` add any class names (from post-meta), after a `sanitize_html_class()` sanity check.
 
-## Post-meta: Save URLs and classes
-URLs esc_url_raw()
+WordPress also auto-adds taxonomy terms to `post_class()`, e.g., with class names `.postscript_scripts-thickbox` and  `.postscript_styles-thickbox`.
 
-
-## Enqueue: Load selected handles and URLs
-
-
-### Classes
+Enqueue and CSS-class functions are in: `/includes/enqueue-scripts.php`.
 
 ### Contribute
 Postscript is now on [GitHub](https://github.com/hearvox/postscript). Pull Requests welcome.
-
-(``)
-(``)
-(``)
-(``)
-(``)
-(``)
-(``)
-(``)
-(``)
-(``)
-(``)
-(``)
-
