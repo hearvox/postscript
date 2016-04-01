@@ -101,8 +101,7 @@ Admin settings use the WordPress Settings API. Settings page and "Help" tab func
 
 Defaults: user-role "Administrator" and post-type "Post".
 
-### Permit URLs and classes
-Admins use checkboxes to allow text fields in the meta box for entering:
+**Permit URLs and classes:** Admins use checkboxes to allow text fields in the meta box for entering:
 * 1 CSS stylesheet URL to enqueue.
 * 1–2 JavaScript URL(s) to enqueue.
 * A class name for `body_class()`.
@@ -110,32 +109,30 @@ Admins use checkboxes to allow text fields in the meta box for entering:
 
 Defaults allow: 1 CSS and 1 JS URL, post and body classes.
 
-### Option functions
-A single site-option, named `'postscript', stores the settings above in arrays. Custom functions get, set, add defaults to, and upgrade this option (`/includes/functions.php`).
+**Option functions:** A single site-option, named `'postscript', stores the settings above in arrays. Custom functions get, set, add defaults to, and upgrade this option (`/includes/functions.php`).
 
-### Select registered script/style handles
-Admins use select-menus on the settings pages to add or remove registered handles from the meta-box. A table displays each selected handle's dependencies, footer-setting, post-count, and status response code of its URL.
+**Select registered script/style handles:** Admins use select-menus on the settings pages to add or remove registered handles from the meta-box. A table displays each selected handle's dependencies, footer-setting, post-count, and status response code of its URL.
 
 The select-menu gets the handles from transients which store front-end registrations.
 
-## Dev Note: Transients store registered scripts/styles
+### Transients store registered scripts/styles
 The `wp_enqueue_scripts` hook registers front-end scripts/styles. The `$wp_scripts` and `$wp_styles` variables store this registration data in memory.
 
 So this plugin needs to access front-end memory from the back-end. To do that a function fires the hook -- `do_action( 'wp_enqueue_scripts' )` -- then stores the variables as transients, `'postscript_scripts_reg'` and `'postscript_styles_reg'`.
 
 This function hooks on `shutdown` (earlier hooks affect the admin display). The transients contain all the WordPress defaults, registered via `wp_default_scripts()` and `wp_default_styles()`, but do not have registrations via the `admin_enqueue_scripts` or `login_enqueue_scripts` hooks. Transient functions are in: `/includes/functions.php`.
 
-## Dev Note: Custom taxonomies store selected scripts/styles
+### Custom taxonomies store selected scripts/styles
 Two custom taxonomies, `'postscript_scripts'` and `'postscript_styles'`, store admin-selected handles. As a sanity check, a function, hooked to `'pre_insert_term'`, adds new terms only if they match a front-end registered handle (in one the above transients).
 
 On the settings screen, WordPress taxonomy display a term's post-count linked to a list all posts that use a particular term/handle. The term posts-list screen displays all allowed post types, by applying the site-option's' 'post_types' array to the `'pre_get_posts'` hook. Taxonomy functions are in the main plugin file: `postscript.php`.
 
-## Dev Note: Post meta box adds scripts, styles, and classes
+### Post meta box adds scripts, styles, and classes
 The Postscript meta box displays admin-allowed handles as checkboxes using `wp_terms_checklist()`. These are the scripts/styles that can be enqueued. Checked boxes are saved as the post's taxonomy terms. (The default taxonomy meta boxes do not display, so the Edit Post form would doesn't have two checkbox sets for the same taxonomy.)
 
 The meta box also has text fields for script/style URLs to be enqueued and for body/post classes. URLs and class names get saved as post-meta as an array in a single custom field, named `'postscript_meta'`. Meta box and post-meta functions are in: `/includes/meta-box.php`.
 
-## Dev Note: Enqueueing loads scripts/styles and adds classes
+### Enqueueing loads scripts/styles and adds classes
 Functions hooked to `wp_enqueue_scripts` enqueue a post's handles (custom taxonomy terms) and URLs (from post-meta), after `sanitize_key()` and `esc_url_raw()` sanity checks. Functions hooked to `body_class` and `post_class` add any class names (from post-meta), after a `sanitize_html_class()` sanity check.
 
 WordPress also auto-adds taxonomy terms to `post_class()`, e.g., with class names `.postscript_scripts-thickbox` and  `.postscript_styles-thickbox`.
