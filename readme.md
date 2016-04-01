@@ -4,21 +4,21 @@ Data visionaries and multi-mediators, make any post sing with scripts and splend
 
 ## Description
 
-No more shoehorning stylesheets and JavaScripts into the post content box. No more custom code for each post. No more loading scripts on every page you just need for a few. Postscript lets you easily add libraries or single-post script and style files post-by-post.
+No more shoehorning stylesheets and JavaScripts into the post content box. No more loading scripts on every post that only a few  use. Postscript lets you easily add libraries or single-post script and style files post-by-post.
 
-The plugin uses the WordPress "enqueue" methods, which means you can control dependencies (whn registering scripts), improve site performance by putting styles in the head and scripts in the footer, and eliminate loading multiple copies of the same library (jQuery, I'm looking at you).
+The plugin uses the WordPress "enqueue" methods, which means you can control dependencies (when registering scripts), improve site performance by putting styles in the head and scripts in the footer, and eliminate loading multiple copies of the same library (jQuery, I'm looking at you).
 
-### Enqueue Registered Styles and Scripts (by Handle)
+### Enqueue registered styles and scripts (by handle)
 
 Use the Postscript meta box (Edit Post screen) to enqueue registered of styles and scripts (listed in checkboxes by handle.).
 
-### Enqueue Unregistered Styles, Scripts, and Data Files (by URL)
+### Enqueue unregistered styles, scripts, and data files (by URL)
 
 For each post, you can also enqueue unregistered files, by entering in the meta boxes text fields for:
 * A stylesheet URL.
 * Two JavaScript URLs, e.g, one JSON data file and one script file.
 
-### Add Post and Body Classes
+### Add post and body classes
 
 And for each post, you can add:
 * Body class(es), to the HTML `&lt;body&lt;` tag (requires `body_class()` in theme).
@@ -38,7 +38,7 @@ To install the use the Postscript plugin:
 
 Thanks:This plugin was developed as part of a [Reynolds Journalism Institute](https://www.rjionline.org) fellowship.
 
-## Frequently Asked Questions
+## Frequently asked questions
 
 ### What might be some future features?
 
@@ -77,20 +77,76 @@ Tell us in the [support fourm](https://wordpress.org/support/plugin/postscript) 
 ### 0.1.0
 * Alpha version.
 
-## Tech Notes
+## Registration scripts/styles in WordPress
 
-### Your Scripts and Styles
+### Your scripts and styles
 You can register your own CSS/JS file *handles* with the [wp_register_script()](https://developer.wordpress.org/reference/functions/wp_register_script/) and the [wp_register_style()](https://developer.wordpress.org/reference/functions/wp_register_style/) functions.
 
-Only handles you register via the [`wp_enqueue_scripts` hook])https://developer.wordpress.org/reference/hooks/wp_enqueue_scripts/} list on Postscript's Settings screen. This list also has handles registered by your active theme and plugins and the defaults registered by WordPress itself.
+Only handles you register via the [`wp_enqueue_scripts` hook](https://developer.wordpress.org/reference/hooks/wp_enqueue_scripts/) list on Postscript's Settings screen. This list also has handles registered by your active theme and plugins and the defaults registered by WordPress itself.
 
-### Default Scripts and Styles
+### Default scripts and styles
 WordPress registers numerous styles and scripts via its core functions: [wp_default_scripts()](https://developer.wordpress.org/reference/functions/wp_default_scripts/) and [wp_default_styles()](https://developer.wordpress.org/reference/functions/wp_default_styles/). Each file gets its own unique handle: see the [list of defaults](https://developer.wordpress.org/reference/functions/wp_enqueue_script/#defaults).
 
-### An Example: Thickbox
+### An example: Thickbox
 WordPress ships with a modified [ThickBox jQuery library](https://codex.wordpress.org/Javascript_Reference/ThickBox), used to make modal lightbox windows. The [add_thickbox()](https://developer.wordpress.org/reference/functions/add_thickbox/) function enables this feature, but it also loads Thickbox's CSS and JS files on every Post, whether or not the post needs it.
 
 This plugin improves site performance by only enqueuing scripts only when speficially requested for an individual post, by checking the Thickbox Script and Styles handles in the **Postscript** box. See [the screenshots](https://wordpress.org/plugins/postscript/screenshots/).
 
+## Settings: Tech Notes
+
+Settings (`/includes/admin-options.php`) use the WordPress Settings API.
+
+### Choose post-types and User-roles
+Admins (capability: 'manage-options') use checkboxes to choose which post-types (`get_post_types()`, `'public'` only) and user-roles (`get_editable_roles()`) display the Postscript meta box on their *Edit Post* screens.
+
+The defaults are user-role: "Administrator" (can't be unchecked) and post-type: "Post". Post-types are passed to `add_meta_box()` and `register_taxonomy()`, see Custom Taxonomies below.
+
+### Permit URLs and classes
+Admins use checkboxes to allow text fields in the meta box for entering:
+* An URL to enqueue 1 stylesheet.
+* URLs to enqueue 1–2 JavaScript files (default: 1).
+* Class(es) for `body_class()`.
+* Class(es) for `post_class()`.
+
+These are allowed by default when activating the plugin.
+
+### Options
+Selected post-types, user-roles, allowed URLs and class are saved as arrays in a single site-option, named `'postscript'. Custom functions (`/includes/functions.php`) get, set, upgrade, and create defaults for this option.
+
+## Select allowable registered script/style handles
+
+
+## Transients: Store registered scripts/styles
+
+Front-end memory.
+
+## Custom taxonomies: Store selected handles
+pre_insert_term
+post_class() class="...postscripts-thickbox poststyles-thickbox"
+
+
+## Post-meta: Save URLs and classes
+URLs esc_url_raw()
+
+
+## Enqueue: Load selected handles and URLs
+
+
+### Classes
+
 ### Contribute
 Postscript is now on [GitHub](https://github.com/hearvox/postscript). Pull Requests welcome.
+
+(``)
+(``)
+(``)
+(``)
+(``)
+(``)
+(``)
+(``)
+(``)
+(``)
+(``)
+(``)
+

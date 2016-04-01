@@ -12,9 +12,13 @@ For Data-visionaries and Multi-mediators: Make posts sing with scripts and style
 
 == Description ==
 
+No more shoehorning stylesheets and JavaScripts into the post content box. No more custom code for each post. No more loading scripts on every page you just need for a few. Postscript lets you easily add libraries or single-post script and style files post-by-post.
+
+The plugin uses the WordPress "enqueue" methods, which means you can control dependencies (whn registering scripts), improve site performance by putting styles in the head and scripts in the footer, and eliminate loading multiple copies of the same library (jQuery, I'm looking at you).
+
 = Enqueue Registered Styles and Scripts (by Handle) =
 
-Use the Postscript meta box (Edit Post screen) to enqueue registered of styles and script, listed in checkboxes by handle.).
+Use the Postscript meta box (Edit Post screen) to enqueue registered of styles and scripts (listed in checkboxes by handle.).
 
 = Enqueue Unregistered Styles, Scripts, and Data Files (by URL) =
 
