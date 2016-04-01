@@ -94,33 +94,42 @@ This plugin improves site performance by only enqueuing scripts only when spefic
 
 ## Tech Notes: Settings
 
-Admin settings are in `/includes/admin-options.php` and use the WordPress Settings API.
+Admin settings use the WordPress Settings API. Functions for the settings page and "Help" tab are in `/includes/admin-options.php`.
 
 ### Choose post-types and User-roles
-Admins (`manage-options`) use checkboxes to choose which user-roles and post-types and display the Postscript meta box on their *Edit Post* screens. Choices are pulled from `get_editable_roles()` and `get_post_types( 'public' => true )`.
+Admins (`manage-options`) have checkboxes to choose which user-roles and post-types display the Postscript meta box in their *Edit Post* screens. Choices are pulled from `get_editable_roles()` and `get_post_types( 'public' => true )`. Post-types are passed to `add_meta_box()` and `register_taxonomy()`.
 
-Defaults: user-role "Administrator" and post-type "Post". (Post-types are used by `add_meta_box()` and `register_taxonomy()`.)
+Defaults: user-role "Administrator" and post-type "Post".
 
 ### Permit URLs and classes
 Admins use checkboxes to allow text fields in the meta box for entering:
-* An URL to enqueue 1 stylesheet.
-* URLs to enqueue 1–2 JavaScript files.
+* 1 CSS stylesheet URL to enqueue.
+* 1–2 JavaScript URL(s) to enqueue.
 * A class name for `body_class()`.
 * A class name for `post_class()`.
 
-Defaults: stylesheet, JavaScript (1), post and body classes allowed.
+Defaults allow: 1 CSS and 1 JS URL, post and body classes.
 
 ### Options
-Selected post-types, user-roles, allowed URLs and class are saved as arrays in a single site-option, named `'postscript'. Custom functions (`/includes/functions.php`) get, set, upgrade, and create defaults for this option.
+A single site-option, named `'postscript', stores the settings above in arrays. Custom functions get, set, add defaults to, and upgrade this option (`/includes/functions.php`).
 
-## Select allowable registered script/style handles
+### Select registered script/style handles
+Admins use select-menus on the settings pages to add and remove registered handles from the meta-box. A table displays data for selected handles: dependencies, footer setting, and checks the source URL's status response code.
+
+Only front-end handles are allowable. Transients store the list of front-end registrations. The select-menu pulls the handles from these transients using `wp_list_pluck()`.
+
+### Transients: Store front-end registered scripts/styles
+The `wp_enqueue_scripts` hook registers front-end scripts/styles. The variables `$wp_scripts` and `$wp_styles` store theses registration data in memory.
+
+So this plugin needs to access front-end memory from the back-end. To do that a function fires the hook (`do_action( 'wp_enqueue_scripts' )`) and stores the variables as the transients `'postscript_scripts_reg'` and `'postscript_styles_reg'`.
+
+The transients have all the WordPress defaults, registered via `wp_default_scripts()` and `wp_default_styles()`, but do not have registrations via the `admin_enqueue_scripts` or `login_enqueue_scripts` hooks. The function that fires `'wp_enqueue_scripts'`  is hooked to `shutdown` -- earlier hooks affect the admin display (likely due to front-end handles enqueued on the back-end).
 
 
-## Transients: Store registered scripts/styles
 
-Front-end memory.
+### Custom taxonomies: Store selected handles
+Admin-selected handles
 
-## Custom taxonomies: Store selected handles
 pre_insert_term
 post_class() class="...postscripts-thickbox poststyles-thickbox"
 
