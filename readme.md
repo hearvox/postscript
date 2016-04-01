@@ -92,11 +92,12 @@ WordPress ships with a modified [ThickBox jQuery library](https://codex.wordpres
 
 This plugin improves site performance by only enqueuing scripts only when speficially requested for an individual post, by checking the Thickbox Script and Styles handles in the **Postscript** box. See [the screenshots](https://wordpress.org/plugins/postscript/screenshots/).
 
-## Dev Note: Site-option saves meta box settings
+## Dev Notes
+
+### Site-option saves meta box settings
 Admin settings use the WordPress Settings API. Settings page and "Help" tab functions are in `/includes/admin-options.php`.
 
-### Choose post-types and User-roles
-Admins (`manage-options`) have checkboxes to choose which user-roles and post-types display the Postscript meta box in their *Edit Post* screens. Choices are pulled from `get_editable_roles()` and `get_post_types( 'public' => true )`. Post-types are passed to `add_meta_box()` and `register_taxonomy()`.
+**Choose post-types and User-roles:** Admins (`manage-options`) have checkboxes to choose which user-roles and post-types display the Postscript meta box in their *Edit Post* screens. Choices are pulled from `get_editable_roles()` and `get_post_types( 'public' => true )`. Post-types are passed to `add_meta_box()` and `register_taxonomy()`.
 
 Defaults: user-role "Administrator" and post-type "Post".
 
