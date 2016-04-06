@@ -345,7 +345,7 @@ function postscript_post_types_callback( $options ) {
         foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type_arr ) {
             $post_type = $post_type_arr->name;
         ?>
-            <li><label><input type="checkbox" id="<?php echo $post_type; ?>" value="<?php echo $post_type; ?>" name="postscript[post_types][]"<?php checked( in_array( $post_type, $options['post_types'] ) ); ?> /> <?php echo $post_type_arr->labels->name; ?></label></li>
+            <li><label><input type="checkbox" id="<?php echo esc_attr( $post_type ); ?>" value="<?php echo esc_attr( $post_type ); ?>" name="postscript[post_types][]"<?php checked( in_array( $post_type, $options['post_types'] ) ); ?> /> <?php echo esc_html( $post_type_arr->labels->name ); ?></label></li>
         <?php
         }
         ?>
