@@ -115,17 +115,17 @@ function postscript_create_taxonomies() {
     $post_types = postscript_get_option( 'post_types' );
 
     $labels_scripts = array(
-        'name'              => _x( 'Scripts', 'taxonomy general name' ),
-        'singular_name'     => _x( 'Script', 'taxonomy singular name' ),
-        'search_items'      => __( 'Search Scripts' ),
-        'all_items'         => __( 'All Scripts' ),
-        'parent_item'       => __( 'Parent Script' ),
-        'parent_item_colon' => __( 'Parent Script:' ),
-        'edit_item'         => __( 'Edit Script' ),
-        'update_item'       => __( 'Update Script' ),
-        'add_new_item'      => __( 'Add New Script' ),
-        'new_item_name'     => __( 'New Scripts Name' ),
-        'menu_name'         => __( 'Scripts' ),
+        'name'              => _x( 'Scripts', 'taxonomy general name', 'postscript' ),
+        'singular_name'     => _x( 'Script', 'taxonomy singular name', 'postscript' ),
+        'search_items'      => __( 'Search Scripts', 'postscript' ),
+        'all_items'         => __( 'All Scripts', 'postscript' ),
+        'parent_item'       => __( 'Parent Script', 'postscript' ),
+        'parent_item_colon' => __( 'Parent Script:', 'postscript' ),
+        'edit_item'         => __( 'Edit Script', 'postscript' ),
+        'update_item'       => __( 'Update Script', 'postscript' ),
+        'add_new_item'      => __( 'Add New Script', 'postscript' ),
+        'new_item_name'     => __( 'New Scripts Name', 'postscript' ),
+        'menu_name'         => __( 'Scripts', 'postscript' ),
     );
 
     $args_scripts = array(
@@ -150,17 +150,17 @@ function postscript_create_taxonomies() {
     register_taxonomy( 'postscript_scripts', $post_types, $args_scripts );
 
     $labels_styles = array(
-        'name'              => _x( 'Styles', 'taxonomy general name' ),
-        'singular_name'     => _x( 'Style', 'taxonomy singular name' ),
-        'search_items'      => __( 'Search Styles' ),
-        'all_items'         => __( 'All Styles' ),
-        'parent_item'       => __( 'Parent Style' ),
-        'parent_item_colon' => __( 'Parent Style:' ),
-        'edit_item'         => __( 'Edit Style' ),
-        'update_item'       => __( 'Update Style' ),
-        'add_new_item'      => __( 'Add New Style' ),
-        'new_item_name'     => __( 'New Style Name' ),
-        'menu_name'         => __( 'Styles' ),
+        'name'              => _x( 'Styles', 'taxonomy general name', 'postscript' ),
+        'singular_name'     => _x( 'Style', 'taxonomy singular name', 'postscript' ),
+        'search_items'      => __( 'Search Styles', 'postscript' ),
+        'all_items'         => __( 'All Styles', 'postscript' ),
+        'parent_item'       => __( 'Parent Style', 'postscript' ),
+        'parent_item_colon' => __( 'Parent Style:', 'postscript' ),
+        'edit_item'         => __( 'Edit Style', 'postscript' ),
+        'update_item'       => __( 'Update Style', 'postscript' ),
+        'add_new_item'      => __( 'Add New Style', 'postscript' ),
+        'new_item_name'     => __( 'New Style Name', 'postscript' ),
+        'menu_name'         => __( 'Styles', 'postscript' ),
     );
 
     $args_styles = array(
