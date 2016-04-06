@@ -47,7 +47,7 @@ define( 'POSTSCRIPT_VERSION', '0.3.1' );
  */
 //
 function postscript_plugin_settings_link( $links ) {
-  $settings_link = '<a href="options-general.php?page=postscript">Settings</a>';
+  $settings_link = '<a href="' . esc_url( admin_url( 'options-general.php?page=postscript' ) ) . '">' . __( 'Settings', 'postscript' ) . '</a>';
   array_unshift( $links, $settings_link );
   return $links;
 }
