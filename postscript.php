@@ -85,10 +85,10 @@ register_deactivation_hook( __FILE__, 'postscript_deactivate' );
 /* ------------------------------------------------------------------------ *
  * Required Plugin Files
  * ------------------------------------------------------------------------ */
-include_once( plugin_dir_path( __FILE__ ) . 'includes/admin-options.php' );
-include_once( plugin_dir_path( __FILE__ ) . 'includes/meta-box.php' );
-include_once( plugin_dir_path( __FILE__ ) . 'includes/functions.php' );
-include_once( plugin_dir_path( __FILE__ ) . 'includes/enqueue-scripts.php' );
+include_once( dirname( __FILE__ ) . '/includes/admin-options.php' );
+include_once( dirname( __FILE__ ) . '/includes/meta-box.php' );
+include_once( dirname( __FILE__ ) . '/includes/functions.php' );
+include_once( dirname( __FILE__ ) . '/includes/enqueue-scripts.php' );
 
 /* ------------------------------------------------------------------------ *
  * Required WordPress Files
