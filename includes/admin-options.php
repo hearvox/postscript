@@ -321,7 +321,7 @@ function postscript_user_roles_callback( $options ) {
         <?php
         foreach ( get_editable_roles() as $role => $details ) {
         ?>
-            <li><label><input type="checkbox" id="<?php echo $role; ?>" value="<?php echo $role ?>" name="postscript[user_roles][]"<?php checked( in_array( $role, $options['user_roles'] ) ); ?><?php disabled( 'administrator', $role ); ?> /> <?php echo translate_user_role( $details['name'] ); ?></label></li>
+            <li><label><input type="checkbox" id="<?php echo esc_attr( $role ); ?>" value="<?php echo esc_attr( $role ); ?>" name="postscript[user_roles][]"<?php checked( in_array( $role, $options['user_roles'] ) ); ?><?php disabled( 'administrator', $role ); ?> /> <?php echo esc_html( translate_user_role( $details['name'] ) ); ?></label></li>
         <?php
         }
         ?>
