@@ -32,15 +32,13 @@ function postscript_enqueue_handles() {
         // If custom tax terms, sanitize then enqueue handle.
         if ( $scripts ) {
             foreach ( $scripts as $script ) {
-                $handle = sanitize_key( $script->name );
-                wp_enqueue_script( sanitize_key( $handle ) );
+                wp_enqueue_script( sanitize_key( $script->name  ) );
             }
         }
 
         if ( $styles ) {
             foreach ( $styles as $style ) {
-                $handle = sanitize_key( $style->name );
-                wp_enqueue_style( sanitize_key( $handle ) );
+                wp_enqueue_style( sanitize_key( $style->name ) );
             }
         }
 
