@@ -224,16 +224,3 @@ function postscript_save_post_meta( $post_id, $post ) {
 
 }
 
-/**
- * Removes default display of plugin's custom tax checkboxes.
- * (Handled by plugin's meta box. Save won't work if both tax forms are in form.)
- */
-function postscript_remove_meta_boxes() {
-    $options = postscript_get_options( 'postscript' );
-
-    foreach ( $options['post_types'] as $post_type ) {
-        remove_meta_box( 'postscript_scriptsdiv', $post_type, 'normal' );
-        remove_meta_box( 'postscript_stylesdiv', $post_type, 'normal' );
-    }
-}
-add_action( 'admin_menu' , 'postscript_remove_meta_boxes' );

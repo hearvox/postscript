@@ -133,6 +133,7 @@ function postscript_create_taxonomies() {
         'labels'            => $labels_scripts,
         'public'            => true,
         'query_var'         => true,
+        'meta_box_cb'       => false,
         'capabilities' => array(
             'manage_terms' => 'manage_options',
             'edit_terms'   => 'manage_options',
@@ -168,6 +169,7 @@ function postscript_create_taxonomies() {
         'labels'            => $labels_styles,
         'public'            => true,
         'query_var'         => true,
+        'meta_box_cb'       => false,
         'capabilities' => array(
             'manage_terms' => 'manage_options',
             'edit_terms'   => 'manage_options',
