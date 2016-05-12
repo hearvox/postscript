@@ -116,24 +116,24 @@ function postscript_add_remove() {
 
     // Add new script or style custom tax term, if registered handle.
     if ( isset( $options['add_script'] ) && in_array( $options['add_script'], $script_handles )  ) {
-        wp_insert_term( $options['add_script'], 'postscript_scripts' );
+        wp_insert_term( $options['add_script'], 'postscripts' );
     }
 
     if ( isset( $options['add_style'] ) && in_array( $options['add_style'], $style_handles )  ) {
-        wp_insert_term( $options['add_style'], 'postscript_styles' );
+        wp_insert_term( $options['add_style'], 'poststyles' );
     }
 
     // Delete custom tax term for added script or style.
-    if ( ! empty( $options['remove_script'] ) && term_exists( $options['remove_script'], 'postscript_scripts') ) {
-        $script_slug = get_term_by('slug', $options['remove_script'], 'postscript_scripts');
+    if ( ! empty( $options['remove_script'] ) && term_exists( $options['remove_script'], 'postscripts') ) {
+        $script_slug = get_term_by('slug', $options['remove_script'], 'postscripts');
         $script_id = $script_slug->term_id;
-        wp_delete_term( $script_id, 'postscript_scripts' );
+        wp_delete_term( $script_id, 'postscripts' );
     }
 
-    if ( ! empty( $options['remove_style'] ) && term_exists( $options['remove_style'], 'postscript_styles') ) {
-        $style_slug = get_term_by( 'slug', $options['remove_style'], 'postscript_styles');
+    if ( ! empty( $options['remove_style'] ) && term_exists( $options['remove_style'], 'poststyles') ) {
+        $style_slug = get_term_by( 'slug', $options['remove_style'], 'poststyles');
         $style_id = $style_slug->term_id;
-        wp_delete_term( $style_id, 'postscript_styles' );
+        wp_delete_term( $style_id, 'poststyles' );
     }
 }
 
@@ -409,7 +409,7 @@ function postscript_add_script_callback() {
         'hide_empty'             => false,
         'fields'                 => 'all',
     );
-    $scripts_added = get_terms( 'postscript_scripts', $args );
+    $scripts_added = get_terms( 'postscripts', $args );
 
     // Display table of selected handles (with $wp_scripts data and term's post count).
     ?>
@@ -443,7 +443,7 @@ function postscript_add_script_callback() {
                 $status_code  = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
                 // Tax term post count, linked to list of posts (if count>0).
                 $count  = $script_obj->count;
-                $posts_count  = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscript_scripts=$script_name\">$count</a>" : $count;
+                $posts_count  = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscripts=$script_name\">$count</a>" : $count;
             ?>
             <tr>
                 <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $script_name; ?></label></th>
@@ -491,7 +491,7 @@ function postscript_add_style_callback() {
         'hide_empty'             => false,
         'fields'                 => 'all',
     );
-    $styles_added = get_terms( 'postscript_styles', $args );
+    $styles_added = get_terms( 'poststyles', $args );
     // Display table of selected handles (with $wp_styles data and term's post count).
     ?>
     <table class="wp-list-table widefat striped">
@@ -526,7 +526,7 @@ function postscript_add_style_callback() {
                 $status_code = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
                 // Tax term post count, linked to list of posts (if count>0).
                 $count = $style_obj->count;
-                $posts_count = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscript_styles=$style_name\">$count</a>" : $count;
+                $posts_count = ( $count ) ? '<a href="' . admin_url() . "edit.php?poststyles=$style_name\">$count</a>" : $count;
             ?>
             <tr>
                 <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $style_name; ?></label></th>
@@ -563,7 +563,7 @@ function postscript_add_style_callback() {
 function postscript_pre_get_posts( $query ) {
     $options = postscript_get_options();
     if ( is_admin() ) {
-        if ( get_query_var( 'postscript_scripts' ) || get_query_var( 'postscript_styles' ) ) {
+        if ( get_query_var( 'postscripts' ) || get_query_var( 'postscripts' ) ) {
             $query->set('post_type', 'any' ); // Hack: to get all post-type to display for term.
 
             // $query->set('post_type', $options['post_types'] ); // Use this when fixed:
@@ -575,13 +575,13 @@ function postscript_pre_get_posts( $query ) {
 add_action( 'pre_get_posts', 'postscript_pre_get_posts' );
 
 /**
- * Adds an Admin Notice to the tax term screen (post list: edit.php?postscript_scripts={term}).
+ * Adds an Admin Notice to the tax term screen (post list: edit.php?postscripts={term}).
  */
 function postscript_tax_term_screen( $query ) {
     if ( is_admin() ) {
-        if ( get_query_var( 'postscript_scripts' ) || get_query_var( 'postscript_styles' ) ) {
-            $term_script = ( get_query_var( 'postscript_scripts' ) ) ? get_query_var( 'postscript_scripts' ) : '';
-            $term_style  = ( get_query_var( 'postscript_styles' ) ) ? get_query_var( 'postscript_styles' ) : '';
+        if ( get_query_var( 'postscripts' ) || get_query_var( 'postscripts' ) ) {
+            $term_script = ( get_query_var( 'postscripts' ) ) ? get_query_var( 'postscripts' ) : '';
+            $term_style  = ( get_query_var( 'poststyles' ) ) ? get_query_var( 'poststyles' ) : '';
 
         ?>
         <div class="notice notice-info is-dismissible">
@@ -598,7 +598,7 @@ add_action( 'admin_notices', 'postscript_tax_term_screen' );
  */
 function postscript_remove_script_callback() {
     $args = array(
-        'taxonomy'          => 'postscript_scripts',
+        'taxonomy'          => 'postscripts',
         'orderby'           => 'name',
         'name'              => 'postscript[remove_script]',
         'option_none_value' => '',
@@ -621,7 +621,7 @@ function postscript_remove_script_callback() {
  */
 function postscript_remove_style_callback() {
     $args = array(
-        'taxonomy'          => 'postscript_styles',
+        'taxonomy'          => 'poststyles',
         'orderby'           => 'name',
         'name'              => 'postscript[remove_style]',
         'option_none_value' => '',
@@ -666,6 +666,6 @@ function postscript_meta_box_example() {
         </div><!-- .postbox -->
     </div><!-- .postbox-container -->
 
-    <p class="clear wp-ui-text-icon"><?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?>. The top-right <a href="#contextual-help-link">Help tab</a> has details on Postscript features.</p>
+    <p class="clear wp-ui-text-icon"><?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?>. The top-right <a href="#contextual-help-link">Help tab</a> has details on Postscript features. <?php _e( 'This plugin created as part of a <a href="https://www.rjionline.org/stories/series/storytelling-tools/">Reynold Journalism Institute</a> fellowship.', 'mexpplus' ); ?></p>
     <?php
 }

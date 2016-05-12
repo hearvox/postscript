@@ -3,7 +3,7 @@
 Plugin Name:       Postscript
 Plugin URI:        http://hearingvoices.com/tools/
 Description:       For data visionaries and multi-mediators. Enqueue scripts and styles for individual posts (from the Edit Post screen). Also add classes to body tag and <code>post_class()</code>. Choose options on the <a href="options-general.php?page=postscript">Settings</a> screen for roles and post-types, and for which scripts, styles, and classes to allow.
-Version:           0.3.1
+Version:           0.4.0
 Author:            Barrett Golding
 Author URI:        http://rjionline.org/
 License:           GPL-2.0+
@@ -40,7 +40,7 @@ if ( defined( 'POSTSCRIPT_VERSION' ) ) {
     return;
 }
 
-define( 'POSTSCRIPT_VERSION', '0.3.1' );
+define( 'POSTSCRIPT_VERSION', '0.4.0' );
 
 /**
  * Adds "Settings" link on plugin page (next to "Activate").
@@ -114,7 +114,7 @@ function postscript_create_taxonomies() {
     //Settings option for allowed post types.
     $post_types = postscript_get_option( 'post_types' );
 
-    $labels_scripts = array(
+        $labels_scripts = array(
         'name'              => _x( 'Scripts', 'taxonomy general name', 'postscript' ),
         'singular_name'     => _x( 'Script', 'taxonomy singular name', 'postscript' ),
         'search_items'      => __( 'Search Scripts', 'postscript' ),
@@ -140,7 +140,7 @@ function postscript_create_taxonomies() {
             'delete_terms' => 'manage_options',
             'assign_terms' => 'edit_posts'
         ),
-        'rewrite'           => array( 'slug' => 'postscript_scripts' ),
+        'rewrite'           => array( 'slug' => 'postscripts' ),
     );
 
     // Filter params for Styles custom taxonomy.
@@ -148,7 +148,7 @@ function postscript_create_taxonomies() {
         $args_scripts = apply_filters( 'postscript_tax_scripts', $args_scripts );
     }
 
-    register_taxonomy( 'postscript_scripts', $post_types, $args_scripts );
+    register_taxonomy( 'postscripts', $post_types, $args_scripts );
 
     $labels_styles = array(
         'name'              => _x( 'Styles', 'taxonomy general name', 'postscript' ),
@@ -176,7 +176,7 @@ function postscript_create_taxonomies() {
             'delete_terms' => 'manage_options',
             'assign_terms' => 'edit_posts'
         ),
-        'rewrite'           => array( 'slug' => 'postscript_styles' ),
+        'rewrite'           => array( 'slug' => 'poststyles' ),
     );
 
     // Filter params for Styles custom taxonomy.
@@ -184,7 +184,8 @@ function postscript_create_taxonomies() {
         $args_styles = apply_filters( 'postscript_tax_styles', $args_styles );
     }
 
-    register_taxonomy( 'postscript_styles', $post_types, $args_styles );
+    register_taxonomy( 'poststyles', $post_types, $args_styles );
+
 }
 add_action( 'init', 'postscript_create_taxonomies', 0 );
 
@@ -196,7 +197,7 @@ add_action( 'init', 'postscript_create_taxonomies', 0 );
  * @return  string $term Submitted taxonomy term (or WP_Error admin-notice).
  */
 function postscript_check_tax_term( $term, $taxonomy) {
-    if ( $taxonomy == 'postscript_scripts' ) {
+    if ( $taxonomy == 'postscripts' ) {
         $script_handles = postscript_script_handles();
         if ( in_array( $term, $script_handles ) ) {
             return $term;
@@ -205,7 +206,7 @@ function postscript_check_tax_term( $term, $taxonomy) {
         }
     }
 
-    if ( $taxonomy == 'postscript_styles' ) {
+    if ( $taxonomy == 'postscripts' ) {
         $style_handles  = postscript_style_handles();
         if ( in_array( $term, $style_handles ) ) {
             return $term;
@@ -223,19 +224,19 @@ add_filter('pre_insert_term', 'postscript_check_tax_term', 20, 2);
  * ------------------------------------------------------------------------ */
 
 /**
- * Text for top of 'postscript_scripts' taxonomy terms screen
+ * Text for top of 'postscripts' taxonomy terms screen
  */
-function postscript_scripts_edit_tags( $query ) {
+function postscripts_edit_tags( $query ) {
     _e( 'This form only allows a registered script handle as Name and Slug.', 'postscript') ;
 }
-add_action( 'postscript_scripts_pre_add_form', 'postscript_scripts_edit_tags' );
-add_action( 'postscript_scripts_edit_form_fields', 'postscript_scripts_edit_tags' );
+add_action( 'postscripts_pre_add_form', 'postscripts_edit_tags' );
+add_action( 'postscripts_edit_form_fields', 'postscripts_edit_tags' );
 
 /**
- * Text for top of 'postscript_styles' taxonomy terms screen
+ * Text for top of 'postscripts' taxonomy terms screen
  */
 function postscript_styles_edit_tags( $query ) {
     _e( 'This form only allows a registered style handle as Name and Slug.', 'postscript') ;
 }
-add_action( 'postscript_styles_pre_add_form', 'postscript_styles_edit_tags' );
-add_action( 'postscript_styles_edit_form_fields', 'postscript_styles_edit_tags' );
+add_action( 'postscripts_pre_add_form', 'postscript_styles_edit_tags' );
+add_action( 'postscripts_edit_form_fields', 'postscript_styles_edit_tags' );

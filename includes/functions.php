@@ -139,6 +139,11 @@ function postscript_set_option( $option, $value ) {
  * @since   0.1.0
  */
 function postscript_get_reg_scripts() {
+
+    if ( is_admin() ) {
+        return;
+    }
+
     // Hack to get front-end scripts into memory, from here in the back-end
     // (in $wp_scripts, $wp_styles) by firing the front-end registration hook.
     do_action( 'wp_enqueue_scripts' );

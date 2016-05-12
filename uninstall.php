@@ -23,23 +23,23 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
  * @since   0.1.0
  */
 function postscript_create_taxonomies() {
-    register_taxonomy( 'postscript_scripts', null );
-    register_taxonomy( 'postscript_styles', null );
+    register_taxonomy( 'postscripts', null );
+    register_taxonomy( 'poststyles', null );
 }
 add_action( 'init', 'postscript_create_taxonomies', 0 );
 
-// Tax doesn't regsiter with firing 'init'.
+/* Tax doesn't register without firing 'init'. */
 do_action( 'init' );
 
 /**
- * Remove plugin taxonomies and their terms.
+ * Remove plugin taxonomy terms, then remove taxonomy.
  *
  * @since   0.1.0
  */
 if ( function_exists( 'wp_delete_term' ) ) {
     global $wp_taxonomies;
-    $tax_scripts = 'postscript_scripts';
-    $tax_styles  = 'postscript_styles';
+    $tax_scripts = 'postscripts';
+    $tax_styles  = 'poststyles';
 
     $args_tax = array(
         'hide_empty' => 0,
@@ -91,13 +91,13 @@ if ( function_exists( 'delete_option' ) ) {
 }
 
 /*
-
+Test for deletions, run before then after uninstall.:
 ?><pre><?php
 var_dump( get_option( 'postscript' ) );
 echo '<hr>';
-echo taxonomy_exists( 'postscript_scripts' );
+echo taxonomy_exists( 'postscripts' );
 echo '<hr>';
-var_dump( get_terms( 'postscript_scripts', array( 'hide_empty' => 0, 'get' => 'all', 'fields' => 'ids' ) ) );
+var_dump( get_terms( 'postscripts', array( 'hide_empty' => 0, 'get' => 'all', 'fields' => 'ids' ) ) );
 echo '<hr>';
 $posts_meta_ids = new WP_Query( array( 'post_type' => 'any', 'post_status' => 'any', 'meta_key' => 'postscript_meta', 'fields' => 'ids' ) );
 var_dump( $posts_meta_ids->posts );
