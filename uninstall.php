@@ -23,8 +23,8 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
  * @since   0.1.0
  */
 function postscript_create_taxonomies() {
-    register_taxonomy( 'postscript_scripts', null );
-    register_taxonomy( 'postscript_styles', null );
+    register_taxonomy( 'postscripts', null );
+    register_taxonomy( 'postscripts', null );
 }
 add_action( 'init', 'postscript_create_taxonomies', 0 );
 
@@ -38,8 +38,8 @@ do_action( 'init' );
  */
 if ( function_exists( 'wp_delete_term' ) ) {
     global $wp_taxonomies;
-    $tax_scripts = 'postscript_scripts';
-    $tax_styles  = 'postscript_styles';
+    $tax_scripts = 'postscripts';
+    $tax_styles  = 'postscripts';
 
     $args_tax = array(
         'hide_empty' => 0,
@@ -95,9 +95,9 @@ if ( function_exists( 'delete_option' ) ) {
 ?><pre><?php
 var_dump( get_option( 'postscript' ) );
 echo '<hr>';
-echo taxonomy_exists( 'postscript_scripts' );
+echo taxonomy_exists( 'postscripts' );
 echo '<hr>';
-var_dump( get_terms( 'postscript_scripts', array( 'hide_empty' => 0, 'get' => 'all', 'fields' => 'ids' ) ) );
+var_dump( get_terms( 'postscripts', array( 'hide_empty' => 0, 'get' => 'all', 'fields' => 'ids' ) ) );
 echo '<hr>';
 $posts_meta_ids = new WP_Query( array( 'post_type' => 'any', 'post_status' => 'any', 'meta_key' => 'postscript_meta', 'fields' => 'ids' ) );
 var_dump( $posts_meta_ids->posts );

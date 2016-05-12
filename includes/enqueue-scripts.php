@@ -26,8 +26,8 @@ function postscript_enqueue_handles() {
     if ( is_singular() && is_main_query() ) { // Run only on front-end post.
 
         // Custom tax term is the script/style handle.
-        $scripts = get_the_terms( get_the_ID(), 'postscript_scripts' );
-        $styles  = get_the_terms( get_the_ID(), 'postscript_styles' );
+        $scripts = get_the_terms( get_the_ID(), 'postscripts' );
+        $styles  = get_the_terms( get_the_ID(), 'poststyles' );
 
         // If custom tax terms, sanitize then enqueue handle.
         if ( $scripts ) {
