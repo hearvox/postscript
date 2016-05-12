@@ -120,7 +120,7 @@ function postscript_add_remove() {
     }
 
     if ( isset( $options['add_style'] ) && in_array( $options['add_style'], $style_handles )  ) {
-        wp_insert_term( $options['add_style'], 'postscripts' );
+        wp_insert_term( $options['add_style'], 'poststyles' );
     }
 
     // Delete custom tax term for added script or style.
@@ -130,10 +130,10 @@ function postscript_add_remove() {
         wp_delete_term( $script_id, 'postscripts' );
     }
 
-    if ( ! empty( $options['remove_style'] ) && term_exists( $options['remove_style'], 'postscripts') ) {
-        $style_slug = get_term_by( 'slug', $options['remove_style'], 'postscripts');
+    if ( ! empty( $options['remove_style'] ) && term_exists( $options['remove_style'], 'poststyles') ) {
+        $style_slug = get_term_by( 'slug', $options['remove_style'], 'poststyles');
         $style_id = $style_slug->term_id;
-        wp_delete_term( $style_id, 'postscripts' );
+        wp_delete_term( $style_id, 'poststyles' );
     }
 }
 
@@ -491,7 +491,7 @@ function postscript_add_style_callback() {
         'hide_empty'             => false,
         'fields'                 => 'all',
     );
-    $styles_added = get_terms( 'postscripts', $args );
+    $styles_added = get_terms( 'poststyles', $args );
     // Display table of selected handles (with $wp_styles data and term's post count).
     ?>
     <table class="wp-list-table widefat striped">
@@ -526,7 +526,7 @@ function postscript_add_style_callback() {
                 $status_code = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
                 // Tax term post count, linked to list of posts (if count>0).
                 $count = $style_obj->count;
-                $posts_count = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscripts=$style_name\">$count</a>" : $count;
+                $posts_count = ( $count ) ? '<a href="' . admin_url() . "edit.php?poststyles=$style_name\">$count</a>" : $count;
             ?>
             <tr>
                 <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $style_name; ?></label></th>
