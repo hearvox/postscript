@@ -581,7 +581,7 @@ function postscript_tax_term_screen( $query ) {
     if ( is_admin() ) {
         if ( get_query_var( 'postscripts' ) || get_query_var( 'postscripts' ) ) {
             $term_script = ( get_query_var( 'postscripts' ) ) ? get_query_var( 'postscripts' ) : '';
-            $term_style  = ( get_query_var( 'postscripts' ) ) ? get_query_var( 'postscripts' ) : '';
+            $term_style  = ( get_query_var( 'poststyles' ) ) ? get_query_var( 'poststyles' ) : '';
 
         ?>
         <div class="notice notice-info is-dismissible">
@@ -621,7 +621,7 @@ function postscript_remove_script_callback() {
  */
 function postscript_remove_style_callback() {
     $args = array(
-        'taxonomy'          => 'postscripts',
+        'taxonomy'          => 'poststyles',
         'orderby'           => 'name',
         'name'              => 'postscript[remove_style]',
         'option_none_value' => '',
