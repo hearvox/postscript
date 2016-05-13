@@ -282,3 +282,27 @@ function postscript_core_full_urls( $url ) {
 
     return $url;
 }
+
+/**
+ * A custom sanitization function that will take the incoming input, and sanitize
+ * the input before handing it back to WordPress to save to the database.
+ *
+ * @link https://tommcfarlin.com/sanitizing-arrays-the-wordpress-settings-api/
+ *
+ * @since    0.4.0
+ *
+ * @param    array    $input        The address input.
+ * @return   array    $new_input    The sanitized input.
+ */
+function postscript_sanitize( $input ) {
+    // Initialize a new array to hold the sanitized values.
+    $new_input = array();
+
+    // Traverse the array and sanitize each value.
+    foreach ( $input as $key => $val ) {
+        $new_input[ $key ] = ( isset( $input[ $key ] ) ) ? sanitize_text_field( $val ) : '';
+    }
+
+    return $new_input;
+}
+
