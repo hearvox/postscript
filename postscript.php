@@ -176,10 +176,12 @@ function postscript_create_taxonomies() {
     register_taxonomy( 'poststyles', $post_types, $args_styles );
 
 }
-add_action( 'init', 'postscript_create_taxonomies', 0 );
+add_action( 'init', 'postscript_create_taxonomies' );
 
 /**
  * Allows only registered handles as custom tax terms.
+ *
+ * Late priority number to ensure font-end script handles are loaded.
  *
  * @uses  postscript_script_handles() Returns array of registered scripts.
  * @uses  postscript_style_handles() Returns array of registered styles.

@@ -134,7 +134,7 @@ function postscript_set_option( $option, $value ) {
  *
  * Gets WordPress default scripts/styles, then those plugin/theme registered.
  * The 'shutdown' hook fires after wp_default_scripts()/_styles()
- * and after admin had rendered (so enqueued scripts don't affect admin display).
+ * and after admin screen has rendered (so enqueued scripts don't affect admin display).
  *
  * @since   0.1.0
  */
