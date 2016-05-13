@@ -195,7 +195,7 @@ function postscript_check_tax_term( $term, $taxonomy) {
         }
     }
 
-    if ( $taxonomy == 'postscripts' ) {
+    if ( $taxonomy == 'poststyles' ) {
         $style_handles  = postscript_style_handles();
         if ( in_array( $term, $style_handles ) ) {
             return $term;
