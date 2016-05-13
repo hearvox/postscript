@@ -585,7 +585,7 @@ function postscript_tax_term_screen( $query ) {
 
         ?>
         <div class="notice notice-info is-dismissible">
-            <p><?php _e( 'These post use Postscript to enqueue the handle: "', 'postscript' ); ?><?php echo $term_script . $term_style; ?>".</p>
+            <p><?php _e( 'These posts use Postscript to enqueue the handle: "', 'postscript' ); ?><?php echo $term_script . $term_style; ?>".</p>
         </div>
         <?php
         }
@@ -598,21 +598,33 @@ add_action( 'admin_notices', 'postscript_tax_term_screen' );
  */
 function postscript_remove_script_callback() {
     $args = array(
-        'taxonomy'          => 'postscripts',
-        'orderby'           => 'name',
-        'name'              => 'postscript[remove_script]',
-        'option_none_value' => '',
-        'show_option_none'  => __( 'Select script to remove:', 'postscript' ),
-        'show_count'        => 1,
-        'hide_empty'        => 0,
-        'value_field'       => 'name',
-        'id'                => 'postscript-remove-script',
+        'hide_empty'             => false,
+        'fields'                 => 'ids',
     );
-    ?>
-    <ul class="clear">
-        <?php wp_dropdown_categories( $args ); ?>
-    </ul>
-    <?php
+    $scripts_added = get_terms( 'postscripts', $args );
+
+    if ($scripts_added ) {
+        $args = array(
+            'taxonomy'          => 'postscripts',
+            'orderby'           => 'name',
+            'name'              => 'postscript[remove_script]',
+            'option_none_value' => '',
+            'show_option_none'  => __( 'Select script to remove:', 'postscript' ),
+            'show_count'        => 1,
+            'hide_empty'        => 0,
+            'value_field'       => 'name',
+            'id'                => 'postscript-remove-script',
+        );
+        ?>
+        <ul class="clear">
+            <?php wp_dropdown_categories( $args ); ?>
+        </ul>
+        <?php
+    } else {
+        ?>
+        <p><?php _e( 'Use Add a Script form above to add registered scripts.', 'postscript' ); ?></p>
+        <?php
+    }
 }
 
 
@@ -621,21 +633,33 @@ function postscript_remove_script_callback() {
  */
 function postscript_remove_style_callback() {
     $args = array(
-        'taxonomy'          => 'poststyles',
-        'orderby'           => 'name',
-        'name'              => 'postscript[remove_style]',
-        'option_none_value' => '',
-        'show_option_none'  => __( 'Select style to remove:', 'postscript' ),
-        'show_count'        => 1,
-        'hide_empty'        => 0,
-        'value_field'       => 'name',
-        'id'                => 'postscript-remove-style',
+        'hide_empty'             => false,
+        'fields'                 => 'ids',
     );
-    ?>
-    <ul class="clear">
-        <?php wp_dropdown_categories( $args ); ?>
-    </ul>
-    <?php
+    $styles_added = get_terms( 'poststyles', $args );
+
+    if ($styles_added ) {
+        $args = array(
+            'taxonomy'          => 'poststyles',
+            'orderby'           => 'name',
+            'name'              => 'postscript[remove_style]',
+            'option_none_value' => '',
+            'show_option_none'  => __( 'Select style to remove:', 'postscript' ),
+            'show_count'        => 1,
+            'hide_empty'        => 0,
+            'value_field'       => 'name',
+            'id'                => 'postscript-remove-style',
+        );
+        ?>
+        <ul class="clear">
+            <?php wp_dropdown_categories( $args ); ?>
+        </ul>
+        <?php
+    } else {
+        ?>
+        <p><?php _e( 'Use Add a Style form above to add registered styles.', 'postscript' ); ?></p>
+        <?php
+    }
 }
 
 /**
