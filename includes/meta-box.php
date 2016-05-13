@@ -223,4 +223,3 @@ function postscript_save_post_meta( $post_id, $post ) {
     }
 
 }
-
