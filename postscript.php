@@ -91,17 +91,6 @@ include_once( dirname( __FILE__ ) . '/includes/functions.php' );
 include_once( dirname( __FILE__ ) . '/includes/enqueue-scripts.php' );
 
 /* ------------------------------------------------------------------------ *
- * Required WordPress Files
- * ------------------------------------------------------------------------ */
-if ( ! function_exists( 'wp_terms_checklist' ) ) {
-    require_once( ABSPATH . '/wp-admin/includes/template.php' );
-}
-
-if ( ! function_exists( 'get_editable_roles' ) ) { // Need WP_User class.
-    require_once( ABSPATH . 'wp-admin/includes/user.php' );
-}
-
-/* ------------------------------------------------------------------------ *
  * Custom Taxonomies: stores user-selected registered script/style handles.
  * ------------------------------------------------------------------------ */
 
