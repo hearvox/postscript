@@ -215,11 +215,11 @@ add_filter('pre_insert_term', 'postscript_check_tax_term', 20, 2);
 /**
  * Text for top of 'postscripts' taxonomy terms screen
  */
-function postscripts_edit_tags( $query ) {
+function postscript_scripts_edit_tags( $query ) {
     _e( 'This form only allows a registered script handle as Name and Slug.', 'postscript') ;
 }
-add_action( 'postscripts_pre_add_form', 'postscripts_edit_tags' );
-add_action( 'postscripts_edit_form_fields', 'postscripts_edit_tags' );
+add_action( 'postscripts_pre_add_form', 'postscript_scripts_edit_tags' );
+add_action( 'postscripts_edit_form_fields', 'postscript_scripts_edit_tags' );
 
 /**
  * Text for top of 'postscripts' taxonomy terms screen
@@ -227,5 +227,5 @@ add_action( 'postscripts_edit_form_fields', 'postscripts_edit_tags' );
 function postscript_styles_edit_tags( $query ) {
     _e( 'This form only allows a registered style handle as Name and Slug.', 'postscript') ;
 }
-add_action( 'postscripts_pre_add_form', 'postscript_styles_edit_tags' );
-add_action( 'postscripts_edit_form_fields', 'postscript_styles_edit_tags' );
+add_action( 'poststyles_pre_add_form', 'postscript_styles_edit_tags' );
+add_action( 'poststyles_edit_form_fields', 'postscript_styles_edit_tags' );
