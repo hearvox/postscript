@@ -161,7 +161,7 @@ function postscript_sanitize_array_values( $input ) {
  *
  * @since   0.1.0
  */
-function postscript_get_reg_scripts() {
+function postscript_get_reg_handles() {
 
     if ( is_admin() ) {
         return;
@@ -220,7 +220,7 @@ function postscript_get_reg_scripts() {
     */
 
 }
-add_action( 'shutdown', 'postscript_get_reg_scripts' );
+add_action( 'shutdown', 'postscript_get_reg_handles' );
 
 /* ------------------------------------------------------------------------ *
  * Functions for returning arrays of registered script/style handles.
@@ -233,7 +233,7 @@ function postscript_script_handles() {
     $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
 
     if ( ! $postscript_scripts_reg ) { // If transient expired.
-        postscript_get_reg_scripts(); // Set transient.
+        postscript_get_reg_handles(); // Set transients.
         $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
     }
 
@@ -251,7 +251,7 @@ function postscript_style_handles() {
     $postscript_styles_reg = get_transient( 'postscript_styles_reg' );
 
     if ( ! $postscript_styles_reg ) { // If transient expired.
-        postscript_get_reg_scripts(); // Set transient.
+        postscript_get_reg_handles(); // Set transients.
         $postscript_styles_reg = get_transient( 'postscript_styles_reg' );
     }
 
