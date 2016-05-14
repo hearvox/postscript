@@ -113,6 +113,7 @@ function postscript_get_option( $option_key = NULL ) {
  * @since   0.1.0
  *
  * @uses    postscript_set_options()
+ *
  * @param   string  $option     Array item key of specified setting
  * @param   string  $value      Array item value of specified setting
  * @return  array   $options    Array of plugin settings
@@ -123,6 +124,28 @@ function postscript_set_option( $option, $value ) {
     $options[$option] = $value;
 
     postscript_set_options( $options );
+}
+
+/**
+ * Sanitizes values in an array.
+ *
+ * @link https://tommcfarlin.com/sanitizing-arrays-the-wordpress-settings-api/
+ *
+ * @since    0.4.0
+ *
+ * @param    array    $input        The address input.
+ * @return   array    $new_input    The sanitized input.
+ */
+function postscript_sanitize_array_values( $input ) {
+    // Initialize a new array to hold the sanitized values.
+    $new_input = array();
+
+    // Traverse the array and sanitize each value.
+    foreach ( $input as $key => $val ) {
+        $new_input[ $key ] = ( isset( $input[ $key ] ) ) ? sanitize_text_field( $val ) : '';
+    }
+
+    return $new_input;
 }
 
 /* ------------------------------------------------------------------------ *
@@ -281,28 +304,5 @@ function postscript_core_full_urls( $url ) {
     }
 
     return $url;
-}
-
-/**
- * A custom sanitization function that will take the incoming input, and sanitize
- * the input before handing it back to WordPress to save to the database.
- *
- * @link https://tommcfarlin.com/sanitizing-arrays-the-wordpress-settings-api/
- *
- * @since    0.4.0
- *
- * @param    array    $input        The address input.
- * @return   array    $new_input    The sanitized input.
- */
-function postscript_sanitize( $input ) {
-    // Initialize a new array to hold the sanitized values.
-    $new_input = array();
-
-    // Traverse the array and sanitize each value.
-    foreach ( $input as $key => $val ) {
-        $new_input[ $key ] = ( isset( $input[ $key ] ) ) ? sanitize_text_field( $val ) : '';
-    }
-
-    return $new_input;
 }
 

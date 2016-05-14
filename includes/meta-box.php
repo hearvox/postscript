@@ -63,6 +63,8 @@ function postscript_add_meta_box() {
  *
  * Form elements are printed only if allowed on Setting page.
  * Callback function passes array of settings-options in args ($box):
+ *
+ * postscript_get_options() returns:
  * Array
  * (   // Settings used by meta-box:
  *     [user_roles] => Array
@@ -92,6 +94,15 @@ function postscript_add_meta_box() {
  *     [version]       => 1.0.0
  * )
  *
+ * get_post_meta( $post_id, 'postscript_meta', true ) returns:
+ * Array
+ * (
+ *     [url_style] => http://example.com/my-post-style.css
+ *     [url_script] => http://example.com/my-post-script.js
+ *     [url_script_2] => http://example.com/my-post-script-2.js
+ *     [class_body] => my-post-body-class
+ *     [class_post] => my-post-class
+ * )
  * @param  Object $post Object containing the current post.
  * @param  array  $box  Array of meta box id, title, callback, and args elements.
  */
@@ -164,6 +175,11 @@ function postscript_meta_box_callback( $post, $box ) {
 
 /**
  * Saves the meta box form data upon submission.
+ *
+ * @uses  postscript_sanitize_array_values()    Sanitizes $_POST array.
+ *
+ * @param int     $post_id    Post ID.
+ * @param WP_Post $post       Post object.
  */
 function postscript_save_post_meta( $post_id, $post ) {
 
@@ -188,8 +204,15 @@ function postscript_save_post_meta( $post_id, $post ) {
     $meta_key   = 'postscript_meta';
     $meta_value = get_post_meta( $post_id, $meta_key, true );
 
-    // If any user-submitted form fields have a value (implode() reduces array to string of values).
-    $form_data  = ( isset( $_POST['postscript_meta'] ) && implode( $_POST['postscript_meta'] ) ) ? $_POST['postscript_meta'] : null;
+    // If any user-submitted form fields have a value.
+    // implode() reduces array to string of values, a check for any values.
+    if  ( isset( $_POST['postscript_meta'] ) && implode( $_POST['postscript_meta'] ) ) {
+        $form_data  = postscript_sanitize_array_values( $_POST['postscript_meta'] );
+    } else {
+        $form_data  = null;
+    }
+
+    // $form_data  = ( isset( $_POST['postscript_meta'] ) && implode( $_POST['postscript_meta'] ) ) ? $_POST['postscript_meta'] : null;
 
     // Add post-meta, if none exists, and if user entered new form data.
     if ( $form_data && '' == $meta_value ) {
@@ -219,7 +242,6 @@ function postscript_save_post_meta( $post_id, $post ) {
             $script_ids  =  array_map ( 'intval', $_POST['tax_input']['postscript_scripts'] );
             wp_set_object_terms( $post_id, $script_ids, 'postscripts', false );
         }
-
     }
 
 }
