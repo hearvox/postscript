@@ -451,10 +451,10 @@ function postscript_add_script_callback() {
                 }
             ?>
             <tr>
-                <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $script_name; ?></label></th>
-                <td><?php echo $script_arr->ver; ?></td>
-                <td><?php echo $deps; ?></td>
-                <td><?php echo $script_arr->args; // Style media: 'screen', 'print', or 'all'.  ?></td>
+                <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo esc_html( $script_name ); ?></label></th>
+                <td><?php echo esc_html( $script_arr->ver ); ?></td>
+                <td><?php echo esc_html( $deps ); ?></td>
+                <td><?php echo esc_html( $script_arr->args ); // Style media: 'screen', 'print', or 'all'.  ?></td>
                 <td><?php echo $status_code; ?></td>
                 <td><?php echo $posts_count; ?></td>
             </tr>
@@ -540,10 +540,10 @@ function postscript_add_style_callback() {
                 // $posts_count = ( $count ) ? '<a href="' . admin_url() . "edit.php?poststyles=$style_name\">$count</a>" : $count;
             ?>
             <tr>
-                <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $style_name; ?></label></th>
-                <td><?php echo $style_arr->ver; ?></td>
-                <td><?php echo $deps; ?></td>
-                <td><?php echo $footer; ?></td>
+                <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo esc_html( $style_name ); ?></label></th>
+                <td><?php echo esc_html( $style_arr->ver ); ?></td>
+                <td><?php echo esc_html( $deps ); ?></td>
+                <td><?php echo esc_html( $footer ); ?></td>
                 <td><?php echo $status_code; ?></td>
                 <td><?php echo $posts_count; ?></td>
             </tr>

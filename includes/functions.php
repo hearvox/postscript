@@ -232,6 +232,11 @@ add_action( 'shutdown', 'postscript_get_reg_scripts' );
 function postscript_script_handles() {
     $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
 
+    if ( ! $postscript_scripts_reg ) { // If transient expired.
+        postscript_get_reg_scripts(); // Set transient.
+        $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
+    }
+
     // Array of registered scripts handles (from $wp_scripts object).
     $scripts_reg = array_values( wp_list_pluck( $postscript_scripts_reg, 'handle' ) );
     sort( $scripts_reg ); // Alphabetize.
@@ -244,6 +249,11 @@ function postscript_script_handles() {
  */
 function postscript_style_handles() {
     $postscript_styles_reg = get_transient( 'postscript_styles_reg' );
+
+    if ( ! $postscript_styles_reg ) { // If transient expired.
+        postscript_get_reg_scripts(); // Set transient.
+        $postscript_styles_reg = get_transient( 'postscript_styles_reg' );
+    }
 
     // Array of registered scripts handles (from $wp_scripts object).
     $styles_reg = array_values( wp_list_pluck( $postscript_styles_reg, 'handle' ) );
