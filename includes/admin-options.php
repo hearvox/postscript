@@ -443,7 +443,13 @@ function postscript_add_script_callback() {
                 $status_code  = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
                 // Tax term post count, linked to list of posts (if count>0).
                 $count  = $script_obj->count;
-                $posts_count  = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscripts=$script_name\">$count</a>" : $count;
+                if ( $count ) {
+                    $posts_count_url = admin_url() . "edit.php?postscripts=$script_name\"";
+                    $posts_count     = '<a href="' . esc_url( $posts_count_url ) . "\">$count</a>";
+                } else {
+                    $posts_count = $count;
+                }
+                // $posts_count  = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscripts=$script_name\">$count</a>" : $count;
             ?>
             <tr>
                 <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $script_name; ?></label></th>
@@ -526,7 +532,13 @@ function postscript_add_style_callback() {
                 $status_code = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
                 // Tax term post count, linked to list of posts (if count>0).
                 $count = $style_obj->count;
-                $posts_count = ( $count ) ? '<a href="' . admin_url() . "edit.php?poststyles=$style_name\">$count</a>" : $count;
+                if ( $count ) {
+                    $posts_count_url = admin_url() . "edit.php?poststyles=$style_name\"";
+                    $posts_count     = '<a href="' . esc_url( $posts_count_url ) . "\">$count</a>";
+                } else {
+                    $posts_count = $count;
+                }
+                // $posts_count = ( $count ) ? '<a href="' . admin_url() . "edit.php?poststyles=$style_name\">$count</a>" : $count;
             ?>
             <tr>
                 <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $style_name; ?></label></th>
@@ -585,7 +597,7 @@ function postscript_tax_term_screen( $query ) {
 
         ?>
         <div class="notice notice-info is-dismissible">
-            <p><?php _e( 'These posts use Postscript to enqueue the handle: "', 'postscript' ); ?><?php echo $term_script . $term_style; ?>".</p>
+            <p><?php _e( 'These posts use Postscript to enqueue the handle: "', 'postscript' ); ?><?php echo esc_html( $term_script ) . esc_html( $term_style ); ?>".</p>
         </div>
         <?php
         }
