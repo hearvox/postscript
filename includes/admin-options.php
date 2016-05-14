@@ -445,11 +445,10 @@ function postscript_add_script_callback() {
                 $count  = $script_obj->count;
                 if ( $count ) {
                     $posts_count_url = admin_url() . "edit.php?postscripts=$script_name\"";
-                    $posts_count     = '<a href="' . esc_url( $posts_count_url ) . "\">$count</a>";
+                    $posts_count     = '<a href="' . esc_url_raw( $posts_count_url ) . "\">$count</a>";
                 } else {
                     $posts_count = $count;
                 }
-                // $posts_count  = ( $count ) ? '<a href="' . admin_url() . "edit.php?postscripts=$script_name\">$count</a>" : $count;
             ?>
             <tr>
                 <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo $script_name; ?></label></th>
