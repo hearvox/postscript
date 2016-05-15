@@ -615,7 +615,8 @@ function postscript_pre_get_posts( $query ) {
 add_action( 'pre_get_posts', 'postscript_pre_get_posts' );
 
 /**
- * Adds an Admin Notice to the tax-term post list (/edit.php?postscripts={term}) with the term.
+ * Adds an Admin Notice to the tax-term post list screen with the term.
+ * (I.e., screen: /edit.php?postscripts={term})
  */
 function postscript_tax_term_screen( $query ) {
     if ( is_admin() ) {
