@@ -399,7 +399,8 @@ function postscript_add_script_callback() {
         <option value=''><?php _e( 'Select script to add:', 'postscript' ); ?></option>
         <?php
         foreach( $script_handles as $script_handle ) {
-            echo "<option value=\"{$script_handle}\">{$script_handle}</option>";
+            $handle =  esc_attr( $script_handle );
+            echo "<option value=\"{$handle}\">{$handle}</option>";
         }
         ?>
     </select>
@@ -435,12 +436,16 @@ function postscript_add_script_callback() {
             if ( in_array( $script_obj->name, $script_handles ) ) {
                 $script_name  = $script_obj->name;
                 $script_arr   = $postscript_scripts_reg[ $script_name ];
+
                 // Comma-separated list of style dependencies.
                 $deps         = implode( ', ', $script_arr->deps );
+
                 // Make relative URLs full (for core registered scripts in '/wp-admin' or '/wp-includes').
                 $src          = ( $script_arr->src ) ? postscript_core_full_urls( $script_arr->src ) : '';
+
                 // Check URL status response code, if script has a 'src' set.
                 $status_code  = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
+
                 // Tax term post count, linked to list of posts (if count>0).
                 $count  = $script_obj->count;
                 if ( $count ) {
@@ -449,14 +454,24 @@ function postscript_add_script_callback() {
                 } else {
                     $posts_count = $count;
                 }
+
+                // For wp_kses() sanitization of HTML.
+                $allowed_html = array(
+                    'a'     => array(
+                        'href' => array()
+                    )
+                );
+
+                $allowed_protocols = array( 'http', 'https' );
+
             ?>
             <tr>
                 <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo esc_html( $script_name ); ?></label></th>
                 <td><?php echo esc_html( $script_arr->ver ); ?></td>
                 <td><?php echo esc_html( $deps ); ?></td>
                 <td><?php echo esc_html( $script_arr->args ); // Style media: 'screen', 'print', or 'all'.  ?></td>
-                <td><?php echo $status_code; ?></td>
-                <td><?php echo $posts_count; ?></td>
+                <td><?php echo wp_kses( $status_code, $allowed_html, $allowed_protocols ); ?></td>
+                <td><?php echo wp_kses( $posts_count, $allowed_html, $allowed_protocols ); ?></td>
             </tr>
             <?php
             } // if
@@ -486,7 +501,8 @@ function postscript_add_style_callback() {
         <option value=''><?php _e( 'Select style to add:', 'postscript' ); ?></option>
         <?php
         foreach( $style_handles as $style_handle ) {
-            echo "<option value=\"{$style_handle}\">{$style_handle}</option>";
+            $handle =  esc_attr( $style_handle );
+            echo "<option value=\"{$handle}\">{$handle}</option>";
         }
         ?>
     </select>
@@ -521,14 +537,19 @@ function postscript_add_style_callback() {
             if ( in_array( $style_obj->name, $style_handles ) ) {
                 $style_name   = $style_obj->name;
                 $style_arr    = $postscript_styles_reg[ $style_name ];
+
                 // Comma-separated list of style dependencies.
                 $deps = implode( ',', $style_arr->deps );
+
                 // Does script load in footer?
                 $footer = ( isset(  $script_arr->extra['group'] ) ) ? $script_arr->extra['group'] : '';
+
                 // Make relative URLs full (for core registered scripts in '/wp-admin' or '/wp-includes').
                 $src = ( $style_arr->src ) ? postscript_core_full_urls( $style_arr->src ) : '';
+
                 // Check URL status response code, if script has a 'src' set.
                 $status_code = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
+
                 // Tax term post count, linked to list of posts (if count>0).
                 $count = $style_obj->count;
                 if ( $count ) {
@@ -537,15 +558,23 @@ function postscript_add_style_callback() {
                 } else {
                     $posts_count = $count;
                 }
-                // $posts_count = ( $count ) ? '<a href="' . admin_url() . "edit.php?poststyles=$style_name\">$count</a>" : $count;
+
+                // For wp_kses() sanitization of HTML.
+                $allowed_html = array(
+                    'a'     => array(
+                        'href' => array()
+                    )
+                );
+
+                $allowed_protocols = array( 'http', 'https' );
             ?>
             <tr>
                 <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo esc_html( $style_name ); ?></label></th>
                 <td><?php echo esc_html( $style_arr->ver ); ?></td>
                 <td><?php echo esc_html( $deps ); ?></td>
                 <td><?php echo esc_html( $footer ); ?></td>
-                <td><?php echo $status_code; ?></td>
-                <td><?php echo $posts_count; ?></td>
+                <td><?php echo wp_kses( $status_code, $allowed_html, $allowed_protocols ); ?></td>
+                <td><?php echo wp_kses( $posts_count, $allowed_html, $allowed_protocols ); ?></td>
             </tr>
             <?php
             } // if
@@ -586,17 +615,21 @@ function postscript_pre_get_posts( $query ) {
 add_action( 'pre_get_posts', 'postscript_pre_get_posts' );
 
 /**
- * Adds an Admin Notice to the tax term screen (post list: edit.php?postscripts={term}).
+ * Adds an Admin Notice to the tax-term post list (/edit.php?postscripts={term}) with the term.
  */
 function postscript_tax_term_screen( $query ) {
     if ( is_admin() ) {
         if ( get_query_var( 'postscripts' ) || get_query_var( 'postscripts' ) ) {
-            $term_script = ( get_query_var( 'postscripts' ) ) ? get_query_var( 'postscripts' ) : '';
-            $term_style  = ( get_query_var( 'poststyles' ) ) ? get_query_var( 'poststyles' ) : '';
-
+            if ( get_query_var( 'postscripts' ) ) {
+                $term = get_query_var( 'postscripts' );
+            } elseif ( get_query_var( 'poststyles' ) ) {
+                $term = get_query_var( 'poststyles' );
+            } else {
+                $term = '';
+            }
         ?>
         <div class="notice notice-info is-dismissible">
-            <p><?php _e( 'These posts use Postscript to enqueue the handle: "', 'postscript' ); ?><?php echo esc_html( $term_script ) . esc_html( $term_style ); ?>".</p>
+            <p><?php _e( 'These posts use Postscript to enqueue the handle: "', 'postscript' ); ?><?php echo esc_html( $term ); ?>".</p>
         </div>
         <?php
         }
