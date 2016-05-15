@@ -422,7 +422,6 @@ function postscript_add_script_callback() {
                 <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Ver', 'postscript' ); ?></th>
                 <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Deps', 'postscript' ); ?></th>
                 <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Footer', 'postscript' ); ?></th>
-                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Status', 'postscript' ); ?></th>
                 <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Posts', 'postscript' ); ?></th>
             </tr>
         </thead>
@@ -434,17 +433,21 @@ function postscript_add_script_callback() {
     if ( ! empty( $scripts_added ) ) {
         foreach ( $scripts_added as $script_obj ) {
             if ( in_array( $script_obj->name, $script_handles ) ) {
-                $script_name  = $script_obj->name;
+                $script_name  = esc_html( $script_obj->name );
                 $script_arr   = $postscript_scripts_reg[ $script_name ];
 
                 // Comma-separated list of style dependencies.
-                $deps         = implode( ', ', $script_arr->deps );
+                $deps = implode( ', ', $script_arr->deps );
 
                 // Make relative URLs full (for core registered scripts in '/wp-admin' or '/wp-includes').
-                $src          = ( $script_arr->src ) ? postscript_core_full_urls( $script_arr->src ) : '';
+                $src = ( $script_arr->src ) ? postscript_core_full_urls( $script_arr->src ) : '';
 
+                // Add link to handle name, if registered source file.
+                $handle = ( $src ) ? "<a href=\"$src\">" . $script_name . '</a>' : $script_name;
+
+                // @todo Add status-code column. Check URL when adding script, add status to term meta.
                 // Check URL status response code, if script has a 'src' set.
-                $status_code  = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
+                // $status_code  = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
 
                 // Tax term post count, linked to list of posts (if count>0).
                 $count  = $script_obj->count;
@@ -466,11 +469,12 @@ function postscript_add_script_callback() {
 
             ?>
             <tr>
-                <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo esc_html( $script_name ); ?></label></th>
+                <th scope="row" class="th-full" style="padding: 0.5em;">
+                    <label><?php echo wp_kses( $handle, $allowed_html, $allowed_protocols ); ?></label>
+                </th>
                 <td><?php echo esc_html( $script_arr->ver ); ?></td>
                 <td><?php echo esc_html( $deps ); ?></td>
                 <td><?php echo esc_html( $script_arr->args ); // Style media: 'screen', 'print', or 'all'.  ?></td>
-                <td><?php echo wp_kses( $status_code, $allowed_html, $allowed_protocols ); ?></td>
                 <td><?php echo wp_kses( $posts_count, $allowed_html, $allowed_protocols ); ?></td>
             </tr>
             <?php
@@ -483,6 +487,9 @@ function postscript_add_script_callback() {
     ?>
         </tbody>
     </table>
+    <p class="wp-ui-text-icon">
+        <?php _e( '<strong>Handle</strong> name links to <code>src</code> file. <strong>Posts</strong> count links to a list of posts that enqueue the file.', 'postscript' ); ?><br />
+    </p>
     <?php
 }
 
@@ -523,7 +530,6 @@ function postscript_add_style_callback() {
                 <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Ver', 'postscript' ); ?></th>
                 <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Deps', 'postscript' ); ?></th>
                 <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Media', 'postscript' ); ?></th>
-                <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Status', 'postscript' ); ?></th>
                 <th scope="col" class="th-full" style="padding: 0.5em;"><?php _e( 'Posts', 'postscript' ); ?></th>
             </tr>
         </thead>
@@ -535,7 +541,7 @@ function postscript_add_style_callback() {
     if ( ! empty( $styles_added ) ) {
         foreach ( $styles_added as $style_obj ) {
             if ( in_array( $style_obj->name, $style_handles ) ) {
-                $style_name   = $style_obj->name;
+                $style_name   = esc_html( $style_obj->name );
                 $style_arr    = $postscript_styles_reg[ $style_name ];
 
                 // Comma-separated list of style dependencies.
@@ -547,8 +553,8 @@ function postscript_add_style_callback() {
                 // Make relative URLs full (for core registered scripts in '/wp-admin' or '/wp-includes').
                 $src = ( $style_arr->src ) ? postscript_core_full_urls( $style_arr->src ) : '';
 
-                // Check URL status response code, if script has a 'src' set.
-                $status_code = ( $src ) ? "<a href='$src'>" . postscript_url_exists( $src ) . '</a>' : '--';
+                // Add link to handle name, if registered source file.
+                $handle = ( $src ) ? "<a href=\"$src\">" . $style_name . '</a>' : $style_name;
 
                 // Tax term post count, linked to list of posts (if count>0).
                 $count = $style_obj->count;
@@ -569,11 +575,12 @@ function postscript_add_style_callback() {
                 $allowed_protocols = array( 'http', 'https' );
             ?>
             <tr>
-                <th scope="row" class="th-full" style="padding: 0.5em;"><label><?php echo esc_html( $style_name ); ?></label></th>
+                <th scope="row" class="th-full" style="padding: 0.5em;">
+                    <label><?php echo wp_kses( $handle, $allowed_html, $allowed_protocols ); ?></label>
+                </th>
                 <td><?php echo esc_html( $style_arr->ver ); ?></td>
                 <td><?php echo esc_html( $deps ); ?></td>
                 <td><?php echo esc_html( $footer ); ?></td>
-                <td><?php echo wp_kses( $status_code, $allowed_html, $allowed_protocols ); ?></td>
                 <td><?php echo wp_kses( $posts_count, $allowed_html, $allowed_protocols ); ?></td>
             </tr>
             <?php
@@ -586,10 +593,6 @@ function postscript_add_style_callback() {
     ?>
         </tbody>
     </table>
-    <p class="wp-ui-text-icon textright">
-        <?php _e( '<strong>Status</strong> response code links to <code>src</code> file.', 'postscript' ); ?><br />
-        <?php _e( '<strong>Posts-count</strong> links to list of posts using the file.', 'postscript' ); ?>
-    </p>
     <?php
 }
 
@@ -667,7 +670,7 @@ function postscript_remove_script_callback() {
         <?php
     } else {
         ?>
-        <p><?php _e( 'Use Add a Script form above to add registered scripts.', 'postscript' ); ?></p>
+        <p><?php _e( 'Use <strong>Add a Script</strong> dropdown above to add registered scripts.', 'postscript' ); ?></p>
         <?php
     }
 }
@@ -702,7 +705,7 @@ function postscript_remove_style_callback() {
         <?php
     } else {
         ?>
-        <p><?php _e( 'Use Add a Style form above to add registered styles.', 'postscript' ); ?></p>
+        <p><?php _e( 'Use <strong>Add a Style</strong> dropdown above to add registered styles.', 'postscript' ); ?></p>
         <?php
     }
 }

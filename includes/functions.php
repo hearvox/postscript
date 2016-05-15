@@ -304,8 +304,8 @@ function postscript_url_exists( $url = '' ) {
  *
  * This function is included in the above, but
  *
- * @param  $url     URL to be checked for relative path (in WP core).
- * @return string   Absolute path URL for WP core file, otherwise passed $url.
+ * @param  string   $url     URL to be checked for relative path (in WP core).
+ * @return string   $url     Absolute path URL for WP core file, otherwise passed $url.
  */
 function postscript_core_full_urls( $url ) {
     // Make absolute URLs for WP core scripts (from their registered relative 'src' URLs)
@@ -316,3 +316,74 @@ function postscript_core_full_urls( $url ) {
     return $url;
 }
 
+/**
+ * Checks URL extension against whitelist.
+ *
+ * @param  string   $url    URL to be checked.
+ * @return bool             True if extension matches whitelist, false if not.
+ */
+function postscript_check_url_extension( $url, $type ) {
+    $url_parts = parse_url( $url );
+    if ( false !== $url_parts ) {
+        $extension = pathinfo( $url_parts['path'], PATHINFO_EXTENSION );
+        if ( ! empty( $extension ) && $extension === 'js' ) {
+            // stuff
+        }
+    }
+}
+
+/**
+ * Checks URL domain against whitelist.
+ *
+ * @link https://gist.github.com/mjangda/1623788
+ * @param  string   $url    URL to be checked.
+ * @return bool             True if extension matches whitelist, false if not.
+ */
+/*
+function postscript_check_url_domain( $url ) {
+    $options = postscript_get_options();
+    // $domains_whitelist = $options['domains'];
+
+    $domain = strtolower( parse_url( $url, PHP_URL_HOST ) );
+    // Check if we match the domain exactly
+    if ( in_array( $domain, $domains_whitelist ) )
+        return true;
+
+    $valid = false;
+
+    //  Proceed only if subdomain or 'www.' (or 'www12.', etc.).
+    $domain_split  = explode( '.', $domain );
+    if ( count( $domain_split ) > 1 ) {
+
+    $whitelisted_domain = '.' . $whitelisted_domain; // Prevent things like 'evilsitetime.com'
+        if( strpos( $domain, $whitelisted_domain ) === ( strlen( $domain ) - strlen( $whitelisted_domain ) ) ) {
+            $valid = true;
+
+    }
+    return $valid;
+}
+
+$WPLINKS_WHITELIST = str_replace(" ", "", WPLINKS_WHITELIST);
+$WPLINKS_WHITELIST_ARRAY = explode(",", $WPLINKS_WHITELIST);
+
+<p><textarea rows="6" cols="80" name="WPLINKS-whitelist" id="WPLINKS-whitelist" placeholder="watchworthy.com, cnn.com, wired.com"><?php echo WPLINKS_WHITELIST;?></textarea><br /><code><strong>Seperate each top level domain name by a comma.</strong></code></p>
+<p><code><strong>Example</strong>: watchworthy.com, cnn.com, wired.com</code></p>
+
+/ **
+ *
+ * Get the whitelisted script domains for the plugin
+ * Whitelist domains using `add_filter` on this hook to return array of your site's whitelisted domaiins.
+ *
+ * @return array of whitelisted domains, e.g. 'ajax.googleapis.com'
+ * /
+function get_whitelisted_script_domains() {
+    return apply_filters( 'shortcake_bakery_whitelisted_script_domains', array() );
+}
+
+$whitelisted_script_domains = get_whitelisted_script_domains();
+
+$host = parse_url( $url, PHP_URL_HOST );
+if ( ! in_array( $host, $whitelisted_script_domains ) ) {
+    continue;
+}
+*/
