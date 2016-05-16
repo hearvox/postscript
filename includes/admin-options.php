@@ -300,7 +300,7 @@ function postscript_remove_script_style_section_callback() {
  *     [add_style]     => {script_handle}
  *     [remove_script] => {style_handle}
  *     [remove_style]  => {script_handle}
- *     [version]       => 1.0.0
+ *     [version]       => 0.4.0
  * )
  */
 

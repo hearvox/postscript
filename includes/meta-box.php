@@ -176,7 +176,7 @@ function postscript_meta_box_callback( $post, $box ) {
 /**
  * Saves the meta box form data upon submission.
  *
- * @uses  postscript_sanitize_array_values()    Sanitizes $_POST array.
+ * @uses  postscript_sanitize_array()    Sanitizes $_POST array.
  *
  * @param int     $post_id    Post ID.
  * @param WP_Post $post       Post object.
@@ -207,7 +207,7 @@ function postscript_save_post_meta( $post_id, $post ) {
     // If any user-submitted form fields have a value.
     // implode() reduces array to string of values, a check for any values.
     if  ( isset( $_POST['postscript_meta'] ) && implode( $_POST['postscript_meta'] ) ) {
-        $form_data  = postscript_sanitize_array_values( $_POST['postscript_meta'] );
+        $form_data  = postscript_sanitize_array( $_POST['postscript_meta'] );
     } else {
         $form_data  = null;
     }

@@ -127,25 +127,54 @@ function postscript_set_option( $option, $value ) {
 }
 
 /**
- * Sanitizes values in an array.
+ * Sanitizes values in an one-dimensional array.
+ * (Used by post meta-box form before writing post-meta to database.)
  *
- * @link https://tommcfarlin.com/sanitizing-arrays-the-wordpress-settings-api/
+ * @link https://tommcfarlin.com/input-sanitization-with-the-wordpress-settings-api/
  *
  * @since    0.4.0
  *
  * @param    array    $input        The address input.
- * @return   array    $new_input    The sanitized input.
+ * @return   array    $input_clean  The sanitized input.
  */
-function postscript_sanitize_array_values( $input ) {
+function postscript_sanitize_array( $input ) {
     // Initialize a new array to hold the sanitized values.
-    $new_input = array();
+    $input_clean = array();
 
     // Traverse the array and sanitize each value.
     foreach ( $input as $key => $val ) {
-        $new_input[ $key ] = ( isset( $input[ $key ] ) ) ? sanitize_text_field( $val ) : '';
+        $input_clean[ $key ] = sanitize_text_field( $val );
     }
 
-    return $new_input;
+    return $input_clean;
+}
+
+/**
+ * Sanitizes values in a multidimensional array.
+ * (Used by Settings API before writing option to database.)
+ *
+ * @link https://tommcfarlin.com/sanitizing-arrays-the-wordpress-settings-api/
+ * @since    0.4.0
+ *
+ * @param    array    $input        The address input.
+ * @return   array    $input_clean  The sanitized input.
+ */
+function postscript_sanitize_array_multi( $input = array() ) {
+    // Initialize the new array that will hold the sanitize values
+    $input_clean = array();
+
+    // Loop through the input and sanitize each of the values
+    foreach ( $input as $key => $val ) {
+        if ( ! is_array ( $val ) && ! is_object( $val ) ) {
+            $input[ $key ] = sanitize_text_field( $val );
+        }
+
+        if ( is_array( $val ) ) {
+            $input[ $key ] = postscript_sanitize_array_multi_d( $val );
+        }
+    }
+
+    return $input_clean;
 }
 
 /* ------------------------------------------------------------------------ *
@@ -332,6 +361,7 @@ function postscript_check_url_extension( $url, $type ) {
     }
 }
 
+
 /**
  * Checks URL domain against whitelist.
  *
@@ -386,4 +416,24 @@ $host = parse_url( $url, PHP_URL_HOST );
 if ( ! in_array( $host, $whitelisted_script_domains ) ) {
     continue;
 }
+
+$domains_whitelist = trim( $options['domains_whitelist'] );
+$domains_allowed = preg_split( '/\r\n|\n\r|\r|\n/', $options['domains_whitelist'] );
+
+function wp_xapi_network_lrs_whitelist_render() {
+        ?>
+        <textarea name='wpxapi_network_settings[wpxapi_network_lrs_whitelist]'  rows="10" cols="50"><?php echo esc_textarea( $this->options['wpxapi_network_lrs_whitelist'] ); ?></textarea>
+        <div class="help-div">We are checking only if the beginning of the url starts with the url that you provided.  So for example: <em>http://lrs.example.org/</em> would work but <em>http://statements.lrs.example.org/</em> will not work</div>
+        <p><strong>Currently allowed urls:</strong><br />
+        <?php
+        if ( ! isset( $this->options['wpxapi_network_lrs_whitelist'] ) || empty( $this->options['wpxapi_network_lrs_whitelist'] ) ) {
+            echo '<em>' . esc_html__( 'No currently whitelisted URLs', 'wpxapi' ) . '</em>';
+        } else {
+            foreach ( preg_split( '/\r\n|\r|\n/', $this->options['wpxapi_network_lrs_whitelist'] ) as $link ) {
+                echo esc_url( $link ) . '<br />';
+            }
+        }
+    }
+
+
 */
