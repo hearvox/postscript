@@ -127,6 +127,47 @@ function postscript_set_option( $option, $value ) {
 }
 
 /**
+ * Sanitizes values in an one- and multi- dimensional arrays.
+ *
+ * Used by post meta-box form before writing post-meta to database
+ * and by Settings API before writing option to database.
+ *
+ * @link https://tommcfarlin.com/input-sanitization-with-the-wordpress-settings-api/
+ *
+ * @since    0.4.0
+ *
+ * @param    array    $input        The address input.
+ * @return   array    $input_clean  The sanitized input.
+ */
+function postscript_sanitize_data( $data = array() ) {
+    // Initialize a new array to hold the sanitized values.
+    $data_clean = array();
+
+    // Traverse the array and sanitize each value.
+    if ( ! is_array( $data ) || ! count( $data )) {
+        return array();
+    }
+
+    // Traverse the array and sanitize each value.
+    foreach ( $data as $key => $value) {
+        // For one-dimensional array.
+        if ( ! is_array( $value ) && ! is_object( $value ) ) {
+            // Remove blank lines and leading/trailing whitespace.
+            $value = preg_replace( '/^\h*\v+/m', '', trim( $value ) );
+
+            $data_clean[ $key ] = sanitize_text_field( $value );
+        }
+
+        // For multidimensional array.
+        if ( is_array( $value ) ) {
+            $data_clean[ $key ] = postscript_sanitize_data( $value );
+        }
+    }
+
+    return $data_clean;
+}
+
+/**
  * Sanitizes values in an one-dimensional array.
  * (Used by post meta-box form before writing post-meta to database.)
  *
@@ -149,32 +190,9 @@ function postscript_sanitize_array( $input ) {
     return $input_clean;
 }
 
-/**
- * Sanitizes values in a multidimensional array.
- * (Used by Settings API before writing option to database.)
- *
- * @link https://tommcfarlin.com/sanitizing-arrays-the-wordpress-settings-api/
- * @since    0.4.0
- *
- * @param    array    $input        The address input.
- * @return   array    $input_clean  The sanitized input.
- */
-function postscript_sanitize_array_multi( $input = array() ) {
-    // Initialize the new array that will hold the sanitize values
-    $input_clean = array();
-
-    // Loop through the input and sanitize each of the values
-    foreach ( $input as $key => $val ) {
-        if ( ! is_array ( $val ) && ! is_object( $val ) ) {
-            $input[ $key ] = sanitize_text_field( $val );
-        }
-
-        if ( is_array( $val ) ) {
-            $input[ $key ] = postscript_sanitize_array_multi_d( $val );
-        }
-    }
-
-    return $input_clean;
+function postscript_remove_empty_lines( $string ) {
+    return preg_replace( "/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $string );
+    // preg_replace( '/^\h*\v+/m', '', $string );
 }
 
 /* ------------------------------------------------------------------------ *
@@ -435,5 +453,9 @@ function wp_xapi_network_lrs_whitelist_render() {
         }
     }
 
+function postscript_remove_empty_lines( $string ) {
+    return preg_replace( "/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $string );
+    // preg_replace('/^\h*\v+/m', '', $str);
+}
 
 */

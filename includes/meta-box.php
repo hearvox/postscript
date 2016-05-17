@@ -28,6 +28,12 @@ function postscript_meta_box_setup() {
         add_action( 'add_meta_boxes', 'postscript_add_meta_box' );
 
         // Save post meta.
+        if ( isset( $_POST['postscript_meta'] ) && isset( $_POST['postscript_meta']['domain_whitelist'] ) ) {
+            add_action('admin_notices', 'postscript_metabox_admin_notice');
+        }
+
+
+        // Save post meta.
         add_action( 'save_post', 'postscript_save_post_meta', 10, 2 );
     }
 }
@@ -176,7 +182,7 @@ function postscript_meta_box_callback( $post, $box ) {
 /**
  * Saves the meta box form data upon submission.
  *
- * @uses  postscript_sanitize_array()    Sanitizes $_POST array.
+ * @uses  postscript_sanitize_data()    Sanitizes $_POST array.
  *
  * @param int     $post_id    Post ID.
  * @param WP_Post $post       Post object.
@@ -207,7 +213,7 @@ function postscript_save_post_meta( $post_id, $post ) {
     // If any user-submitted form fields have a value.
     // implode() reduces array to string of values, a check for any values.
     if  ( isset( $_POST['postscript_meta'] ) && implode( $_POST['postscript_meta'] ) ) {
-        $form_data  = postscript_sanitize_array( $_POST['postscript_meta'] );
+        $form_data  = postscript_sanitize_data( $_POST['postscript_meta'] );
     } else {
         $form_data  = null;
     }
@@ -244,4 +250,13 @@ function postscript_save_post_meta( $post_id, $post ) {
         }
     }
 
+}
+
+
+function postscript_metabox_admin_notice() {
+    ?>
+    <div class="error">
+        <p><?php _e( 'Error!', 'postscript' ); ?></p>
+    </div>
+    <?php
 }
