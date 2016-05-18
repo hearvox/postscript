@@ -116,6 +116,11 @@ function postscript_add_remove() {
 
     // Add new script or style custom tax term, if registered handle.
     if ( isset( $options['add_script'] ) && in_array( $options['add_script'], $script_handles )  ) {
+        // @todo Check URL status code:
+        // $url = postscript_handle_url( $options['add_script'] );
+        // $url_status = postscript_url_exists( $url );
+        // $term_id = wp_insert_term( $options['add_script'], 'postscripts' );
+        // add_term_meta ( $term_id, 'postscript_url_status', $url_status, true );
         wp_insert_term( $options['add_script'], 'postscripts' );
     }
 

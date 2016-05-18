@@ -312,8 +312,24 @@ function postscript_style_handles() {
 /* ------------------------------------------------------------------------ *
  * Functions to check URLs.
  * ------------------------------------------------------------------------ */
+
 /**
- * Checks if URL exists.
+ * Gets URL src from registered scripts exists. (Not used yet.)
+ * @todo Add status code as tax-meta upon settings wp_insert_term.
+ *
+ * @param  $url         URL to be checked.
+ * @return int|string   URL Sstatus repsonse code number, or WP error on failure.
+ */
+function postscript_handle_url( $handle = '' ) {
+    $postscript_scripts_reg  = get_transient( 'postscript_scripts_reg' );
+    $url = $postscript_scripts_reg[ $handle ]->src;
+
+    return $url;
+}
+
+/**
+ * Checks if URL exists. (Not used yet.)
+ * @todo Add status code as tax-meta upon settings wp_insert_term.
  *
  * @param  $url         URL to be checked.
  * @return int|string   URL Sstatus repsonse code number, or WP error on failure.
@@ -367,7 +383,7 @@ function postscript_core_full_urls( $url ) {
  * Checks enqueued URL extension against whitelist.
  *
  * @param  string   $url    URL to be checked.
- * @return bool             True if extension matches whitelist, false if not.
+ * @return bool             True if extension is in whitelist, false if not.
  */
 function postscript_check_url_extension( $url ) {
     // Allowed file extensions.
@@ -388,14 +404,6 @@ function postscript_check_url_extension( $url ) {
     }
 
     return false;
-}
-
-add_filter('postscript_url_extensions', 'testxxx' );
-//
-function testxxx( $extension_whitelist ) {
-    $extension_whitelist = array( 'js', 'css', 'xxx' );
-    return $extension_whitelist;
-
 }
 
 /**
