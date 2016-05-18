@@ -364,21 +364,39 @@ function postscript_core_full_urls( $url ) {
 }
 
 /**
- * Checks URL extension against whitelist.
+ * Checks enqueued URL extension against whitelist.
  *
  * @param  string   $url    URL to be checked.
  * @return bool             True if extension matches whitelist, false if not.
  */
-function postscript_check_url_extension( $url, $type ) {
+function postscript_check_url_extension( $url ) {
+    // Allowed file extensions.
+    $extension_whitelist = array( 'js', 'css' );
+
+    // Filter extensions whitelist.
+    if ( has_filter( 'postscript_url_extensions' ) ) {
+        $extension_whitelist = apply_filters( 'postscript_url_extensions', $extension_whitelist );
+    }
+
+    // Get URL components.
     $url_parts = parse_url( $url );
-    if ( false !== $url_parts ) {
+    if ( $url_parts ) {
         $extension = pathinfo( $url_parts['path'], PATHINFO_EXTENSION );
-        if ( ! empty( $extension ) && $extension === 'js' ) {
-            // stuff
+        if ( in_array( $extension, $extension_whitelist )  ) {
+                return true;
         }
     }
+
+    return false;
 }
 
+add_filter('postscript_url_extensions', 'testxxx' );
+//
+function testxxx( $extension_whitelist ) {
+    $extension_whitelist = array( 'js', 'css', 'xxx' );
+    return $extension_whitelist;
+
+}
 
 /**
  * Checks URL domain against whitelist.
