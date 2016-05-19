@@ -60,15 +60,20 @@ function postscript_set_options( $options ) {
  * @return  array   $new_options    Merged array of plugin settings
  */
 function postscript_upgrade_options( $options ) {
+// Get host name (e.g., 'example.com') from site URL.
+    $site_url = site_url();
+    $site_host = parse_url( $site_url, PHP_URL_HOST );
+
     $defaults = array(
         'user_roles' => array( 'administrator' ),
         'post_types' => array( 'post' ),
         'allow'      => array(
-            'urls_script'  => '1',
-            'urls_style'   => '1',
-            'class_body'   => 'on',
-            'class_post'   => 'on',
-        )
+            'urls_script'   => '1',
+            'urls_style'    => '1',
+            'class_body'    => 'on',
+            'class_post'    => 'on',
+            'url_whitelist' => $site_host,
+        ),
     );
 
     if ( is_array( $options ) && ! empty( $options ) ) {

@@ -366,9 +366,20 @@ function postscript_allow_fields_callback( $options ) {
     $opt = $options['allow']; // User settings to permit URLs and classes.
     ?>
     <fieldset>
-        <legend><?php _e( 'Add a text field in Postscript box for:', 'postscript' ); ?></legend>
+        <legend><?php _e( 'Permit fields in the Postscript box (example at bottom).', 'postscript' ); ?></legend>
         <ul class="inside">
+
             <li>
+                <p><?php _e( 'Add fields for classes:', 'postscript' ); ?></p>
+                <label><input type="checkbox" id="postscript-allow-class-body" name="postscript[allow][class_body]" value="on"<?php checked( 'on', isset( $opt['class_body'] ) ? $opt['class_body'] : 'off' ); ?>/> <?php _e( 'Body class*', 'postscript' ); ?></label></li>
+            <li>
+                <label><input type="checkbox" id="postscript-allow-class-post" name="postscript[allow][class_post]" value="on"<?php checked( 'on', isset( $opt['class_post'] ) ? $opt['class_post'] : 'off' ); ?>/> <?php _e( 'Post class*', 'postscript' ); ?></label>
+                <p class="wp-ui-text-icon"><?php _e( 'Requires <code>body_class()</code>/<code>post_class()</code> in theme.', 'postscript' ); ?></p>
+                <hr />
+            </li>
+
+            <li>
+                <p><?php _e( 'Add fields for URLs:', 'postscript' ); ?></p>
                 <select id="postscript-urls-script" name="postscript[allow][urls_script]">
                     <option value="0"<?php selected( '0', isset( $opt['urls_script'] ) ? $opt['urls_script'] : '' ); ?>>0</option>
                     <option value="1"<?php selected( '1', isset( $opt['urls_script'] ) ? $opt['urls_script'] : '' ); ?>>1</option>
@@ -380,11 +391,13 @@ function postscript_allow_fields_callback( $options ) {
                     <option value="0"<?php selected( '0', isset( $opt['urls_style'] ) ? $opt['urls_style'] : '' ); ?>>0</option>
                     <option value="1"<?php selected( '1', isset( $opt['urls_style'] ) ? $opt['urls_style'] : '' ); ?>>1</option>
                 </select> <label for="postscript-urls-style"><?php _e( 'Style URL', 'postscript' ); ?></label>
+                <hr />
             </li>
-            <li><label><input type="checkbox" id="postscript-allow-class-body" name="postscript[allow][class_body]" value="on"<?php checked( 'on', isset( $opt['class_body'] ) ? $opt['class_body'] : 'off' ); ?>/> <?php _e( 'Body class*', 'postscript' ); ?></label></li>
-            <li><label><input type="checkbox" id="postscript-allow-class-post" name="postscript[allow][class_post]" value="on"<?php checked( 'on', isset( $opt['class_post'] ) ? $opt['class_post'] : 'off' ); ?>/> <?php _e( 'Post class*', 'postscript' ); ?></label></li>
+            <li>
+                <label for="postscript-url-whitelist"><?php _e( 'URL Whitelist', 'postscript' ); ?></label><br /><textarea id="postscript-url-whitelist" name='postscript[allow][url_whitelist]' rows="10" cols="50"><?php if ( isset ( $opt['url_whitelist'] ) ) { echo esc_textarea( $opt['url_whitelist'] ); } ?></textarea>
+                <p class="wp-ui-text-icon"><?php _e( 'Only script/style URLs from these hosts will enqueue.', 'postscript' ); ?></p>
+            </li>
         </ul>
-        <p class="wp-ui-text-icon"><?php _e( 'Requires <code>body_class()</code>/<code>post_class()</code> in theme.', 'postscript' ); ?></p>
     </fieldset>
     <?php
 }
