@@ -28,7 +28,7 @@
 function postscript_get_options() {
     $options = get_option( 'postscript' );
 
-    /* Set version if not the latest. */
+    // Set version if not the latest.
     if ( ! isset( $options['version'] ) || $options['version'] < POSTSCRIPT_VERSION ) {
         $options = postscript_upgrade_options( $options );
     }
@@ -46,7 +46,8 @@ function postscript_get_options() {
  * @param   array   $option     Array of plugin settings
  */
 function postscript_set_options( $options ) {
-    update_option( 'postscript', $options );
+    $options_clean = postscript_sanitize_data( $options );
+    update_option( 'postscript', $options_clean );
 }
 
 /**
@@ -289,6 +290,14 @@ function postscript_script_handles() {
     sort( $scripts_reg ); // Alphabetize.
 
     return $scripts_reg;
+}
+
+
+function postscript_object_to_array($d) {
+        if (is_object($d))
+            $d = get_object_vars($d);
+
+        return is_array($d) ? array_map(__FUNCTION__, $d) : $d;
 }
 
 /**

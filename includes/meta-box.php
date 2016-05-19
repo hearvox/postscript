@@ -211,7 +211,7 @@ function postscript_save_post_meta( $post_id, $post ) {
     $meta_value = get_post_meta( $post_id, $meta_key, true );
 
     // If any user-submitted form fields have a value.
-    // implode() reduces array to string of values, a check for any values.
+    // implode() reduces array values to a string, to check if there are any values.
     if  ( isset( $_POST['postscript_meta'] ) && implode( $_POST['postscript_meta'] ) ) {
         $form_data  = postscript_sanitize_data( $_POST['postscript_meta'] );
     } else {
