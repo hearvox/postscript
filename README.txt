@@ -66,7 +66,7 @@ Tell us in the [support fourm](https://wordpress.org/support/plugin/postscript) 
 
 == Changelog ==
 = 0.4.0 =
-* Custom taxonomy  slugs change to  'postscripts' and poststyles'.
+* Change custom taxonomy slugs to 'postscripts' and poststyles'.
 
 = 0.3.1 =
 * Beta version.

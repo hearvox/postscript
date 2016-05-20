@@ -431,6 +431,26 @@ function postscript_check_url_extension( $url ) {
 }
 
 /**
+ * Checks enqueued URL hostname against whitelist.
+ *
+ * @since   0.1.0
+ *
+ * @param  string   $url    URL to be checked.
+ * @return bool             True if extension is in whitelist, false if not.
+ */
+function postscript_check_url_hostname( $url ) {
+    $options            = postscript_get_options();
+    $hostname           = parse_url( $url, PHP_URL_HOST );
+    $hostname_whitelist = preg_split( ',', $options['url_whitelist'] );
+
+    if ( in_array( $hostname, $hostname_whitelist )  ) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
  * Checks URL domain against whitelist.
  *
  * @since   0.4.0

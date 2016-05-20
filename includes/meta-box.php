@@ -28,17 +28,26 @@ function postscript_meta_box_setup() {
         add_action( 'add_meta_boxes', 'postscript_add_meta_box' );
 
         // Save post meta.
-        if ( isset( $_POST['postscript_meta'] ) && isset( $_POST['postscript_meta']['domain_whitelist'] ) ) {
-            add_action('admin_notices', 'postscript_metabox_admin_notice');
-        }
-
-
-        // Save post meta.
         add_action( 'save_post', 'postscript_save_post_meta', 10, 2 );
+
+        add_action('admin_notices', 'postscript_metabox_admin_notice');
+
     }
 }
 add_action( 'load-post.php', 'postscript_meta_box_setup' );
 add_action( 'load-post-new.php', 'postscript_meta_box_setup' );
+
+
+function postscript_metabox_admin_notice() {
+    $postscript_meta = get_post_meta( get_the_id(), 'postscript_meta', true );
+    ?>
+    <div class="error">
+    <?php var_dump( $_POST ) ?>
+        <p><?php _e( 'Error!', 'postscript' ); ?></p>
+    </div>
+    <?php
+    // }
+}
 
 /**
  * Creates meta box for the post editor screen.
@@ -211,8 +220,8 @@ function postscript_save_post_meta( $post_id, $post ) {
     $meta_value = get_post_meta( $post_id, $meta_key, true );
 
     // If any user-submitted form fields have a value.
-    // implode() reduces array values to a string, to check if there are any values.
-    if  ( isset( $_POST['postscript_meta'] ) && implode( $_POST['postscript_meta'] ) ) {
+    // (implode() reduces array values to a string to do the check).
+    if ( isset( $_POST['postscript_meta'] ) && implode( $_POST['postscript_meta'] ) ) {
         $form_data  = postscript_sanitize_data( $_POST['postscript_meta'] );
     } else {
         $form_data  = null;
@@ -250,13 +259,4 @@ function postscript_save_post_meta( $post_id, $post ) {
         }
     }
 
-}
-
-
-function postscript_metabox_admin_notice() {
-    ?>
-    <div class="error">
-        <p><?php _e( 'Error!', 'postscript' ); ?></p>
-    </div>
-    <?php
 }
