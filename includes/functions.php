@@ -37,20 +37,6 @@ function postscript_get_options() {
 }
 
 /**
- * Sets an option in database (an array of plugin settings).
- *
- * Note: update_option() adds option if it doesn't exist.
- *
- * @since   0.1.0
- *
- * @param   array   $option     Array of plugin settings
- */
-function postscript_set_options( $options ) {
-    $options_clean = postscript_sanitize_data( $options );
-    update_option( 'postscript', $options_clean );
-}
-
-/**
  * Makes array of plugin settings, merging default and new values.
  *
  * @since   0.1.0
@@ -60,7 +46,7 @@ function postscript_set_options( $options ) {
  * @return  array   $new_options    Merged array of plugin settings
  */
 function postscript_upgrade_options( $options ) {
-// Get host name (e.g., 'example.com') from site URL.
+// Get hostname (e.g., 'example.com') from site URL.
     $site_url = site_url();
     $site_host = parse_url( $site_url, PHP_URL_HOST );
 
@@ -72,8 +58,8 @@ function postscript_upgrade_options( $options ) {
             'urls_style'    => '1',
             'class_body'    => 'on',
             'class_post'    => 'on',
-            'url_whitelist' => $site_host,
         ),
+        'url_whitelist' => array( $site_host ),
     );
 
     if ( is_array( $options ) && ! empty( $options ) ) {
@@ -87,6 +73,20 @@ function postscript_upgrade_options( $options ) {
     postscript_set_options( $new_options );
 
     return $new_options;
+}
+
+/**
+ * Sets an option in database (an array of plugin settings).
+ *
+ * Note: update_option() adds option if it doesn't exist.
+ *
+ * @since   0.1.0
+ *
+ * @param   array   $option     Array of plugin settings
+ */
+function postscript_set_options( $options ) {
+    $options_clean = postscript_sanitize_data( $options );
+    update_option( 'postscript', $options_clean );
 }
 
 /* ------------------------------------------------------------------------ *
@@ -281,6 +281,8 @@ add_action( 'shutdown', 'postscript_get_reg_handles' );
 
 /**
  * Makes an alphabetized array of registered script handles.
+ *
+ * @since   0.1.0
  */
 function postscript_script_handles() {
     $postscript_scripts_reg = get_transient( 'postscript_scripts_reg' );
@@ -331,6 +333,8 @@ function postscript_style_handles() {
  * Gets URL src from registered scripts exists. (Not used yet.)
  * @todo Add status code as tax-meta upon settings wp_insert_term.
  *
+ * @since   0.1.0
+ *
  * @param  $url         URL to be checked.
  * @return int|string   URL Sstatus repsonse code number, or WP error on failure.
  */
@@ -344,6 +348,8 @@ function postscript_handle_url( $handle = '' ) {
 /**
  * Checks if URL exists. (Not used yet.)
  * @todo Add status code as tax-meta upon settings wp_insert_term.
+ *
+ * @since   0.1.0
  *
  * @param  $url         URL to be checked.
  * @return int|string   URL Sstatus repsonse code number, or WP error on failure.
@@ -379,7 +385,9 @@ function postscript_url_exists( $url = '' ) {
 /**
  * Makes full URL from relative /wp-includes and /wp-admin URLs.
  *
- * This function is included in the above, but
+ * This function is included in the above, but here for separate use.
+ *
+ * @since   0.1.0
  *
  * @param  string   $url     URL to be checked for relative path (in WP core).
  * @return string   $url     Absolute path URL for WP core file, otherwise passed $url.
@@ -395,6 +403,8 @@ function postscript_core_full_urls( $url ) {
 
 /**
  * Checks enqueued URL extension against whitelist.
+ *
+ * @since   0.1.0
  *
  * @param  string   $url    URL to be checked.
  * @return bool             True if extension is in whitelist, false if not.
@@ -422,6 +432,8 @@ function postscript_check_url_extension( $url ) {
 
 /**
  * Checks URL domain against whitelist.
+ *
+ * @since   0.4.0
  *
  * @link https://gist.github.com/mjangda/1623788
  * @param  string   $url    URL to be checked.
