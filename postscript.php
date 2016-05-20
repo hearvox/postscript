@@ -40,7 +40,7 @@ if ( defined( 'POSTSCRIPT_VERSION' ) ) {
     return;
 }
 
-define( 'POSTSCRIPT_VERSION', '0.4.123' );
+define( 'POSTSCRIPT_VERSION', '0.4.125' );
 
 /**
  * Adds "Settings" link on plugin page (next to "Activate").

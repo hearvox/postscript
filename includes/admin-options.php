@@ -245,7 +245,8 @@ function postscript_options_init() {
 
     register_setting(
         'postscript',
-        'postscript'
+        'postscript',
+        'postscript_sanitize_data'
     );
 
 }
@@ -373,6 +374,10 @@ function postscript_post_types_callback( $options ) {
  */
 function postscript_allow_urls_callback( $options ) {
     $opt = $options['allow']; // User settings to permit URLs and classes.
+
+    $site_url = site_url();
+    $site_host = parse_url( $site_url, PHP_URL_HOST );
+
     ?>
     <fieldset>
         <legend><?php _e( 'Add fields to the Postscript box for URLs (<a href="#metabox">example at bottom</a>).', 'postscript' ); ?></legend>
@@ -392,8 +397,8 @@ function postscript_allow_urls_callback( $options ) {
                 <hr />
             </li>
             <li>
-                <label for="postscript-url-whitelist"><?php _e( 'URL Hostname Whitelist', 'postscript' ); ?></label><br /><textarea id="postscript-url-whitelist" name='postscript[url_whitelist]' rows="5" cols="40"><?php if ( isset ( $options['url_whitelist'] ) ) { echo esc_textarea( implode("\n", $options['url_whitelist'] ) ); } ?></textarea>
-                <p class="wp-ui-text-icon"><?php _e( 'Enter one hostname per line. Unregistered script/style URLs will enqueue only if at the above hostnames, e.g., "example.com" or "www.example.com".', 'postscript' ); ?></p>
+                <label for="postscript-url-whitelist"><?php _e( 'URL Hostname Whitelist', 'postscript' ); ?></label><br /><textarea id="postscript-url-whitelist" name='postscript[url_whitelist]' rows="3" cols="40"><?php if ( isset ( $options['url_whitelist'] ) ) { echo esc_textarea( $options['url_whitelist'] ); } ?></textarea>
+                <p class="wp-ui-text-icon"><?php _e( 'Enter comma-separated hostnames, e.g., "<code>example.com,www.example.com</code>". Unregistered script/style URLs will enqueue only if at the above hostnames,.', 'postscript' ); ?></p>
             </li>
         </ul>
     </fieldset>

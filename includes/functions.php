@@ -59,7 +59,7 @@ function postscript_upgrade_options( $options ) {
             'class_body'    => 'on',
             'class_post'    => 'on',
         ),
-        'url_whitelist' => array( $site_host ),
+        'url_whitelist' => $site_host,
     );
 
     if ( is_array( $options ) && ! empty( $options ) ) {
