@@ -29,9 +29,6 @@ function postscript_meta_box_setup() {
 
         // Save post meta.
         add_action( 'save_post', 'postscript_save_post_meta', 10, 2 );
-
-        add_action('admin_notices', 'postscript_metabox_admin_notice');
-
     }
 }
 add_action( 'load-post.php', 'postscript_meta_box_setup' );
@@ -148,6 +145,7 @@ function postscript_meta_box_callback( $post, $box ) {
     // Display text fields for: URLs (style/script) and classes (body/post).
     $opt_allow = $box['args']['allow'];
     $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
+    $pm = get_post_meta( $post_id, 'pm', true );
     ?>
     <?php if ( isset ( $opt_allow['urls_style'] ) && 1 === intval( $opt_allow['urls_style'] )  ) { // Admin setting allows style URL text field. ?>
     <p>
@@ -219,10 +217,14 @@ function postscript_save_post_meta( $post_id, $post ) {
     $meta_key   = 'postscript_meta';
     $meta_value = get_post_meta( $post_id, $meta_key, true );
 
+    // $form_data = $_POST['postscript_meta'];
+    // update_post_meta( $post_id, $meta_key, $form_data );
+
     // If any user-submitted form fields have a value.
     // (implode() reduces array values to a string to do the check).
     if ( isset( $_POST['postscript_meta'] ) && implode( $_POST['postscript_meta'] ) ) {
         $form_data  = postscript_sanitize_data( $_POST['postscript_meta'] );
+        // $form_data  = $_POST['postscript_meta'];
     } else {
         $form_data  = null;
     }

@@ -149,7 +149,7 @@ function postscript_sanitize_data( $data = array() ) {
     // Initialize a new array to hold the sanitized values.
     $data_clean = array();
 
-    // Traverse the array and sanitize each value.
+    // Check for non-empty array.
     if ( ! is_array( $data ) || ! count( $data )) {
         return array();
     }

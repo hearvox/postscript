@@ -398,7 +398,7 @@ function postscript_allow_urls_callback( $options ) {
             </li>
             <li>
                 <label for="postscript-url-whitelist"><?php _e( 'URL Hostname Whitelist', 'postscript' ); ?></label><br /><textarea id="postscript-url-whitelist" name='postscript[url_whitelist]' rows="3" cols="40"><?php if ( isset ( $options['url_whitelist'] ) ) { echo esc_textarea( $options['url_whitelist'] ); } ?></textarea>
-                <p class="wp-ui-text-icon"><?php _e( 'Enter comma-separated hostnames, e.g., "<code>example.com,www.example.com</code>". Unregistered script/style URLs will enqueue only if at the above hostnames,.', 'postscript' ); ?></p>
+                <p class="wp-ui-text-icon"><?php _e( 'Enter comma-separated hostnames, e.g., <code>example.com,www.example.com,sub.example.com</code>. Unregistered URLs will enqueue only if an exact match to one of the above hostnames.', 'postscript' ); ?></p>
             </li>
         </ul>
     </fieldset>
@@ -779,6 +779,7 @@ function postscript_meta_box_example() {
         </div><!-- .postbox -->
     </div><!-- .postbox-container -->
 
-    <p class="clear wp-ui-text-icon"><?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?>. The top-right <a href="#contextual-help-link">Help tab</a> has details on Postscript features. <?php _e( 'This plugin created as part of a <a href="https://www.rjionline.org/stories/series/storytelling-tools/">Reynold Journalism Institute</a> fellowship.', 'mexpplus' ); ?></p>
+    <p class="clear wp-ui-text-icon">The top-right <a href="#contextual-help-link">Help tab</a> has details on Postscript features. <?php _e( 'This plugin created as part of a <a href="https://www.rjionline.org/stories/series/storytelling-tools/">Reynold Journalism Institute</a> fellowship.', 'mexpplus' ); ?></p>
+    <p class="clear wp-ui-text-icon"><small>(<?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?>.)</small>
     <?php
 }
