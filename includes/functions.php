@@ -158,9 +158,9 @@ function postscript_sanitize_data( $data = array() ) {
     foreach ( $data as $key => $value) {
         // For one-dimensional array.
         if ( ! is_array( $value ) && ! is_object( $value ) ) {
-            // Remove blank lines and leading/trailing whitespace.
+            // Remove blank lines and whitespaces.
             $value = preg_replace( '/^\h*\v+/m', '', trim( $value ) );
-
+            $value = str_replace( ' ', '', $value );
             $data_clean[ $key ] = sanitize_text_field( $value );
         }
 
