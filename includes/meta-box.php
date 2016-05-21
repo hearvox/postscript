@@ -224,7 +224,6 @@ function postscript_save_post_meta( $post_id, $post ) {
     // (implode() reduces array values to a string to do the check).
     if ( isset( $_POST['postscript_meta'] ) && implode( $_POST['postscript_meta'] ) ) {
         $form_data  = postscript_sanitize_data( $_POST['postscript_meta'] );
-        // $form_data  = $_POST['postscript_meta'];
     } else {
         $form_data  = null;
     }
