@@ -14,7 +14,7 @@ For Data-visionaries and Multi-mediators: Make posts sing with scripts and style
 
 No more shoehorning stylesheets and JavaScripts into the post content box. No more custom code for each post. No more loading scripts on every page you just need for a few. Postscript lets you easily add libraries or single-post script and style files post-by-post.
 
-The plugin uses the WordPress "enqueue" methods, which means you can control dependencies (whn registering scripts), improve site performance by putting styles in the head and scripts in the footer, and eliminate loading multiple copies of the same library (jQuery, I'm looking at you).
+The plugin uses the WordPress "enqueue" methods, which means you can control dependencies (when registering scripts), improve site performance by putting styles in the head and scripts in the footer, and eliminate loading multiple copies of the same library (jQuery, I'm looking at you).
 
 = Enqueue Registered Styles and Scripts (by Handle) =
 
@@ -57,6 +57,9 @@ Tell us in the [support fourm](https://wordpress.org/support/plugin/postscript) 
 * In Settings page make separate lists for default and plugin/theme-registrations.
 * Add filter for...?
 
+= How does this work? =
+The [GitHub Dev Notes](https://github.com/hearvox/postscript#dev-notes) details on the inner workings of this plugin, including custom fields and taxonomies, transients, options, and filters.
+
 == Screenshots ==
 
 1. Edit Post screen **Postscript** meta box
@@ -68,7 +71,7 @@ Tell us in the [support fourm](https://wordpress.org/support/plugin/postscript) 
 = 0.4.0 =
 * Change custom taxonomy slugs to 'postscripts' and poststyles'.
 
-= 0.3.1 =
+= 0.3.0 =
 * Beta version.
 * Test upgrade option function based on version number.
 
