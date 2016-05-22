@@ -17,6 +17,8 @@
 /**
  * Adds submenu item to Settings dashboard menu.
  *
+ * @since   0.1.0
+ *
  * Sets Settings page screen ID: 'settings_page_postscript'.
  */
 function postscript_settings_menu() {
@@ -37,6 +39,7 @@ add_action('admin_menu', 'postscript_settings_menu');
  * Adds tabs, sidebar, and content to contextual Help tab on Settings page.
  *
  * Sets Settings page screen ID: 'settings_page_postscript'.
+ * @since   0.1.0
  */
 function postscript_help_tab() {
     $current_screen = get_current_screen();
@@ -82,6 +85,8 @@ function postscript_help_tab() {
 
 /**
  * Renders settings menu page.
+ *
+ * @since   0.1.0
  */
 function postscript_settings_display() {
 
@@ -105,6 +110,7 @@ function postscript_settings_display() {
 /**
  * Adds or removes any user-selected script/style in the form submission data.
  *
+ * @since   0.1.0
  * @uses  postscript_get_options() Safely gets site option.
  */
 function postscript_add_remove() {
@@ -148,6 +154,8 @@ function postscript_add_remove() {
 
 /**
  * Creates settings fields via WordPress Settings API.
+ *
+ * @since   0.1.0
  */
 function postscript_options_init() {
 
@@ -258,6 +266,8 @@ add_action('admin_init', 'postscript_options_init');
 
 /**
  * Outputs text for the top of the Settings screen.
+ *
+ * @since   0.1.0
  */
 function postscript_section_callback() {
     ?>
@@ -268,6 +278,8 @@ function postscript_section_callback() {
 
 /**
  * Outputs text for the top of the Add Scripts/Styles section.
+ *
+ * @since   0.1.0
  */
 function postscript_scripts_styles_section_callback() {
     ?>
@@ -277,6 +289,8 @@ function postscript_scripts_styles_section_callback() {
 
 /**
  * Outputs text for the top of the Remove Scripts/Styles section.
+ *
+ * @since   0.1.0
  */
 function postscript_remove_script_style_section_callback() {
     ?>
@@ -321,6 +335,8 @@ function postscript_remove_script_style_section_callback() {
 
 /**
  * Outputs HTML checkboxes of user roles (to choose which roles display Postscript meta box).
+ *
+ * @since   0.1.0
  */
 function postscript_user_roles_callback( $options ) {
     // Need WP_User class.
@@ -348,6 +364,8 @@ function postscript_user_roles_callback( $options ) {
 
 /**
  * Outputs HTML checkboxes of post types (to choose which post-types display Postscript meta box).
+ *
+ * @since   0.1.0
  */
 function postscript_post_types_callback( $options ) {
     ?>
@@ -371,6 +389,8 @@ function postscript_post_types_callback( $options ) {
 
 /**
  * Outputs HTML checkboxes (to allow text fields in Postscript box for entering URLs and classes).
+ *
+ * @since   0.1.0
  */
 function postscript_allow_urls_callback( $options ) {
     $opt = $options['allow']; // User settings to permit URLs and classes.
@@ -407,6 +427,8 @@ function postscript_allow_urls_callback( $options ) {
 
 /**
  * Outputs HTML checkboxes (to allow text fields in Postscript box for entering URLs and classes).
+ *
+ * @since   0.1.0
  */
 function postscript_allow_classes_callback( $options ) {
     $opt = $options['allow']; // User settings to permit URLs and classes.
@@ -428,6 +450,7 @@ function postscript_allow_classes_callback( $options ) {
 /**
  * Outputs HTML select menu of all registered scripts.
  *
+ * @since   0.1.0
  * @uses    postscript_script_handles() Array of registered style handles
  */
 function postscript_add_script_callback() {
@@ -537,6 +560,7 @@ function postscript_add_script_callback() {
 /**
  * Outputs HTML select menu of all registered styles.
  *
+ * @since   0.1.0
  * @uses    postscript_style_handles()  Array of registered style handles
  */
 function postscript_add_style_callback() {
@@ -642,6 +666,7 @@ function postscript_add_style_callback() {
  *
  * Term's post-count link displays in Settings page table and tax admin screens.
  *
+ * @since   0.1.0
  * @uses  postscript_get_options()  Safely gets site option.
  */
 function postscript_pre_get_posts( $query ) {
@@ -684,6 +709,8 @@ add_action( 'admin_notices', 'postscript_tax_term_screen' );
 
 /**
  * Outputs HTML select menu of all registered scripts.
+ *
+ * @since   0.1.0
  */
 function postscript_remove_script_callback() {
     $args = array(
@@ -719,6 +746,8 @@ function postscript_remove_script_callback() {
 
 /**
  * Outputs HTML select menu of all registered style (tax term).
+ *
+ * @since   0.1.0
  */
 function postscript_remove_style_callback() {
     $args = array(
@@ -754,6 +783,7 @@ function postscript_remove_style_callback() {
 /**
  * Render example of Edit Post screen meta box, based on settings using post's meta box fn.
  *
+ * @since   0.3.0
  * @see   /includes/meta-box.php
  * @uses  postscript_get_options()  Safely gets site option
  */
