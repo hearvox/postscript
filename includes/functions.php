@@ -1,5 +1,4 @@
 <?php
-
 /**
  * General functions for options and registered/selected scripts and styles.
  *

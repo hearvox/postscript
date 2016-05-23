@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Admin Settings Page (Dashboard> Settings> Postscript)
  *

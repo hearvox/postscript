@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The post editor functionality of the plugin.
  *
