@@ -401,27 +401,25 @@ function postscript_core_full_urls( $url ) {
 }
 
 /**
- * Checks enqueued URL extension against whitelist.
+ * Checks enqueued URL filename extension against whitelist.
  *
+ * Allowed extensions are an array so user can add to it via filter.
  * @since   0.1.0
  *
  * @param  string   $url    URL to be checked.
  * @return bool             True if extension is in whitelist, false if not.
  */
-function postscript_check_url_extension( $url ) {
-    // Allowed file extensions.
-    $extension_whitelist = array( 'js', 'css' );
-
+function postscript_check_url_extension( $url, $extensions = array( 'js' ) ) {
     // Filter extensions whitelist.
-    if ( has_filter( 'postscript_url_extensions' ) ) {
-        $extension_whitelist = apply_filters( 'postscript_url_extensions', $extension_whitelist );
+    if ( has_filter( 'postscript_check_url_extension' ) ) {
+        $extensions = apply_filters( 'postscript_check_url_extension', $extensions );
     }
 
     // Get URL components.
     $url_parts = parse_url( $url );
     if ( $url_parts ) {
-        $extension = pathinfo( $url_parts['path'], PATHINFO_EXTENSION );
-        if ( in_array( $extension, $extension_whitelist )  ) {
+        $ext = pathinfo( $url_parts['path'], PATHINFO_EXTENSION );
+        if ( in_array( $ext, $extensions )  ) {
                 return true;
         }
     }

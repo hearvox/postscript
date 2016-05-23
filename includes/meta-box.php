@@ -148,21 +148,21 @@ function postscript_meta_box_callback( $post, $box ) {
     ?>
     <?php if ( isset ( $opt_allow['urls_style'] ) && 1 === intval( $opt_allow['urls_style'] )  ) { // Admin setting allows style URL text field. ?>
     <p>
-        <label for="postscript-url-style"><?php _e( 'CSS stylesheet URL:', 'postscript' ); ?></label><br />
+        <label for="postscript-url-style"><?php _e( 'CSS stylesheet URL (.css):', 'postscript' ); ?></label><br />
         <input class="widefat" type="url" name="postscript_meta[url_style]" id="postscript-url-style" value="<?php if ( isset ( $postscript_meta['url_style'] ) ) { echo esc_url_raw( $postscript_meta['url_style'] ); } ?>" size="30" />
     </p>
     <?php } ?>
     <?php if ( isset ( $opt_allow['urls_script'] ) ) { // Admin setting allows script URL text field. ?>
         <?php $urls_script = intval( $opt_allow['urls_script'] ); ?>
         <?php if ( $urls_script ) { ?>
-    <p>
-        <label for="postscript-url-script"><?php _e( 'JavaScript URL:', 'postscript' ); ?></label><br />
+    <p class="form-invalid">
+        <label for="postscript-url-script"><?php _e( 'JavaScript URL (.js):', 'postscript' ); ?></label> <span class="wp-ui-notification"><?php _e( 'Error: File must have <code>.js</code> extension.', 'postscript' ); ?></span><br />
         <input class="widefat" type="url" name="postscript_meta[url_script]" id="postscript-url-script" value="<?php if ( isset ( $postscript_meta['url_script'] ) ) { echo esc_url_raw( $postscript_meta['url_script'] ); } ?>" size="30" />
     </p>
         <?php } ?>
         <?php if ( 2 === $urls_script ) { // Admin setting allows second script URL text field. ?>
     <p>
-        <label for="postscript-url-script-2"><?php _e( 'JavaScript URL 2:', 'postscript' ); ?></label><br />
+        <label for="postscript-url-script-2"><?php _e( 'JavaScript URL 2 (.js):', 'postscript' ); ?></label><br />
         <input class="widefat" type="url" name="postscript_meta[url_script_2]" id="postscript-url-script-2" value="<?php if ( isset ( $postscript_meta['url_script_2'] ) ) { echo esc_url_raw( $postscript_meta['url_script_2'] ); } ?>" size="30" />
     </p>
         <?php } ?>
@@ -184,6 +184,14 @@ function postscript_meta_box_callback( $post, $box ) {
     <?php
     }
 }
+
+/*
+    <p class="form-invalid">
+        <label for="postscript-url-script"><?php _e( 'JavaScript URL (.js):', 'postscript' ); ?></label> <span class="wp-ui-notification"><?php _e( 'Error: File must have <code>.js</code> extension.', 'postscript' ); ?></span><br />
+
+    <p<?php echo 'class=" form-invalid"'; ?>>
+        <label for="postscript-url-script"><?php _e( 'JavaScript URL (.js):', 'postscript' ); ?></label><?php echo $form_error; ?><br />
+*/
 
 /**
  * Saves the meta box form data upon submission.
