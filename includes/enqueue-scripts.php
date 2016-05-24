@@ -69,17 +69,26 @@ function postscript_enqueue_script_urls() {
         $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
         $options         = postscript_get_options();
 
-        // If the post has a Style/Script URL value and the user-settings allow enqueue by URL.
-        if ( isset( $postscript_meta['url_style'] ) && $options['allow']['urls_style'] ) {
+        $url_style    = ( isset( $postscript_meta['url_style'] ) ) ? $postscript_meta['url_style'] : null;
+        $url_script   = ( isset( $postscript_meta['url_script'] ) ) ? $postscript_meta['url_script'] : null;
+        $url_script_2 = ( isset( $postscript_meta['url_script_2'] ) ) ? $postscript_meta['url_script_2'] : null;
+
+        $css = array( 'css' );
+        $js = array( 'js' );
+
+        // If the post has a Style/Script URL value,
+        // and the URL hostname/extension is in whitelist,
+        // and the user-settings allow enqueue by URL.
+        if ( $url_style && postscript_check_url( $url_style, $css ) && $options['allow']['urls_style'] ) {
             // Style/script handles made from string: "postscript-style-{$post_id}".
             wp_enqueue_style( "postscript-style-$post_id", esc_url_raw( $postscript_meta['url_style'] ), array() );
         }
 
-        if ( isset( $postscript_meta['url_script'] ) && $options['allow']['urls_script'] ) {
+        if ( $url_script && postscript_check_url( $url_script, $js )  && $options['allow']['urls_script'] ) {
             wp_enqueue_script( "postscript-script-$post_id", esc_url_raw( $postscript_meta['url_script'] ), array(), false, true );
         }
 
-        if ( isset( $postscript_meta['url_script_2'] ) && $options['allow']['urls_script'] == '2' ) {
+        if ( $url_script_2 && postscript_check_url( $url_script_2, $js ) && $options['allow']['urls_script'] == '2' ) {
             // Load second JS last (via dependency param).
             $dep = ( isset( $postscript_meta['url_script_2'] ) ) ? "postscript-script-$post_id" : '';
             wp_enqueue_script( "postscript-script-2-$post_id", esc_url_raw( $postscript_meta['url_script_2'] ), array( $dep ), false, true );

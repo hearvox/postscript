@@ -146,11 +146,10 @@ function postscript_meta_box_callback( $post, $box ) {
     $opt_allow       = $box['args']['allow'];
     $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
 
-    // @todo Make all this logic and HTML into arrays.
-    $url_style       = ( isset( $postscript_meta['url_style'] ) ) ? $postscript_meta['url_style'] : '';
-    $url_script      = ( isset( $postscript_meta['url_script'] ) ) ? $postscript_meta['url_script'] : '';
-    $url_style_2     = ( isset( $postscript_meta['url_script_2'] ) ) ? $postscript_meta['url_script_2'] : '';
-    $url_error_class = '';
+    // @todo Turn all this logic and HTML into an array.
+    $url_style    = ( isset( $postscript_meta['url_style'] ) ) ? $postscript_meta['url_style'] : '';
+    $url_script   = ( isset( $postscript_meta['url_script'] ) ) ? $postscript_meta['url_script'] : '';
+    $url_script_2 = ( isset( $postscript_meta['url_script_2'] ) ) ? $postscript_meta['url_script_2'] : '';
     ?>
     <?php
     // Admin setting allows style URL text field.
@@ -204,6 +203,7 @@ function postscript_meta_box_callback( $post, $box ) {
  * @since   0.4.0
  *
  * @param  string   $url        URL to be checked.
+ * @param  array    $extensions Whitelist of filename extensions.
  * @return string   $url_error  Error message if true, else empty string if not.
  */
 function postscript_url_error( $url, $extensions = array() ) {
