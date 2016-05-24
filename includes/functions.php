@@ -404,12 +404,12 @@ function postscript_core_full_urls( $url ) {
  * Checks enqueued URL filename extension against whitelist.
  *
  * Allowed extensions are an array so user can add to it via filter.
- * @since   0.1.0
+ * @since   0.4.0
  *
  * @param  string   $url    URL to be checked.
  * @return bool             True if extension is in whitelist, false if not.
  */
-function postscript_check_url_extension( $url, $extensions = array( 'js' ) ) {
+function postscript_check_url_extension( $url, $extensions = array() ) {
     // Filter extensions whitelist.
     if ( has_filter( 'postscript_check_url_extension' ) ) {
         $extensions = apply_filters( 'postscript_check_url_extension', $extensions );
@@ -420,7 +420,7 @@ function postscript_check_url_extension( $url, $extensions = array( 'js' ) ) {
     if ( $url_parts ) {
         $ext = pathinfo( $url_parts['path'], PATHINFO_EXTENSION );
         if ( in_array( $ext, $extensions )  ) {
-                return true;
+            return true;
         }
     }
 
@@ -430,7 +430,7 @@ function postscript_check_url_extension( $url, $extensions = array( 'js' ) ) {
 /**
  * Checks enqueued URL hostname against whitelist.
  *
- * @since   0.1.0
+ * @since   0.4.0
  *
  * @param  string   $url    URL to be checked.
  * @return bool             True if extension is in whitelist, false if not.
@@ -438,7 +438,7 @@ function postscript_check_url_extension( $url, $extensions = array( 'js' ) ) {
 function postscript_check_url_hostname( $url ) {
     $options            = postscript_get_options();
     $hostname           = parse_url( $url, PHP_URL_HOST );
-    $hostname_whitelist = preg_split( ',', $options['url_whitelist'] );
+    $hostname_whitelist = explode( ',', $options['url_whitelist'] );
 
     if ( in_array( $hostname, $hostname_whitelist )  ) {
         return true;

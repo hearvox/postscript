@@ -139,31 +139,44 @@ function postscript_meta_box_callback( $post, $box ) {
         </ul>
     </p>
     <hr />
-    <?php } ?>
     <?php
+    }
+
     // Display text fields for: URLs (style/script) and classes (body/post).
-    $opt_allow = $box['args']['allow'];
+    $opt_allow       = $box['args']['allow'];
     $postscript_meta = get_post_meta( $post_id, 'postscript_meta', true );
-    $pm = get_post_meta( $post_id, 'pm', true );
+
+    // @todo Make all this logic and HTML into arrays.
+    $url_style       = ( isset( $postscript_meta['url_style'] ) ) ? $postscript_meta['url_style'] : '';
+    $url_script      = ( isset( $postscript_meta['url_script'] ) ) ? $postscript_meta['url_script'] : '';
+    $url_style_2     = ( isset( $postscript_meta['url_script_2'] ) ) ? $postscript_meta['url_script_2'] : '';
+    $url_error_class = '';
     ?>
-    <?php if ( isset ( $opt_allow['urls_style'] ) && 1 === intval( $opt_allow['urls_style'] )  ) { // Admin setting allows style URL text field. ?>
-    <p>
-        <label for="postscript-url-style"><?php _e( 'CSS stylesheet URL (.css):', 'postscript' ); ?></label><br />
-        <input class="widefat" type="url" name="postscript_meta[url_style]" id="postscript-url-style" value="<?php if ( isset ( $postscript_meta['url_style'] ) ) { echo esc_url_raw( $postscript_meta['url_style'] ); } ?>" size="30" />
+    <?php
+    // Admin setting allows style URL text field.
+    if ( isset ( $opt_allow['urls_style'] ) && 1 === intval( $opt_allow['urls_style'] )  ) {
+        // Check for whitelisted extension and hostname.
+        $url_error = postscript_url_error( $url_style, array( 'css' ) );
+    ?>
+    <p<?php echo postscript_url_error_class( $url_error ) ?>>
+        <label for="postscript-url-style"><?php _e( 'CSS stylesheet URL (.css):', 'postscript' ); ?></label><?php echo $url_error; ?><br />
+        <input class="widefat" type="url" name="postscript_meta[url_style]" id="postscript-url-style" value="<?php if ( ! empty( $url_style ) ) { echo esc_url_raw( $url_style ); } ?>" size="30" />
     </p>
     <?php } ?>
     <?php if ( isset ( $opt_allow['urls_script'] ) ) { // Admin setting allows script URL text field. ?>
         <?php $urls_script = intval( $opt_allow['urls_script'] ); ?>
-        <?php if ( $urls_script ) { ?>
-    <p class="form-invalid">
-        <label for="postscript-url-script"><?php _e( 'JavaScript URL (.js):', 'postscript' ); ?></label> <span class="wp-ui-notification"><?php _e( 'Error: File must have <code>.js</code> extension.', 'postscript' ); ?></span><br />
-        <input class="widefat" type="url" name="postscript_meta[url_script]" id="postscript-url-script" value="<?php if ( isset ( $postscript_meta['url_script'] ) ) { echo esc_url_raw( $postscript_meta['url_script'] ); } ?>" size="30" />
+        <?php if ( $url_script ) { ?>
+            <?php $url_error = postscript_url_error( $url_script, array( 'js' ) ); ?>
+    <p<?php echo postscript_url_error_class( $url_error ) ?>>
+        <label for="postscript-url-script"><?php _e( 'JavaScript URL (.js):', 'postscript' ); ?></label><?php echo $url_error; ?><br />
+        <input class="widefat" type="url" name="postscript_meta[url_script]" id="postscript-url-script" value="<?php if ( ! empty( $url_script ) ) { echo esc_url_raw( $url_script ); } ?>" size="30" />
     </p>
         <?php } ?>
         <?php if ( 2 === $urls_script ) { // Admin setting allows second script URL text field. ?>
-    <p>
-        <label for="postscript-url-script-2"><?php _e( 'JavaScript URL 2 (.js):', 'postscript' ); ?></label><br />
-        <input class="widefat" type="url" name="postscript_meta[url_script_2]" id="postscript-url-script-2" value="<?php if ( isset ( $postscript_meta['url_script_2'] ) ) { echo esc_url_raw( $postscript_meta['url_script_2'] ); } ?>" size="30" />
+            <?php $url_error = postscript_url_error( $url_script_2, array( 'js' ) ); ?>
+    <p<?php echo postscript_url_error_class( $url_error ) ?>>
+        <label for="postscript-url-script-2"><?php _e( 'JavaScript URL 2 (.js):', 'postscript' ); ?></label><?php echo $url_error; ?><br />
+        <input class="widefat" type="url" name="postscript_meta[url_script_2]" id="postscript-url-script-2" value="<?php if ( ! empty( $url_script_2 ) ) { echo esc_url_raw( $url_script_2 ); } ?>" size="30" />
     </p>
         <?php } ?>
     <?php } ?>
@@ -185,13 +198,44 @@ function postscript_meta_box_callback( $post, $box ) {
     }
 }
 
-/*
-    <p class="form-invalid">
-        <label for="postscript-url-script"><?php _e( 'JavaScript URL (.js):', 'postscript' ); ?></label> <span class="wp-ui-notification"><?php _e( 'Error: File must have <code>.js</code> extension.', 'postscript' ); ?></span><br />
+/**
+ * Checks enqueued URL hostname and extension against whitelists.
+ *
+ * @since   0.4.0
+ *
+ * @param  string   $url        URL to be checked.
+ * @return string   $url_error  Error message if true, else empty string if not.
+ */
+function postscript_url_error( $url, $extensions = array() ) {
+    $screen    = get_current_screen();
+    $url_error = '';
 
-    <p<?php echo 'class=" form-invalid"'; ?>>
-        <label for="postscript-url-script"><?php _e( 'JavaScript URL (.js):', 'postscript' ); ?></label><?php echo $form_error; ?><br />
-*/
+    if ( 'post' === $screen->id && ! empty( $url ) ) {
+        if ( ! postscript_check_url_extension( $url, $extensions ) ) {
+            $url_error = ' <span class="wp-ui-notification">' . __( 'Error: URL does not have permitted <strong>extension</strong>.', 'postscript' ) . '</span>';
+        } elseif ( ! postscript_check_url_hostname( $url ) ) {
+            $url_error = ' <span class="wp-ui-notification">' . __( 'Error: URL does not have permitted <strong>hostname</strong>.', 'postscript' ) . '</span>';
+        } else {
+            $url_error = '';
+        }
+    }
+
+    return $url_error;
+}
+
+/**
+ * Returns class name for HTML form input.
+ *
+ * @since   0.4.0
+ *
+ * @param  string   $url_error        Error message from postscript_url_error().
+ * @return string   $url_error_class  Error class if true, else empty string if not.
+ */
+function postscript_url_error_class( $url_error ) {
+    $url_error_class = ( empty( $url_error ) )? '' : ' class="form-invalid"';
+
+    return $url_error_class;
+}
 
 /**
  * Saves the meta box form data upon submission.
