@@ -1,10 +1,10 @@
 === Postscript ===
 Contributors: hearvox
-Donate link: http://hearingvoices.com/tools
+Donate link: http://hearingvoices.com/tools/postscript
 Tags: script, javascript, style, styles, stylesheet, css, class
-Requires at least: 3.3
-Tested up to: 4.4
-Stable tag: 0.3.1
+Requires at least: 3.5
+Tested up to: 4.5
+Stable tag: 0.4.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

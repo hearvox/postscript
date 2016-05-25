@@ -169,22 +169,22 @@ function postscript_options_init() {
     );
 
     add_settings_section(
-        'postscript_scripts_styles_section',
-        __( 'Add scripts and styles', 'postscript' ),
-        'postscript_scripts_styles_section_callback',
+        'postscript_add_handles_section',
+        __( 'Add registered scripts and styles (by handle)', 'postscript' ),
+        'postscript_add_handles_section_callback',
         'postscript'
     );
 
     add_settings_section(
-        'postscript_remove_script_style_section',
+        'postscript_remove_handles_section',
         __( 'Remove scripts and styles', 'postscript' ),
-        'postscript_remove_script_style_section_callback',
+        'postscript_remove_handles_section_callback',
         'postscript'
     );
 
     add_settings_field(
         'postscript_user_roles',
-        __( 'User Roles', 'postscript' ),
+        __( 'User roles', 'postscript' ),
         'postscript_user_roles_callback',
         'postscript',
         'postscript_settings_section',
@@ -193,7 +193,7 @@ function postscript_options_init() {
 
     add_settings_field(
         'postscript_post_types',
-        __( 'Post Types', 'postscript' ),
+        __( 'Post types', 'postscript' ),
         'postscript_post_types_callback',
         'postscript',
         'postscript_settings_section',
@@ -202,7 +202,7 @@ function postscript_options_init() {
 
     add_settings_field(
         'postscript_allow_urls',
-        __( 'Allow URLs', 'postscript' ),
+        __( 'Allow Unregistered Script and Stylesheets (by URL)', 'postscript' ),
         'postscript_allow_urls_callback',
         'postscript',
         'postscript_settings_section',
@@ -223,7 +223,7 @@ function postscript_options_init() {
         __( '<label for="postscript-add-script">Add a Script</label>', 'postscript' ),
         'postscript_add_script_callback',
         'postscript',
-        'postscript_scripts_styles_section'
+        'postscript_add_handles_section'
     );
 
     add_settings_field(
@@ -231,7 +231,7 @@ function postscript_options_init() {
         __( '<label for="postscript-add-style">Add a Style</label>', 'postscript' ),
         'postscript_add_style_callback',
         'postscript',
-        'postscript_scripts_styles_section'
+        'postscript_add_handles_section'
     );
 
     add_settings_field(
@@ -239,7 +239,7 @@ function postscript_options_init() {
         __( '<label for="postscript-remove-script">Remove a Script</label>', 'postscript' ),
         'postscript_remove_script_callback',
         'postscript',
-        'postscript_remove_script_style_section'
+        'postscript_remove_handles_section'
     );
 
     add_settings_field(
@@ -247,7 +247,7 @@ function postscript_options_init() {
         __( '<label for="postscript-remove-style">Remove a Style</label>', 'postscript' ),
         'postscript_remove_style_callback',
         'postscript',
-        'postscript_remove_script_style_section'
+        'postscript_remove_handles_section'
     );
 
     register_setting(
@@ -270,7 +270,8 @@ add_action('admin_init', 'postscript_options_init');
  */
 function postscript_section_callback() {
     ?>
-    <p><?php _e('Postscript lets you enqueue scripts and styles for a single post in the Edit Post screen.', 'postscript' ); ?></p>
+    <p><?php _e('Postscript lets you enqueue script files and stylesheets for a single post in the Edit Post screen.', 'postscript' ); ?></p>
+    <p><?php _e('You add <a href="https://codex.wordpress.org/Function_Reference/wp_register_script">registered files</a> by handle (<a href="#handles">settings</a>) and unregistered files by URL (<a href="#urls">settings</a>).', 'postscript' ); ?></p>
     <p><?php _e('Choose the post-types and user-roles that display the Postscript box:', 'postscript' ); ?></p>
     <?php
 }
@@ -280,7 +281,7 @@ function postscript_section_callback() {
  *
  * @since   0.1.0
  */
-function postscript_scripts_styles_section_callback() {
+function postscript_add_handles_section_callback() {
     ?>
     <p><?php _e('Add registered script or style to be listed in the Postscript box.', 'postscript' ); ?></p>
     <?php
@@ -291,7 +292,7 @@ function postscript_scripts_styles_section_callback() {
  *
  * @since   0.1.0
  */
-function postscript_remove_script_style_section_callback() {
+function postscript_remove_handles_section_callback() {
     ?>
     <p><?php _e('Remove script or style from the Postscript box.', 'postscript' ); ?></p>
     <?php
@@ -383,6 +384,7 @@ function postscript_post_types_callback( $options ) {
         ?>
         </ul>
     </fieldset>
+    <hr id="urls" />
     <?php
 }
 
@@ -417,7 +419,7 @@ function postscript_allow_urls_callback( $options ) {
             </li>
             <li>
                 <label for="postscript-url-whitelist"><?php _e( 'URL Hostname Whitelist', 'postscript' ); ?></label><br /><textarea id="postscript-url-whitelist" name='postscript[url_whitelist]' rows="3" cols="40"><?php if ( isset ( $options['url_whitelist'] ) ) { echo esc_textarea( $options['url_whitelist'] ); } ?></textarea>
-                <p class="wp-ui-text-icon"><?php _e( 'Enter comma-separated hostnames, e.g., <code>example.com,www.example.com,sub.example.com</code>. Unregistered URLs will enqueue only if an exact match to one of the above hostnames.', 'postscript' ); ?></p>
+                <p class="wp-ui-text-icon"><?php _e( 'Enter comma-separated hostnames, e.g., <code>example.com,www.example.com,sub.example.com</code>. Unregistered URLs must exactly match an above hostname to be  enqueued.', 'postscript' ); ?></p>
             </li>
         </ul>
     </fieldset>
@@ -443,6 +445,7 @@ function postscript_allow_classes_callback( $options ) {
             </li>
         </ul>
     </fieldset>
+    <hr id="handles" />
     <?php
 }
 
