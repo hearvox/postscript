@@ -164,7 +164,7 @@ function postscript_meta_box_callback( $post, $box ) {
     <?php } ?>
     <?php if ( isset ( $opt_allow['urls_script'] ) ) { // Admin setting allows script URL text field. ?>
         <?php $urls_script = intval( $opt_allow['urls_script'] ); ?>
-        <?php if ( $url_script ) { ?>
+        <?php if ( $urls_script ) { ?>
             <?php $url_error = postscript_url_error( $url_script, array( 'js' ) ); ?>
     <p<?php echo postscript_url_error_class( $url_error ) ?>>
         <label for="postscript-url-script"><?php _e( 'JavaScript URL (.js):', 'postscript' ); ?></label><?php echo $url_error; ?><br />
@@ -210,7 +210,7 @@ function postscript_url_error( $url, $extensions = array() ) {
     $screen    = get_current_screen();
     $url_error = '';
 
-    if ( 'post' === $screen->id && ! empty( $url ) ) {
+    if ( 'postscript' != $screen->id && ! empty( $url ) ) {
         if ( ! postscript_check_url_extension( $url, $extensions ) ) {
             $url_error = ' <span class="wp-ui-notification">' . __( 'Error: URL does not have permitted <strong>extension</strong>.', 'postscript' ) . '</span>';
         } elseif ( ! postscript_check_url_hostname( $url ) ) {
