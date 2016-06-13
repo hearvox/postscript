@@ -4,7 +4,7 @@ Data visionaries and multi-mediators, make any post sing with scripts and splend
 
 ## Description
 
-No more shoehorning stylesheets and JavaScripts into the post content box. No more loading scripts on every post that only a few  use. Postscript lets you easily add libraries or single-post script and style files post-by-post.
+No more shoehorning stylesheets and JavaScripts into the post content box. No more loading scripts on every post that only a few use. Postscript lets you easily add libraries or single-post script and style files post-by-post.
 
 The plugin uses the WordPress "enqueue" methods, which means you can control dependencies (when registering scripts), improve site performance by putting styles in the head and scripts in the footer, and eliminate loading multiple copies of the same library (jQuery, I'm looking at you).
 
@@ -65,17 +65,18 @@ Tell us in the [support fourm](https://wordpress.org/support/plugin/postscript) 
 
 ## Changelog
 
-### 0.3.1
+### 0.4.5
+* Add whitelists for hostnames and extensions of unregistered URLs.
+
+### 0.4.0
+* Change custom taxonomy slugs to 'postscripts' and poststyles'.
+
+### 0.3.0
 * Beta version.
 * Test upgrade option function based on version number.
 
 ### 0.1.0
-* Alpha version.
-
-## Upgrade Notice
-
-### 0.1.0
-* Alpha version.
+* Initial test version.
 
 ## Registrating scripts/styles in WordPress
 
@@ -90,7 +91,7 @@ WordPress registers numerous styles and scripts via its core functions: [wp_defa
 ### An example: Thickbox
 WordPress ships with a modified [ThickBox jQuery library](https://codex.wordpress.org/Javascript_Reference/ThickBox), used to make modal lightbox windows. The [add_thickbox()](https://developer.wordpress.org/reference/functions/add_thickbox/) function enables this feature, but it also loads Thickbox's CSS and JS files on every Post, whether or not the post needs it.
 
-This plugin improves site performance by only enqueuing scripts only when speficially requested for an individual post, by checking the Thickbox Script and Styles handles in the **Postscript** box. See [the screenshots](https://wordpress.org/plugins/postscript/screenshots/).
+This plugin improves site performance by enqueuing scripts only when specifically requested for an individual post, by checking the Thickbox Script and Styles handles in the **Postscript** box. See [the screenshots](https://wordpress.org/plugins/postscript/screenshots/).
 
 ## Dev Notes
 
