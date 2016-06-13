@@ -202,7 +202,7 @@ function postscript_options_init() {
 
     add_settings_field(
         'postscript_allow_urls',
-        __( 'Allow Unregistered Script and Stylesheets (by URL)', 'postscript' ),
+        __( 'Allow Unregistered Script and Stylesheet (by URL)', 'postscript' ),
         'postscript_allow_urls_callback',
         'postscript',
         'postscript_settings_section',
@@ -270,9 +270,8 @@ add_action('admin_init', 'postscript_options_init');
  */
 function postscript_section_callback() {
     ?>
-    <p><?php _e('Postscript lets you enqueue script files and stylesheets for a single post in the Edit Post screen.', 'postscript' ); ?></p>
-    <p><?php _e('You add <a href="https://codex.wordpress.org/Function_Reference/wp_register_script">registered files</a> by handle (<a href="#handles">settings</a>) and unregistered files by URL (<a href="#urls">settings</a>).', 'postscript' ); ?></p>
-    <p><?php _e('Choose the post-types and user-roles that display the Postscript box:', 'postscript' ); ?></p>
+    <p><?php _e('Postscript lets you enqueue script files and a stylesheet for a single post via the Edit Post screen.', 'postscript' ); ?></p>
+    <p><?php _e('You can add <a href="https://codex.wordpress.org/Function_Reference/wp_register_script">registered files</a> by handle (<a href="#handles">settings</a>) and unregistered files by URL (<a href="#urls">settings</a>).', 'postscript' ); ?></p>
     <?php
 }
 
@@ -283,7 +282,7 @@ function postscript_section_callback() {
  */
 function postscript_add_handles_section_callback() {
     ?>
-    <p><?php _e('Add registered script or style to be listed in the Postscript box.', 'postscript' ); ?></p>
+    <p><?php _e('Add registered script or style to be listed in the Postscript meta box.', 'postscript' ); ?></p>
     <?php
 }
 
@@ -294,7 +293,7 @@ function postscript_add_handles_section_callback() {
  */
 function postscript_remove_handles_section_callback() {
     ?>
-    <p><?php _e('Remove script or style from the Postscript box.', 'postscript' ); ?></p>
+    <p><?php _e('Remove script or style from the Postscript meta box.', 'postscript' ); ?></p>
     <?php
 }
 
@@ -401,7 +400,7 @@ function postscript_allow_urls_callback( $options ) {
 
     ?>
     <fieldset>
-        <legend><?php _e( 'Add fields to the Postscript box for URLs (<a href="#metabox">example at bottom</a>).', 'postscript' ); ?></legend>
+        <legend><?php _e( 'Add fields to the Postscript meta box for URLs (<a href="#metabox">example at bottom</a>).', 'postscript' ); ?></legend>
         <ul class="inside">
             <li>
                 <select id="postscript-urls-script" name="postscript[allow][urls_script]">
@@ -418,8 +417,8 @@ function postscript_allow_urls_callback( $options ) {
                 <hr />
             </li>
             <li>
-                <label for="postscript-url-whitelist"><?php _e( 'URL Hostname Whitelist', 'postscript' ); ?></label><br /><textarea id="postscript-url-whitelist" name='postscript[url_whitelist]' rows="3" cols="40"><?php if ( isset ( $options['url_whitelist'] ) ) { echo esc_textarea( $options['url_whitelist'] ); } ?></textarea>
-                <p class="wp-ui-text-icon"><?php _e( 'Enter comma-separated hostnames, e.g., <code>example.com,www.example.com,sub.example.com</code>. Unregistered URLs must exactly match an above hostname to be  enqueued.', 'postscript' ); ?></p>
+                <label for="postscript-url-whitelist"><?php _e( 'URL Hostname Whitelist (comma-separated)', 'postscript' ); ?></label><br /><textarea id="postscript-url-whitelist" name='postscript[url_whitelist]' rows="3" cols="40"><?php if ( isset ( $options['url_whitelist'] ) ) { echo esc_textarea( $options['url_whitelist'] ); } ?></textarea>
+                <p class="wp-ui-text-icon"><?php _e( 'Enter allowed hostnames separated by commas, e.g.: <code>example.com,www.example.com,sub.example.com</code>. Unregistered URLs will <strong>not</strong> enqueue unless they exactly match a whitelisted hostname.', 'postscript' ); ?></p>
             </li>
         </ul>
     </fieldset>
@@ -435,7 +434,7 @@ function postscript_allow_classes_callback( $options ) {
     $opt = $options['allow']; // User settings to permit URLs and classes.
     ?>
     <fieldset>
-        <legend><?php _e( 'Add fields to the Postscript box for class names.', 'postscript' ); ?></legend>
+        <legend><?php _e( 'Add fields to the Postscript meta box for class names.', 'postscript' ); ?></legend>
         <ul class="inside">
             <li>
                 <label><input type="checkbox" id="postscript-allow-class-body" name="postscript[allow][class_body]" value="on"<?php checked( 'on', isset( $opt['class_body'] ) ? $opt['class_body'] : 'off' ); ?>/> <?php _e( 'Body class*', 'postscript' ); ?></label></li>
@@ -795,7 +794,7 @@ function postscript_meta_box_example() {
     $fake_post   = (object) array( 'ID' => '-1'); // Meta box needs a post object id.
     ?>
     <hr />
-    <h2 id="metabox"><?php _e('Postscript box example', 'postscript' ); ?></h2>
+    <h2 id="metabox"><?php _e('Postscript meta box example', 'postscript' ); ?></h2>
     <p>
         <?php _e('This meta box displays on the Edit Post screen:', 'postscript' ); ?><br />
         <?php _e('&bull; For user-role(s): ', 'postscript' ); ?><?php echo implode( $options['user_roles'], ', ' ); ?><br />

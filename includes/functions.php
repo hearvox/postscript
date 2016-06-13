@@ -418,7 +418,7 @@ function postscript_check_url_extension( $url, $extensions = array() ) {
 
     // Get URL components.
     $url_parts = parse_url( $url );
-    if ( $url_parts ) {
+    if ( $url_parts && array_key_exists( 'path', $url_parts ) ) {
         $ext = pathinfo( $url_parts['path'], PATHINFO_EXTENSION );
         if ( in_array( $ext, $extensions )  ) {
             return true;

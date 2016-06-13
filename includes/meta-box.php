@@ -212,7 +212,7 @@ function postscript_url_error( $url, $extensions = array() ) {
 
     if ( 'postscript' != $screen->id && ! empty( $url ) ) { // Do not display on settings screen.
         if ( ! postscript_check_url_extension( $url, $extensions ) ) {
-            $url_error = '<br /><span class="wp-ui-notification">' . __( 'Error: File <strong>extension</strong> not allowed:', 'postscript' ) . '</span>';
+            $url_error = '<br /><span class="wp-ui-notification">' . __( 'Error: Wrong file <strong>extension</strong>:', 'postscript' ) . '</span>';
         } elseif ( ! postscript_check_url_hostname( $url ) ) {
             $url_error = '<br /><span class="wp-ui-notification">' . __( 'Error: URL <strong>hostname</strong> not on whitelist:', 'postscript' ) . '</span>';
         } else {
