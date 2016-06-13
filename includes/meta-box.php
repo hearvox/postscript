@@ -210,11 +210,11 @@ function postscript_url_error( $url, $extensions = array() ) {
     $screen    = get_current_screen();
     $url_error = '';
 
-    if ( 'postscript' != $screen->id && ! empty( $url ) ) {
+    if ( 'postscript' != $screen->id && ! empty( $url ) ) { // Do not display on settings screen.
         if ( ! postscript_check_url_extension( $url, $extensions ) ) {
-            $url_error = ' <span class="wp-ui-notification">' . __( 'Error: URL does not have permitted <strong>extension</strong>.', 'postscript' ) . '</span>';
+            $url_error = '<br /><span class="wp-ui-notification">' . __( 'Error: File <strong>extension</strong> not allowed:', 'postscript' ) . '</span>';
         } elseif ( ! postscript_check_url_hostname( $url ) ) {
-            $url_error = ' <span class="wp-ui-notification">' . __( 'Error: URL does not have permitted <strong>hostname</strong>.', 'postscript' ) . '</span>';
+            $url_error = '<br /><span class="wp-ui-notification">' . __( 'Error: URL <strong>hostname</strong> not on whitelist:', 'postscript' ) . '</span>';
         } else {
             $url_error = '';
         }

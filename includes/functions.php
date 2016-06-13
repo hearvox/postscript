@@ -453,9 +453,9 @@ function postscript_check_url_hostname( $url ) {
  *
  * @since   0.4.0
  *
- * @param  string   $url    URL to be checked.
+ * @param  string   $url        URL to be checked.
  * @param  array   $extensions  Whitelist of filename extensions.
- * @return bool             True if extension is in whitelist, false if not.
+ * @return bool                 True if extension is in whitelist, false if not.
  */
 function postscript_check_url( $url, $extensions = array() ) {
     if ( ! empty( $url ) && postscript_check_url_extension( $url, $extensions ) && postscript_check_url_hostname( $url ) ) {
