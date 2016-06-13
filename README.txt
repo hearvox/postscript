@@ -18,12 +18,12 @@ The plugin uses the WordPress "enqueue" methods, which means you can control dep
 
 = Enqueue Registered Styles and Scripts (by Handle) =
 
-Use the Postscript meta box (Edit Post screen) to enqueue registered styles and scripts (listed in checkboxes by handle.).
+Use the Postscript meta box (Edit Post screen) to enqueue registered styles and scripts (listed by handle in checkboxes).
 
 = Enqueue Unregistered Styles, Scripts, and Data Files (by URL) =
 
 For each post, you can also enqueue unregistered files, by entering URLs in the meta box text fields for:
-* 1 stylesheet.
+* 1 CSS stylesheet.
 * 2 JavaScript URLs, e.g, one JSON data file and one script file.
 
 = Add Post and Body Classes =
@@ -34,7 +34,7 @@ And for each post, you can add:
 
 = Settings and Security =
 
-Admins control the user-roles and post-types allowed to use the Postscript meta box. The Settings screen lets you add or remove allowed script/style handles.
+The Settings screen lets you control which user-roles and post-types display the Postscript meta box and which script/style handles users are allowed to enqueue.
 
 == Installation ==
 
@@ -46,24 +46,47 @@ To install the use the Postscript plugin:
 
 == Frequently Asked Questions ==
 
-= What might be some future features? =
+= How do add registered script/style handles to the Postscript meta box? =
+The Settings &gt; Postscript screen lists all available handles, those registered via the [`wp_enqueue_scripts` hook])https://developer.wordpress.org/reference/hooks/wp_enqueue_scripts/} in your active theme and plugins and the defaults registered by WordPress itself.
 
-Tell us in the [support fourm](https://wordpress.org/support/plugin/postscript) about new features you'd like in future releases. For instance:
+You can add any registered script or stylesheet handle to the checkboxes in the Postscript meta box. The [GitHub Dev Notes](https://github.com/hearvox/postscript#dev-notes) details on the inner workings of this plugin, including custom fields and taxonomies, transients, options, and filters.
+
+= How do I register scripts? =
+**Your Scripts and Styles:** You can register your own CSS/JS file *handles* with the [wp_register_script()](https://developer.wordpress.org/reference/functions/wp_register_script/) and [wp_register_style()](https://developer.wordpress.org/reference/functions/wp_register_style/) functions.
+
+**Default Scripts and Styles:** WordPress auto-registers numerous styles and scripts via its core functions: [wp_default_scripts()](https://developer.wordpress.org/reference/functions/wp_default_scripts/) and [wp_default_styles()](https://developer.wordpress.org/reference/functions/wp_default_styles/). Each file gets its own unique handle: see the [list of defaults](https://developer.wordpress.org/reference/functions/wp_enqueue_script/#defaults).
+
+= What is a use case for this plugin? =
+Adding Thickbox to a post is an example of what this plugin does. WordPress ships with a modified [ThickBox jQuery library](https://codex.wordpress.org/Javascript_Reference/ThickBox), used to make modal lightbox windows. The [add_thickbox()](https://developer.wordpress.org/reference/functions/add_thickbox/) function enables this feature. When enabled, though, Thickbox's CSS and JS files load on every Post, whether the post needs it or not.
+
+This plugin improves site performance by enqueuing scripts only when specifically requested for an individual post, via the **Postscript** meta box. See [the screenshots](https://wordpress.org/plugins/postscript/screenshots/).
+
+= What might be some future features? =
+Tell us in the [support forum](https://wordpress.org/support/plugin/postscript) about new features you'd like in future releases. For instance:
 
 * Pass parameters to registered scripts (via [`wp_localize_script()`](https://developer.wordpress.org/reference/functions/wp_localize_script/)).
 * List all post's enqueues in the Edit Post screen.
 * Live preview of Draft posts in the Customizer, with its new phone and tablet views.
 * Add custom &lt;style&gt; in the document &lt;head&gt; (via [`wp_add_inline_style()`](https://developer.wordpress.org/reference/functions/wp_add_inline_style/)).
 * Add custom &lt;script&gt; in the document &lt;head&gt; (`wp_add_inline_script()` coming in WordPress 4.5).
-* Add Page Templete dropdown to Posts (and CPTs).
+* Add Page Template dropdown to Posts (and CPTs).
 * Add file-modification timestamp as script/style's version number (as cache buster).
 * AJAX check for file-exists for user-entered URLs.
 * Export/import settings, taxonomy terms, and post meta.
 * In Settings page make separate lists for default and plugin/theme-registrations.
 * Add filter for ____?
 
-= How does this work? =
-The [GitHub Dev Notes](https://github.com/hearvox/postscript#dev-notes) details on the inner workings of this plugin, including custom fields and taxonomies, transients, options, and filters.
+= How can I contribute to Postscript? =
+
+Postscript is now on [GitHub](https://github.com/hearvox/postscript). Pull Requests welcome.
+
+= How can I translate Postscript? =
+This plugin is internationalized (default: English). Please contribute a translation in your language.
+
+The WordPress.org Polyglots Team maintains a comprehensive [Translator’s Handbook](https://make.wordpress.org/polyglots/handbook/). All text strings in this plugin are localized, following the guidelines of the Wordpress.org Plugin Handbook's [Internationalization section](https://developer.wordpress.org/plugins/internationalization/).
+
+= Credits =
+This plugin was developed as part of a [Reynolds Journalism Institute](https://www.rjionline.org) fellowship.
 
 == Screenshots ==
 
@@ -73,6 +96,7 @@ The [GitHub Dev Notes](https://github.com/hearvox/postscript#dev-notes) details 
 4. Settings Page: Remove Scripts and Styles
 
 == Changelog ==
+
 = 0.4.5 =
 * Add whitelists for hostnames and extensions of unregistered URLs.
 
@@ -88,40 +112,7 @@ The [GitHub Dev Notes](https://github.com/hearvox/postscript#dev-notes) details 
 
 == Upgrade Notice ==
 
-= 0.4.5 =
-Public release version.
+= 0.4.0 =
+Secure public release version is 0.4.5.
 
-== Translations ==
 
-* English - default, always included
-
-*Note:* This plugin is built to be easily translatable. Please contribute a translation in your language.
-
-The WordPress.org Polyglots Team maintains a comprehensive [Translator’s Handbook](https://make.wordpress.org/polyglots/handbook/). All text strings in this plugin are localized, following the guidelines of the Wordpress.org Plugin Handbook's [Internationalization section](https://developer.wordpress.org/plugins/internationalization/).
-
-(The additional sections display in "Other Notes" /other_notes/.)
-
-== Tech Notes ==
-
-You can add any registered script or stylesheet handle to the checkboxes in the Postscript meta box.
-
-= Default Scripts and Styles =
-WordPress registers numerous styles and scripts via its core functions: [wp_default_scripts()](https://developer.wordpress.org/reference/functions/wp_default_scripts/) and [wp_default_styles()](https://developer.wordpress.org/reference/functions/wp_default_styles/). Each file gets its own unique handle: see the [list of defaults](https://developer.wordpress.org/reference/functions/wp_enqueue_script/#defaults).
-
-= Your Scripts and Styles =
-You can register your own CSS/JS file *handles* with the [wp_register_script()](https://developer.wordpress.org/reference/functions/wp_register_script/) and [wp_register_style()](https://developer.wordpress.org/reference/functions/wp_register_style/) functions.
-
-= Your Scripts and Styles =
-The Postscript's Settings screen lists all available handles, those registered via the [`wp_enqueue_scripts` hook])https://developer.wordpress.org/reference/hooks/wp_enqueue_scripts/} in your active theme and plugins and the defaults registered by WordPress itself.
-
-= An Example: Thickbox =
-WordPress ships with a modified [ThickBox jQuery library](https://codex.wordpress.org/Javascript_Reference/ThickBox), used to make modal lightbox windows. The [add_thickbox()](https://developer.wordpress.org/reference/functions/add_thickbox/) function enables this feature. When enabled, though, Thickbox's CSS and JS files load on every Post, whether the post needs it or not.
-
-This plugin improves site performance by enqueuing scripts only when specifically requested for an individual post, via the **Postscript** meta box. See [the screenshots](https://wordpress.org/plugins/postscript/screenshots/).
-
-= Contribute =
-Postscript is now on [GitHub](https://github.com/hearvox/postscript). Pull Requests welcome.
-
-== Credits ==
-Thanks:
-This plugin was developed as part of a [Reynolds Journalism Institute](https://www.rjionline.org) fellowship.
