@@ -159,7 +159,7 @@ function postscript_meta_box_callback( $post, $box ) {
     ?>
     <p<?php echo postscript_url_error_class( $url_error ) ?>>
         <label for="postscript-url-style"><?php _e( 'CSS stylesheet URL (.css):', 'postscript' ); ?></label><?php echo $url_error; ?><br />
-        <input class="widefat" type="url" name="postscript_meta[url_style]" id="postscript-url-style" value="<?php if ( ! empty( $url_style ) ) { echo esc_url_raw( $url_style ); } ?>" size="30" />
+        <input class="widefat" type="url" name="postscript_meta[url_style]" id="postscript-url-style"  size="30" value="<?php if ( ! empty( $url_style ) ) { echo esc_url_raw( $url_style ); } ?>" placeholder="<?php _e( '.css files only', 'postscript' ); ?>" />
     </p>
     <?php } ?>
     <?php if ( isset ( $opt_allow['urls_script'] ) ) { // Admin setting allows script URL text field. ?>
@@ -168,14 +168,14 @@ function postscript_meta_box_callback( $post, $box ) {
             <?php $url_error = postscript_url_error( $url_script, array( 'js' ) ); ?>
     <p<?php echo postscript_url_error_class( $url_error ) ?>>
         <label for="postscript-url-script"><?php _e( 'JavaScript URL (.js):', 'postscript' ); ?></label><?php echo $url_error; ?><br />
-        <input class="widefat" type="url" name="postscript_meta[url_script]" id="postscript-url-script" value="<?php if ( ! empty( $url_script ) ) { echo esc_url_raw( $url_script ); } ?>" size="30" />
+        <input class="widefat" type="url" name="postscript_meta[url_script]" id="postscript-url-script" size="30" value="<?php if ( ! empty( $url_script ) ) { echo esc_url_raw( $url_script ); } ?>" placeholder="<?php _e( '.js files only', 'postscript' ); ?>" />
     </p>
         <?php } ?>
         <?php if ( 2 === $urls_script ) { // Admin setting allows second script URL text field. ?>
             <?php $url_error = postscript_url_error( $url_script_2, array( 'js' ) ); ?>
     <p<?php echo postscript_url_error_class( $url_error ) ?>>
         <label for="postscript-url-script-2"><?php _e( 'JavaScript URL 2 (.js):', 'postscript' ); ?></label><?php echo $url_error; ?><br />
-        <input class="widefat" type="url" name="postscript_meta[url_script_2]" id="postscript-url-script-2" value="<?php if ( ! empty( $url_script_2 ) ) { echo esc_url_raw( $url_script_2 ); } ?>" size="30" />
+        <input class="widefat" type="url" name="postscript_meta[url_script_2]" id="postscript-url-script-2" size="30" value="<?php if ( ! empty( $url_script_2 ) ) { echo esc_url_raw( $url_script_2 ); } ?>" placeholder="<?php _e( '.js files only', 'postscript' ); ?>" />
     </p>
         <?php } ?>
     <?php } ?>
