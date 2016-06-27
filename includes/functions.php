@@ -468,6 +468,8 @@ function postscript_check_url( $url, $extensions = array() ) {
 /**
  * Checks URL domain against whitelist.
  *
+ * For future use.
+ *
  * @since   0.4.0
  *
  * @link https://gist.github.com/mjangda/1623788
@@ -497,52 +499,4 @@ function postscript_check_url_domain( $url ) {
     }
     return $valid;
 }
-
-$WPLINKS_WHITELIST = str_replace(" ", "", WPLINKS_WHITELIST);
-$WPLINKS_WHITELIST_ARRAY = explode(",", $WPLINKS_WHITELIST);
-
-<p><textarea rows="6" cols="80" name="WPLINKS-whitelist" id="WPLINKS-whitelist" placeholder="watchworthy.com, cnn.com, wired.com"><?php echo WPLINKS_WHITELIST;?></textarea><br /><code><strong>Seperate each top level domain name by a comma.</strong></code></p>
-<p><code><strong>Example</strong>: watchworthy.com, cnn.com, wired.com</code></p>
-
-/ **
- *
- * Get the whitelisted script domains for the plugin
- * Whitelist domains using `add_filter` on this hook to return array of your site's whitelisted domaiins.
- *
- * @return array of whitelisted domains, e.g. 'ajax.googleapis.com'
- * /
-function get_whitelisted_script_domains() {
-    return apply_filters( 'shortcake_bakery_whitelisted_script_domains', array() );
-}
-
-$whitelisted_script_domains = get_whitelisted_script_domains();
-
-$host = parse_url( $url, PHP_URL_HOST );
-if ( ! in_array( $host, $whitelisted_script_domains ) ) {
-    continue;
-}
-
-$domains_whitelist = trim( $options['domains_whitelist'] );
-$domains_allowed = preg_split( '/\r\n|\n\r|\r|\n/', $options['domains_whitelist'] );
-
-function wp_xapi_network_lrs_whitelist_render() {
-        ?>
-        <textarea name='wpxapi_network_settings[wpxapi_network_lrs_whitelist]'  rows="10" cols="50"><?php echo esc_textarea( $this->options['wpxapi_network_lrs_whitelist'] ); ?></textarea>
-        <div class="help-div">We are checking only if the beginning of the url starts with the url that you provided.  So for example: <em>http://lrs.example.org/</em> would work but <em>http://statements.lrs.example.org/</em> will not work</div>
-        <p><strong>Currently allowed urls:</strong><br />
-        <?php
-        if ( ! isset( $this->options['wpxapi_network_lrs_whitelist'] ) || empty( $this->options['wpxapi_network_lrs_whitelist'] ) ) {
-            echo '<em>' . esc_html__( 'No currently whitelisted URLs', 'wpxapi' ) . '</em>';
-        } else {
-            foreach ( preg_split( '/\r\n|\r|\n/', $this->options['wpxapi_network_lrs_whitelist'] ) as $link ) {
-                echo esc_url( $link ) . '<br />';
-            }
-        }
-    }
-
-function postscript_remove_empty_lines( $string ) {
-    return preg_replace( "/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $string );
-    // preg_replace('/^\h*\v+/m', '', $str);
-}
-
 */

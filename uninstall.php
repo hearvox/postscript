@@ -82,18 +82,3 @@ if ( function_exists( 'delete_post_meta_by_key' ) ) {
 if ( function_exists( 'delete_option' ) ) {
     delete_option( 'postscript' );
 }
-
-/*
-Test for deletions, run before then after uninstall.:
-?><pre><?php
-var_dump( get_option( 'postscript' ) );
-echo '<hr>';
-echo taxonomy_exists( 'postscripts' );
-echo '<hr>';
-var_dump( get_terms( 'postscripts', array( 'hide_empty' => 0, 'get' => 'all', 'fields' => 'ids' ) ) );
-echo '<hr>';
-$posts_meta_ids = new WP_Query( array( 'post_type' => 'any', 'post_status' => 'any', 'meta_key' => 'postscript_meta', 'fields' => 'ids' ) );
-var_dump( $posts_meta_ids->posts );
-?></pre>
-
-*/
