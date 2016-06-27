@@ -19,16 +19,10 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
  *
  * Plugin not activated so tax registration no longer exists.
  *
- * @since   0.1.0
+ * @since   0.4.7
  */
-function postscript_create_taxonomies() {
-    register_taxonomy( 'postscripts', null );
-    register_taxonomy( 'poststyles', null );
-}
-add_action( 'init', 'postscript_create_taxonomies', 0 );
-
-/* Tax doesn't register without firing 'init'. */
-do_action( 'init' );
+register_taxonomy( 'postscripts', null );
+register_taxonomy( 'poststyles', null );
 
 /**
  * Remove plugin taxonomy terms, then remove taxonomy.
