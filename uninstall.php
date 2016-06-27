@@ -15,9 +15,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 /**
- * Register taxonomies (to get and deletes its terms).
+ * Register taxonomies (to get and delete its terms).
  *
- * Plugin now activated so tax registration no longer exists.
+ * Plugin now deactivated so tax registration no longer exists.
  *
  * @since   0.1.0
  */
