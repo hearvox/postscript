@@ -1,10 +1,12 @@
 === Postscript ===
 Contributors: hearvox
-Donate link: http://hearingvoices.com/tools/postscript
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=T4YWRA5FZC5PC
 Tags: script, javascript, style, styles, stylesheet, css, class
+Author URI: http://hearingvoices.com/tools/postscript/
+Plugin URI: http://hearingvoices.com/
 Requires at least: 3.5
 Tested up to: 4.5
-Stable tag: 0.4.5
+Stable tag: 0.4.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
