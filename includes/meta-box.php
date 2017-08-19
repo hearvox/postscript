@@ -46,7 +46,7 @@ function postscript_metabox_admin_notice() {
 }
 
 /**
- * Creates meta box for the post editor screen.
+ * Creates meta box for the post editor screen (for user-selected post types).
  *
  * Passes array of user-setting options to callback.
  *

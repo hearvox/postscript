@@ -810,7 +810,7 @@ function postscript_meta_box_example() {
         </div><!-- .postbox -->
     </div><!-- .postbox-container -->
 
-    <p class="clear wp-ui-text-icon">The top-right <a href="#contextual-help-link">Help tab</a> has details on Postscript features. <?php _e( 'This plugin created as part of a <a href="https://www.rjionline.org/stories/series/storytelling-tools/">Reynold Journalism Institute</a> fellowship.', 'mexpplus' ); ?></p>
-    <p class="clear wp-ui-text-icon"><small>(<?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?>.)</small>
+    <p class="clear wp-ui-text-icon"><?php _e( 'The top-right <a href="#contextual-help-link">Help tab</a> has details on Postscript features. This plugin created as part of a <a href="https://www.rjionline.org/stories/series/storytelling-tools/">Reynold Journalism Institute</a> fellowship.', 'postscript' ); ?></p>
+    <p class="clear wp-ui-text-icon"><small>(<?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?>.)</small></p>
     <?php
 }
