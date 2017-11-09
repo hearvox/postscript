@@ -121,6 +121,9 @@ function postscript_create_taxonomies() {
         'hierarchical'      => true,
         'labels'            => $labels_scripts,
         'public'            => true,
+        'show_in_menu'      => false,
+        'show_in_nav_menus' => false,
+        'show_in_quick_edit'=> false,
         'query_var'         => true,
         'meta_box_cb'       => false,
         'capabilities' => array(
@@ -157,6 +160,9 @@ function postscript_create_taxonomies() {
         'hierarchical'      => true,
         'labels'            => $labels_styles,
         'public'            => true,
+        'show_in_menu'      => false,
+        'show_in_nav_menus' => false,
+        'show_in_quick_edit'=> false,
         'query_var'         => true,
         'meta_box_cb'       => false,
         'capabilities' => array(

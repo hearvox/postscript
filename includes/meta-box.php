@@ -123,10 +123,11 @@ function postscript_meta_box_callback( $post, $box ) {
     ?>
     <?php wp_nonce_field( basename( __FILE__ ), 'postscript_meta_nonce' ); ?>
     <?php if ( get_terms( 'poststyles', array( 'hide_empty' => false ) ) ) { ?>
+    <style>#postscript-meta .wpseo-make-primary-term {display: none;}</style>
     <p>
         <h3 class="hndle"><span><?php _e('Load Styles', 'postscript' ); ?></span></h3>
         <ul id="poststyleschecklist" data-wp-lists="list:category" class="categorychecklist form-no-clear">
-            <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'poststyles', 'selected_cats' => true, 'checked_ontop' => true ) ); ?>
+            <?php wp_terms_checklist( $post_id, array( 'taxonomy' => 'poststyles', 'selected_cats' => false, 'checked_ontop' => true, ) ); ?>
         </ul>
     </p>
     <hr />
@@ -246,7 +247,11 @@ function postscript_url_error_class( $url_error ) {
  * @param WP_Post $post       Post object.
  */
 function postscript_save_post_meta( $post_id, $post ) {
-
+/*
+echo '<pre>';
+var_dump($_POST);
+echo '</pre>';
+*/
     // Checks save status
     $is_autosave = wp_is_post_autosave( $post_id );
     $is_revision = wp_is_post_revision( $post_id );
@@ -264,6 +269,15 @@ function postscript_save_post_meta( $post_id, $post ) {
     if ( ! current_user_can( $post_type->cap->edit_post, $post_id ) ) {
         return $post_id;
     }
+
+    if ( ! isset( $_POST['tax_input']['poststyles'] ) ) {
+        wp_set_object_terms( $post_id, NULL, 'poststyles', false );
+    }
+
+    if ( ! isset( $_POST['tax_input']['postscripts'] ) ) {
+        wp_set_object_terms( $post_id, NULL, 'postscripts', false );
+    }
+
 
     $meta_key   = 'postscript_meta';
     $meta_value = get_post_meta( $post_id, $meta_key, true );
@@ -298,17 +312,21 @@ function postscript_save_post_meta( $post_id, $post ) {
         return;
     }
 
+    /*
     if ( isset( $_POST['tax_input'] ) ) {
     // Convert array values (term IDs) from number strings to integers.
         if ( isset( $_POST['tax_input']['postscript_styles'] ) && is_array( $_POST['tax_input']['postscript_styles'] ) ) {
             $style_ids  =  array_map ( 'intval', $_POST['tax_input']['postscript_styles'] );
-            wp_set_object_terms( $post_id, $style_ids, 'postscripts', false );
+            // wp_set_object_terms( $post_id, $style_ids, 'poststyles', true );
         }
 
         if ( isset( $_POST['tax_input']['postscript_scripts'] ) && is_array( $_POST['tax_input']['postscript_scripts'] ) ) {
             $script_ids  =  array_map ( 'intval', $_POST['tax_input']['postscript_scripts'] );
             wp_set_object_terms( $post_id, $script_ids, 'postscripts', false );
+        } else {
+            wp_set_object_terms( $post_id, NULL, 'postscripts', false );
         }
     }
-
+    */
 }
+
