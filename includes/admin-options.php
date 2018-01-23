@@ -93,7 +93,7 @@ function postscript_settings_display() {
     postscript_add_remove();
     ?>
     <div class="wrap">
-        <h2>Postscript (v <?php echo POSTSCRIPT_VERSION; ?>) <?php _e('Settings', 'postscript' ); ?></h2>
+        <h2>Postscript <?php _e('Settings', 'postscript' ); ?> (<?php echo POSTSCRIPT_VERSION; ?>)</h2>
         <!-- Create the form that will be used to render our options. -->
         <form method="post" action="options.php">
             <?php settings_fields( 'postscript' ); ?>
@@ -525,7 +525,7 @@ function postscript_add_script_callback() {
 
                 // For wp_kses() sanitization of HTML.
                 $allowed_html = array(
-                    'a'     => array(
+                    'a' => array(
                         'href' => array()
                     )
                 );
@@ -796,9 +796,9 @@ function postscript_meta_box_example() {
     <hr />
     <h2 id="metabox"><?php _e('Postscript meta box example', 'postscript' ); ?></h2>
     <p>
-        <?php _e('This meta box displays on the Edit Post screen:', 'postscript' ); ?><br />
-        <?php _e('&bull; For user-role(s): ', 'postscript' ); ?><?php echo implode( $options['user_roles'], ', ' ); ?><br />
-        <?php _e('&bull; For post-type(s): ', 'postscript' ); ?><?php echo implode( $options['post_types'], ', ' ); ?>
+        <?php _e('This meta box displays on the Edit Post screen for:', 'postscript' ); ?><br />
+        <?php _e('&bull; User-roles: ', 'postscript' ); ?> <?php echo implode( $options['user_roles'], ', ' ); ?><br />
+        <?php _e('&bull; Post-types: ', 'postscript' ); ?> <?php echo implode( $options['post_types'], ', ' ); ?>
     <p>
 
     <div id="postscript-meta" class="postbox-container">

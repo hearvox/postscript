@@ -1,24 +1,34 @@
-# Postscript
+# Postscript #
+**Contributors:** hearvox
+**Donate link:** https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=T4YWRA5FZC5PC
+**Tags:** script, javascript, style, styles, stylesheet, css, class, enqueue
+**Author URI:** http://hearingvoices.com/tools/postscript/
+**Plugin URI:** http://hearingvoices.com/
+**Requires at least:** 3.5
+**Tested up to:** 4.9.2
+**Stable tag:** 1.0.0
+**License:** GPLv2 or later
+**License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
 Data visionaries and multi-mediators, make any post sing with scripts and splendid with styles, all from within WordPress.
 
-## Description
+## Description ##
 
 No more shoehorning stylesheets and JavaScripts into the post content box. No more loading scripts on every post that only a few use. Postscript lets you easily add libraries or single-post script and style files post-by-post.
 
 The plugin uses the WordPress "enqueue" methods, which means you can control dependencies (when registering scripts), improve site performance by putting styles in the head and scripts in the footer, and eliminate loading multiple copies of the same library (jQuery, I'm looking at you).
 
-### Enqueue registered styles and scripts (by handle)
+### Enqueue registered styles and scripts (by handle) ###
 
 Use the Postscript meta box (Edit Post screen) to enqueue registered of styles and scripts (listed in checkboxes by handle.).
 
-### Enqueue unregistered styles, scripts, and data files (by URL)
+### Enqueue unregistered styles, scripts, and data files (by URL) ###
 
 For each post, you can also enqueue unregistered files, by entering in the meta boxes text fields for:
 * A stylesheet URL.
 * Two JavaScript URLs, e.g, one JSON data file and one script file.
 
-### Add post and body classes
+### Add post and body classes ###
 
 And for each post, you can add:
 * Body class(es), to the HTML `&lt;body&lt;` tag (requires `body_class()` in theme).
@@ -26,7 +36,7 @@ And for each post, you can add:
 
 See [the screenshots](https://wordpress.org/plugins/postscript/screenshots/).
 
-## Installation
+## Installation ##
 
 To install the use the Postscript plugin:
 
@@ -34,13 +44,13 @@ To install the use the Postscript plugin:
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Go to the Setting: Postscript options screen.
 
-### Credits
+### Credits ###
 
 Thanks:This plugin was developed as part of a [Reynolds Journalism Institute](https://www.rjionline.org) fellowship.
 
-## Frequently asked questions
+## Frequently asked questions ##
 
-### What might be some future features?
+### What might be some future features? ###
 
 Tell us in the [support fourm](https://wordpress.org/support/plugin/postscript) about new features you'd like in future releases. For instance:
 
@@ -56,27 +66,27 @@ Tell us in the [support fourm](https://wordpress.org/support/plugin/postscript) 
 * In Settings page make separate lists for default and plugin/theme-registrations.
 * Add filter for...?
 
-## Screenshots
+## Screenshots ##
 
 1. Edit Post screen **Postscript** meta box
 2. Settings Page: User Roles, Post Types, URls, and Classes
 3. Settings Page: Tables of Added Scripts and Styles
 4. Settings Page: Remove Scripts and Styles
 
-## Changelog
+## Changelog ##
 
-### 0.4.5
+### 1.0.0
+* Fix taxonomy term removal when posyt has only one term.
+* Remove Postscript taxonomies from Dashboard menu links.
+* Remove Postscript taxonomies from Dashboard: Appearance: Menu checkboxes.
+* Remove Postscript taxonomies from Quick Edit checkboxes.
+* Prevent Yoast SEO plugin "Make Primary" button display for Postscript taxonomies.
+
+### 0.4.7
+* Beta version in WordPress Directory.
 * Add whitelists for hostnames and extensions of unregistered URLs.
-
-### 0.4.0
-* Change custom taxonomy slugs to 'postscripts' and poststyles'.
-
-### 0.3.0
-* Beta version.
+* Change custom taxonomy slugs to 'postscripts' and poststyles'.Fix
 * Test upgrade option function based on version number.
-
-### 0.1.0
-* Initial test version.
 
 ## Registrating scripts/styles in WordPress
 
