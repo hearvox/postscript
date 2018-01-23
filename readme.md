@@ -76,7 +76,7 @@ Tell us in the [support fourm](https://wordpress.org/support/plugin/postscript) 
 ## Changelog ##
 
 ### 1.0.0
-* Fix taxonomy term removal when posyt has only one term.
+* Fix taxonomy term deletion when no terms checked.
 * Remove Postscript taxonomies from Dashboard menu links.
 * Remove Postscript taxonomies from Dashboard: Appearance: Menu checkboxes.
 * Remove Postscript taxonomies from Quick Edit checkboxes.

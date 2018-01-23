@@ -199,7 +199,7 @@ function postscript_check_tax_term( $term, $taxonomy) {
         if ( in_array( $term, $script_handles ) ) {
             return $term;
         } else {
-        return new WP_Error( 'invalid_term', __('The script handle you entered is <strong>not</strong> <a href="https://developer.wordpress.org/reference/functions/wp_register_script/">registered</a>.') );
+        return new WP_Error( 'invalid_term', __('The script handle you entered is <strong>not</strong> <a href="https://developer.wordpress.org/reference/functions/wp_register_script/">registered</a>.', 'postscript') );
         }
     }
 
@@ -208,7 +208,7 @@ function postscript_check_tax_term( $term, $taxonomy) {
         if ( in_array( $term, $style_handles ) ) {
             return $term;
         } else {
-        return new WP_Error( 'invalid_term', __('The style handle you entered is <strong>not</strong> <a href="https://developer.wordpress.org/reference/functions/wp_register_style/">registered</a>.') );
+        return new WP_Error( 'invalid_term', __('The style handle you entered is <strong>not</strong> <a href="https://developer.wordpress.org/reference/functions/wp_register_style/">registered</a>.', 'postscript') );
         }
     }
 

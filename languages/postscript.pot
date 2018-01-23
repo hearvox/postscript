@@ -1,0 +1,491 @@
+# Copyright (C) 2018 Barrett Golding
+# This file is distributed under the GPL-2.0+.
+msgid ""
+msgstr ""
+"Project-Id-Version: Postscript 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/postscript\n"
+"POT-Creation-Date: 2018-01-23 16:47:38+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: grunt-wp-i18n1.0.1\n"
+
+#: includes/admin-options.php:25
+msgid "Postscript: Enqueue Scripts and Style"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Postscript"
+msgstr ""
+
+#: includes/admin-options.php:50 includes/admin-options.php:96
+#: postscript.php:50
+msgid "Settings"
+msgstr ""
+
+#: includes/admin-options.php:52
+msgid "Postcript: Enqueue Scripts and Styles Per-Post"
+msgstr ""
+
+#: includes/admin-options.php:53
+msgid ""
+"Use these settings to add <em>registered</em> script and style handles that "
+"users can enqueue from the Edit Post screen. You can also enqueue URLs of "
+"<em>unregistered</em> files (one stylesheet and up to two scripts."
+msgstr ""
+
+#: includes/admin-options.php:54
+msgid ""
+"And you can allow users to add classes to <code>post_class()</code> and "
+"<code>body_class()</code>."
+msgstr ""
+
+#: includes/admin-options.php:63
+msgid "Tech Notes"
+msgstr ""
+
+#: includes/admin-options.php:66
+msgid "Handles are stored in custom taxonomies."
+msgstr ""
+
+#: includes/admin-options.php:67
+msgid "Only registered handles can be added as taxonomy terms."
+msgstr ""
+
+#: includes/admin-options.php:68 includes/admin-options.php:69
+msgid "Post-counts for terms track which posts enqueue which handles."
+msgstr ""
+
+#: includes/admin-options.php:70
+msgid ""
+"The <a href=\"#metabox\">example</a> below shows how your settings effect "
+"the Edit Post screen's meta box."
+msgstr ""
+
+#: includes/admin-options.php:78
+msgid "Reference:"
+msgstr ""
+
+#: includes/admin-options.php:79
+msgid "Register scripts"
+msgstr ""
+
+#: includes/admin-options.php:80
+msgid "Default scripts"
+msgstr ""
+
+#: includes/admin-options.php:81
+msgid "Postscript plugin"
+msgstr ""
+
+#: includes/admin-options.php:166
+msgid "Postcript meta box"
+msgstr ""
+
+#: includes/admin-options.php:173
+msgid "Add registered scripts and styles (by handle)"
+msgstr ""
+
+#: includes/admin-options.php:180
+msgid "Remove scripts and styles"
+msgstr ""
+
+#: includes/admin-options.php:187
+msgid "User roles"
+msgstr ""
+
+#: includes/admin-options.php:196
+msgid "Post types"
+msgstr ""
+
+#: includes/admin-options.php:205
+msgid "Allow Unregistered Script and Stylesheet (by URL)"
+msgstr ""
+
+#: includes/admin-options.php:214
+msgid "Allow Classes"
+msgstr ""
+
+#: includes/admin-options.php:223
+msgid "<label for=\"postscript-add-script\">Add a Script</label>"
+msgstr ""
+
+#: includes/admin-options.php:231
+msgid "<label for=\"postscript-add-style\">Add a Style</label>"
+msgstr ""
+
+#: includes/admin-options.php:239
+msgid "<label for=\"postscript-remove-script\">Remove a Script</label>"
+msgstr ""
+
+#: includes/admin-options.php:247
+msgid "<label for=\"postscript-remove-style\">Remove a Style</label>"
+msgstr ""
+
+#: includes/admin-options.php:273
+msgid ""
+"Postscript lets you enqueue script files and a stylesheet for a single post "
+"via the Edit Post screen."
+msgstr ""
+
+#: includes/admin-options.php:274
+msgid ""
+"You can add <a "
+"href=\"https://codex.wordpress.org/Function_Reference/wp_register_script\">"
+"registered files</a> by handle (<a href=\"#handles\">settings</a>) and "
+"unregistered files by URL (<a href=\"#urls\">settings</a>)."
+msgstr ""
+
+#: includes/admin-options.php:285
+msgid "Add registered script or style to be listed in the Postscript meta box."
+msgstr ""
+
+#: includes/admin-options.php:296
+msgid "Remove script or style from the Postscript meta box."
+msgstr ""
+
+#: includes/admin-options.php:349
+msgid "Select the roles allowed to use Postscript box:"
+msgstr ""
+
+#: includes/admin-options.php:372
+msgid "Select which post types display Postscript box:"
+msgstr ""
+
+#: includes/admin-options.php:403
+msgid ""
+"Add fields to the Postscript meta box for URLs (<a "
+"href=\"#metabox\">example at bottom</a>)."
+msgstr ""
+
+#: includes/admin-options.php:410
+msgid "Script URL(s)"
+msgstr ""
+
+#: includes/admin-options.php:416
+msgid "Style URL"
+msgstr ""
+
+#: includes/admin-options.php:420
+msgid "URL Hostname Whitelist (comma-separated)"
+msgstr ""
+
+#: includes/admin-options.php:421
+msgid ""
+"Enter allowed hostnames separated by commas, e.g.: "
+"<code>example.com,www.example.com,sub.example.com</code>. Unregistered URLs "
+"will <strong>not</strong> enqueue unless they exactly match a whitelisted "
+"hostname."
+msgstr ""
+
+#: includes/admin-options.php:437
+msgid "Add fields to the Postscript meta box for class names."
+msgstr ""
+
+#: includes/admin-options.php:440
+msgid "Body class*"
+msgstr ""
+
+#: includes/admin-options.php:442
+msgid "Post class*"
+msgstr ""
+
+#: includes/admin-options.php:443
+msgid "Requires <code>body_class()</code>/<code>post_class()</code> in theme."
+msgstr ""
+
+#: includes/admin-options.php:464
+msgid "Select script to add:"
+msgstr ""
+
+#: includes/admin-options.php:483
+msgid "Scripts added"
+msgstr ""
+
+#: includes/admin-options.php:486 includes/admin-options.php:595
+msgid "Handle"
+msgstr ""
+
+#: includes/admin-options.php:487 includes/admin-options.php:596
+msgid "Ver"
+msgstr ""
+
+#: includes/admin-options.php:488 includes/admin-options.php:597
+msgid "Deps"
+msgstr ""
+
+#: includes/admin-options.php:489
+msgid "Footer"
+msgstr ""
+
+#: includes/admin-options.php:490 includes/admin-options.php:599
+msgid "Posts"
+msgstr ""
+
+#: includes/admin-options.php:549
+msgid "You have not added any scripts yet."
+msgstr ""
+
+#: includes/admin-options.php:556
+msgid ""
+"<strong>Handle</strong> name links to <code>src</code> file. "
+"<strong>Posts</strong> count links to a list of posts that enqueue the file."
+msgstr ""
+
+#: includes/admin-options.php:574
+msgid "Select style to add:"
+msgstr ""
+
+#: includes/admin-options.php:592
+msgid "Styles added"
+msgstr ""
+
+#: includes/admin-options.php:598
+msgid "Media"
+msgstr ""
+
+#: includes/admin-options.php:656
+msgid "You have not added any styles yet."
+msgstr ""
+
+#: includes/admin-options.php:703
+msgid "These posts use Postscript to enqueue the handle: \""
+msgstr ""
+
+#: includes/admin-options.php:729
+msgid "Select script to remove:"
+msgstr ""
+
+#: includes/admin-options.php:742
+msgid "Use <strong>Add a Script</strong> dropdown above to add registered scripts."
+msgstr ""
+
+#: includes/admin-options.php:766
+msgid "Select style to remove:"
+msgstr ""
+
+#: includes/admin-options.php:779
+msgid "Use <strong>Add a Style</strong> dropdown above to add registered styles."
+msgstr ""
+
+#: includes/admin-options.php:797
+msgid "Postscript meta box example"
+msgstr ""
+
+#: includes/admin-options.php:799
+msgid "This meta box displays on the Edit Post screen for:"
+msgstr ""
+
+#: includes/admin-options.php:800
+msgid "&bull; User-roles: "
+msgstr ""
+
+#: includes/admin-options.php:801
+msgid "&bull; Post-types: "
+msgstr ""
+
+#: includes/admin-options.php:813
+msgid ""
+"The top-right <a href=\"#contextual-help-link\">Help tab</a> has details on "
+"Postscript features. This plugin created as part of a <a "
+"href=\"https://www.rjionline.org/stories/series/storytelling-tools/\">"
+"Reynold Journalism Institute</a> fellowship."
+msgstr ""
+
+#: includes/admin-options.php:814
+msgid " queries in "
+msgstr ""
+
+#: includes/admin-options.php:814
+msgid " seconds uses "
+msgstr ""
+
+#: includes/admin-options.php:814
+msgid " peak memory"
+msgstr ""
+
+#: includes/meta-box.php:42
+msgid "Error!"
+msgstr ""
+
+#: includes/meta-box.php:128
+msgid "Load Styles"
+msgstr ""
+
+#: includes/meta-box.php:137
+msgid "Load Scripts"
+msgstr ""
+
+#: includes/meta-box.php:162
+msgid "CSS stylesheet URL (.css):"
+msgstr ""
+
+#: includes/meta-box.php:163
+msgid ".css files only"
+msgstr ""
+
+#: includes/meta-box.php:171
+msgid "JavaScript URL (.js):"
+msgstr ""
+
+#: includes/meta-box.php:172 includes/meta-box.php:179
+msgid ".js files only"
+msgstr ""
+
+#: includes/meta-box.php:178
+msgid "JavaScript URL 2 (.js):"
+msgstr ""
+
+#: includes/meta-box.php:188
+msgid "Body class:"
+msgstr ""
+
+#: includes/meta-box.php:194
+msgid "Post class:"
+msgstr ""
+
+#: includes/meta-box.php:216
+msgid "Error: Wrong file <strong>extension</strong>:"
+msgstr ""
+
+#: includes/meta-box.php:218
+msgid "Error: URL <strong>hostname</strong> not on whitelist:"
+msgstr ""
+
+#: postscript.php:109
+msgid "Search Scripts"
+msgstr ""
+
+#: postscript.php:110
+msgid "All Scripts"
+msgstr ""
+
+#: postscript.php:111
+msgid "Parent Script"
+msgstr ""
+
+#: postscript.php:112
+msgid "Parent Script:"
+msgstr ""
+
+#: postscript.php:113
+msgid "Edit Script"
+msgstr ""
+
+#: postscript.php:114
+msgid "Update Script"
+msgstr ""
+
+#: postscript.php:115
+msgid "Add New Script"
+msgstr ""
+
+#: postscript.php:116
+msgid "New Scripts Name"
+msgstr ""
+
+#: postscript.php:117
+msgid "Scripts"
+msgstr ""
+
+#: postscript.php:148
+msgid "Search Styles"
+msgstr ""
+
+#: postscript.php:149
+msgid "All Styles"
+msgstr ""
+
+#: postscript.php:150
+msgid "Parent Style"
+msgstr ""
+
+#: postscript.php:151
+msgid "Parent Style:"
+msgstr ""
+
+#: postscript.php:152
+msgid "Edit Style"
+msgstr ""
+
+#: postscript.php:153
+msgid "Update Style"
+msgstr ""
+
+#: postscript.php:154
+msgid "Add New Style"
+msgstr ""
+
+#: postscript.php:155
+msgid "New Style Name"
+msgstr ""
+
+#: postscript.php:156
+msgid "Styles"
+msgstr ""
+
+#: postscript.php:202
+msgid ""
+"The script handle you entered is <strong>not</strong> <a "
+"href=\"https://developer.wordpress.org/reference/functions/wp_register_"
+"script/\">registered</a>."
+msgstr ""
+
+#: postscript.php:211
+msgid ""
+"The style handle you entered is <strong>not</strong> <a "
+"href=\"https://developer.wordpress.org/reference/functions/wp_register_"
+"style/\">registered</a>."
+msgstr ""
+
+#: postscript.php:227
+msgid "This form only allows a registered script handle as Name and Slug."
+msgstr ""
+
+#: postscript.php:236
+msgid "This form only allows a registered style handle as Name and Slug."
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://hearingvoices.com/tools/postscript"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"For data visionaries and multi-mediators. Enqueue scripts and styles for "
+"individual posts (from the Edit Post screen). Also add classes to body tag "
+"and <code>post_class()</code>. Choose options on the <a "
+"href=\"options-general.php?page=postscript\">Settings</a> screen for roles "
+"and post-types, and for which scripts, styles, and classes to allow."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Barrett Golding"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://rjionline.org/"
+msgstr ""
+
+#: postscript.php:107
+msgctxt "taxonomy general name"
+msgid "Scripts"
+msgstr ""
+
+#: postscript.php:146
+msgctxt "taxonomy general name"
+msgid "Styles"
+msgstr ""
+
+#: postscript.php:108
+msgctxt "taxonomy singular name"
+msgid "Script"
+msgstr ""
+
+#: postscript.php:147
+msgctxt "taxonomy singular name"
+msgid "Style"
+msgstr ""

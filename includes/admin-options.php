@@ -78,7 +78,7 @@ function postscript_help_tab() {
         '<p><strong>' . __( 'Reference:', 'postscript' ) . '</strong></p>' .
         '<p><a href="https://codex.wordpress.org/Function_Reference/wp_register_script">'     . __( 'Register scripts',     'postscript' ) . '</a></p>' .
         '<p><a href="https://developer.wordpress.org/reference/functions/wp_enqueue_script/#defaults" target="_blank">' . __( 'Default scripts', 'postscript' ) . '</a></p>' .
-        '<p><a href="http://hearingvoices.com/tools/postscript/">' . __( 'Postscript plugin', 'jetpack' ) . '</a></p>'
+        '<p><a href="http://hearingvoices.com/tools/postscript/">' . __( 'Postscript plugin', 'jetpack', 'postscript' ) . '</a></p>'
     );
 }
 
