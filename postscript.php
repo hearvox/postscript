@@ -103,7 +103,7 @@ function postscript_create_taxonomies() {
     //Settings option for allowed post types.
     $post_types = postscript_get_option( 'post_types' );
 
-        $labels_scripts = array(
+    $labels_scripts = array(
         'name'              => _x( 'Scripts', 'taxonomy general name', 'postscript' ),
         'singular_name'     => _x( 'Script', 'taxonomy singular name', 'postscript' ),
         'search_items'      => __( 'Search Scripts', 'postscript' ),
@@ -136,7 +136,7 @@ function postscript_create_taxonomies() {
     );
 
     // Filter params for Styles custom taxonomy.
-    if ( has_filter( 'postscript_tax_scripts' ) ) {
+    if ( ! has_filter( 'postscript_tax_scripts' ) ) {
         $args_scripts = apply_filters( 'postscript_tax_scripts', $args_scripts );
     }
 
@@ -175,7 +175,7 @@ function postscript_create_taxonomies() {
     );
 
     // Filter params for Styles custom taxonomy.
-    if ( has_filter( 'postscript_tax_styles' ) ) {
+    if ( ! has_filter( 'postscript_tax_styles' ) ) {
         $args_styles = apply_filters( 'postscript_tax_styles', $args_styles );
     }
 

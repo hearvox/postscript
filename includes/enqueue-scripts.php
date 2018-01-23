@@ -98,6 +98,27 @@ function postscript_enqueue_script_urls() {
 add_action( 'wp_enqueue_scripts', 'postscript_enqueue_script_urls', 100010 );
 
 /**
+ * Use filemod timestamp for version number.
+ *
+ * For setting cache-busting version number in script registrations.
+ * wp_register_script( 'handle', $file_url, array(), headecon_filemod_vers( $file_path ) );
+ *
+ * @param  string $path Path of script/style file
+ * @return string $vers File-modification timestamp or WordPress version
+ */
+function postscript_filemod_vers( $path ) {
+    $vers = '';
+
+    if ( file_exists( $path ) ) {
+        $vers = filemtime( $path );
+    } else {
+        $vers = get_bloginfo('version');
+    }
+
+    return $vers;
+}
+
+/**
  * Adds user-entered class(es) to the body tag.
  *
  * @uses postscript_get_options()   Safely gets option from database.

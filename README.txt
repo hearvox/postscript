@@ -1,7 +1,7 @@
 === Postscript ===
 Contributors: hearvox
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=T4YWRA5FZC5PC
-Tags: script, javascript, style, styles, stylesheet, css, class
+Tags: script, javascript, style, styles, stylesheet, css, class, enqueue
 Author URI: http://hearingvoices.com/tools/postscript/
 Plugin URI: http://hearingvoices.com/
 Requires at least: 3.5
