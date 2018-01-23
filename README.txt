@@ -5,7 +5,7 @@ Tags: script, javascript, style, styles, stylesheet, css, class, enqueue
 Author URI: http://hearingvoices.com/tools/postscript/
 Plugin URI: http://hearingvoices.com/
 Requires at least: 3.5
-Tested up to: 4.5
+Tested up to: 4.9.2
 Stable tag: 0.4.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -31,7 +31,7 @@ For each post, you can also enqueue unregistered files, by entering URLs in the 
 = Add Post and Body Classes =
 
 And for each post, you can add:
-* A classname, to the HTML `&lt;body&lt;` tag (requires `body_class()` in theme).
+* A classname, to the HTML body tag (requires `body_class()` in theme).
 * A classname, to `class="post"` list (inserted by WordPress, requires `post_class()` in theme).
 
 = Settings and Security =
@@ -63,21 +63,6 @@ Adding Thickbox to a post is an example of what this plugin does. WordPress ship
 
 This plugin improves site performance by enqueuing scripts only when specifically requested for an individual post, via the **Postscript** meta box. See [the screenshots](https://wordpress.org/plugins/postscript/screenshots/).
 
-= What might be some future features? =
-Tell us in the [support forum](https://wordpress.org/support/plugin/postscript) about new features you'd like in future releases. For instance:
-
-* Pass parameters to registered scripts (via [`wp_localize_script()`](https://developer.wordpress.org/reference/functions/wp_localize_script/)).
-* List all post's enqueues in the Edit Post screen.
-* Live preview of Draft posts in the Customizer, with its new phone and tablet views.
-* Add custom &lt;style&gt; in the document &lt;head&gt; (via [`wp_add_inline_style()`](https://developer.wordpress.org/reference/functions/wp_add_inline_style/)).
-* Add custom &lt;script&gt; in the document &lt;head&gt; (`wp_add_inline_script()` coming in WordPress 4.5).
-* Add Page Template dropdown to Posts (and CPTs).
-* Add file-modification timestamp as script/style's version number (as cache buster).
-* AJAX check for file-exists for user-entered URLs.
-* Export/import settings, taxonomy terms, and post meta.
-* In Settings page make separate lists for default and plugin/theme-registrations.
-* Add filter for ____?
-
 = How can I contribute to Postscript? =
 
 Postscript is now on [GitHub](https://github.com/hearvox/postscript). Pull Requests welcome.
@@ -99,22 +84,15 @@ This plugin was developed as part of a [Reynolds Journalism Institute](https://w
 
 == Changelog ==
 
-= 0.4.5 =
+= 1.0.0 =
+* Fix taxonomy term deletion when no terms checked.
+* Remove Postscript taxonomies from Dashboard menu links.
+* Remove Postscript taxonomies from Dashboard: Appearance: Menu checkboxes.
+* Remove Postscript taxonomies from Quick Edit checkboxes.
+* Remove Yoast SEO plugin "Make Primary" button on Postscript taxonomies.
+
+= 0.4.7 =
+* Beta version in WordPress Directory.
 * Add whitelists for hostnames and extensions of unregistered URLs.
-
-= 0.4.0 =
-* Change custom taxonomy slugs to 'postscripts' and poststyles'.
-
-= 0.3.0 =
-* Beta version.
+* Change custom taxonomy slugs to 'postscripts' and poststyles'.Fix
 * Test upgrade option function based on version number.
-
-= 0.1.0 =
-* Initial test version.
-
-== Upgrade Notice ==
-
-= 0.4.0 =
-Secure public release version is 0.4.5.
-
-
