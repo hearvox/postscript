@@ -2,11 +2,11 @@
 Contributors: hearvox
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=T4YWRA5FZC5PC
 Tags: script, javascript, style, styles, stylesheet, css, class, enqueue
-Author URI: http://hearingvoices.com/tools/postscript/
-Plugin URI: http://hearingvoices.com/
+Author URI: http://hearingvoices.com/
+Plugin URI: http://hearingvoices.com/tools/postscript/
 Requires at least: 3.5
 Tested up to: 4.9.2
-Stable tag: 0.4.7
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,7 +40,7 @@ The Settings screen lets you control which user-roles and post-types display the
 
 == Installation ==
 
-To install the use the Postscript plugin:
+To install and use the Postscript plugin:
 
 1. Upload the `postscript` directory and content to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
@@ -85,14 +85,21 @@ This plugin was developed as part of a [Reynolds Journalism Institute](https://w
 == Changelog ==
 
 = 1.0.0 =
-* Fix taxonomy term deletion when no terms checked.
-* Remove Postscript taxonomies from Dashboard menu links.
-* Remove Postscript taxonomies from Dashboard: Appearance: Menu checkboxes.
-* Remove Postscript taxonomies from Quick Edit checkboxes.
-* Remove Yoast SEO plugin "Make Primary" button on Postscript taxonomies.
+Release Date: February 20, 2018
+
+Bugfixes:
+
+* Fixes taxonomy term deletion when no terms checked.
+* Removes Postscript taxonomies from Dashboard menu links.
+* Removes Postscript taxonomies from Dashboard: Appearance: Menu checkboxes.
+* Removes Postscript taxonomies from Quick Edit checkboxes.
+* Removes Yoast SEO plugin "Make Primary" button on Postscript taxonomies.
 
 = 0.4.7 =
-* Beta version in WordPress Directory.
-* Add whitelists for hostnames and extensions of unregistered URLs.
-* Change custom taxonomy slugs to 'postscripts' and poststyles'.Fix
-* Test upgrade option function based on version number.
+Release Date: July 30, 2016
+
+Beta version, first in WordPress Directory:
+
+* Adds whitelists for hostnames and extensions of unregistered URLs.
+* Changes custom taxonomy slugs to 'postscripts' and poststyles'.Fix
+* Tests upgrade option function based on version number.

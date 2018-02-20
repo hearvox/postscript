@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Postscript 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/postscript\n"
-"POT-Creation-Date: 2018-01-23 16:47:38+00:00\n"
+"POT-Creation-Date: 2018-02-20 17:09:59+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,7 +22,7 @@ msgid "Postscript"
 msgstr ""
 
 #: includes/admin-options.php:50 includes/admin-options.php:96
-#: postscript.php:50
+#: postscript.php:51
 msgid "Settings"
 msgstr ""
 
@@ -355,97 +355,97 @@ msgstr ""
 msgid "Error: URL <strong>hostname</strong> not on whitelist:"
 msgstr ""
 
-#: postscript.php:109
+#: postscript.php:110
 msgid "Search Scripts"
 msgstr ""
 
-#: postscript.php:110
+#: postscript.php:111
 msgid "All Scripts"
 msgstr ""
 
-#: postscript.php:111
+#: postscript.php:112
 msgid "Parent Script"
 msgstr ""
 
-#: postscript.php:112
+#: postscript.php:113
 msgid "Parent Script:"
 msgstr ""
 
-#: postscript.php:113
+#: postscript.php:114
 msgid "Edit Script"
 msgstr ""
 
-#: postscript.php:114
+#: postscript.php:115
 msgid "Update Script"
 msgstr ""
 
-#: postscript.php:115
+#: postscript.php:116
 msgid "Add New Script"
 msgstr ""
 
-#: postscript.php:116
+#: postscript.php:117
 msgid "New Scripts Name"
 msgstr ""
 
-#: postscript.php:117
+#: postscript.php:118
 msgid "Scripts"
 msgstr ""
 
-#: postscript.php:148
+#: postscript.php:149
 msgid "Search Styles"
 msgstr ""
 
-#: postscript.php:149
+#: postscript.php:150
 msgid "All Styles"
 msgstr ""
 
-#: postscript.php:150
+#: postscript.php:151
 msgid "Parent Style"
 msgstr ""
 
-#: postscript.php:151
+#: postscript.php:152
 msgid "Parent Style:"
 msgstr ""
 
-#: postscript.php:152
+#: postscript.php:153
 msgid "Edit Style"
 msgstr ""
 
-#: postscript.php:153
+#: postscript.php:154
 msgid "Update Style"
 msgstr ""
 
-#: postscript.php:154
+#: postscript.php:155
 msgid "Add New Style"
 msgstr ""
 
-#: postscript.php:155
+#: postscript.php:156
 msgid "New Style Name"
 msgstr ""
 
-#: postscript.php:156
+#: postscript.php:157
 msgid "Styles"
 msgstr ""
 
-#: postscript.php:202
+#: postscript.php:203
 msgid ""
 "The script handle you entered is <strong>not</strong> <a "
 "href=\"https://developer.wordpress.org/reference/functions/wp_register_"
 "script/\">registered</a>."
 msgstr ""
 
-#: postscript.php:211
+#: postscript.php:212
 msgid ""
 "The style handle you entered is <strong>not</strong> <a "
 "href=\"https://developer.wordpress.org/reference/functions/wp_register_"
 "style/\">registered</a>."
 msgstr ""
 
-#: postscript.php:227
+#: postscript.php:228
 msgid "This form only allows a registered script handle as Name and Slug."
 msgstr ""
 
-#: postscript.php:236
+#: postscript.php:237
 msgid "This form only allows a registered style handle as Name and Slug."
 msgstr ""
 
@@ -470,22 +470,22 @@ msgstr ""
 msgid "http://rjionline.org/"
 msgstr ""
 
-#: postscript.php:107
+#: postscript.php:108
 msgctxt "taxonomy general name"
 msgid "Scripts"
 msgstr ""
 
-#: postscript.php:146
+#: postscript.php:147
 msgctxt "taxonomy general name"
 msgid "Styles"
 msgstr ""
 
-#: postscript.php:108
+#: postscript.php:109
 msgctxt "taxonomy singular name"
 msgid "Script"
 msgstr ""
 
-#: postscript.php:147
+#: postscript.php:148
 msgctxt "taxonomy singular name"
 msgid "Style"
 msgstr ""
