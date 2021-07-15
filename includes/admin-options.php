@@ -418,7 +418,7 @@ function postscript_allow_urls_callback( $options ) {
             </li>
             <li>
                 <label for="postscript-url-whitelist"><?php _e( 'URL Hostname Whitelist (comma-separated)', 'postscript' ); ?></label><br /><textarea id="postscript-url-whitelist" name='postscript[url_whitelist]' rows="3" cols="40"><?php if ( isset ( $options['url_whitelist'] ) ) { echo esc_textarea( $options['url_whitelist'] ); } ?></textarea>
-                <p class="wp-ui-text-icon"><?php _e( 'Enter allowed hostnames separated by commas, e.g.: <code>example.com,www.example.com,sub.example.com</code>. Unregistered URLs will <strong>not</strong> enqueue unless they exactly match a whitelisted hostname.', 'postscript' ); ?></p>
+                <p class="howto"><?php _e( 'Enter allowed hostnames separated by commas, e.g.: <code>example.com,www.example.com,sub.example.com</code>. Unregistered URLs will <strong>not</strong> enqueue unless they exactly match a whitelisted hostname.', 'postscript' ); ?></p>
             </li>
         </ul>
     </fieldset>
@@ -440,7 +440,7 @@ function postscript_allow_classes_callback( $options ) {
                 <label><input type="checkbox" id="postscript-allow-class-body" name="postscript[allow][class_body]" value="on"<?php checked( 'on', isset( $opt['class_body'] ) ? $opt['class_body'] : 'off' ); ?>/> <?php _e( 'Body class*', 'postscript' ); ?></label></li>
             <li>
                 <label><input type="checkbox" id="postscript-allow-class-post" name="postscript[allow][class_post]" value="on"<?php checked( 'on', isset( $opt['class_post'] ) ? $opt['class_post'] : 'off' ); ?>/> <?php _e( 'Post class*', 'postscript' ); ?></label>
-                <p class="wp-ui-text-icon"><?php _e( 'Requires <code>body_class()</code>/<code>post_class()</code> in theme.', 'postscript' ); ?></p>
+                <p class="howto"><?php _e( 'Requires <code>body_class()</code>/<code>post_class()</code> in theme.', 'postscript' ); ?></p>
             </li>
         </ul>
     </fieldset>
@@ -552,7 +552,7 @@ function postscript_add_script_callback() {
     ?>
         </tbody>
     </table>
-    <p class="wp-ui-text-icon">
+    <p class="howto">
         <?php _e( '<strong>Handle</strong> name links to <code>src</code> file. <strong>Posts</strong> count links to a list of posts that enqueue the file.', 'postscript' ); ?><br />
     </p>
     <?php
@@ -810,7 +810,7 @@ function postscript_meta_box_example() {
         </div><!-- .postbox -->
     </div><!-- .postbox-container -->
 
-    <p class="clear wp-ui-text-icon"><?php _e( 'The top-right <a href="#contextual-help-link">Help tab</a> has details on Postscript features. This plugin created as part of a <a href="https://www.rjionline.org/stories/series/storytelling-tools/">Reynold Journalism Institute</a> fellowship.', 'postscript' ); ?></p>
-    <p class="clear wp-ui-text-icon"><small>(<?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?>.)</small></p>
+    <p class="clear howto"><?php _e( 'The top-right <a href="#contextual-help-link">Help tab</a> has details on Postscript features. This plugin created as part of a <a href="https://www.rjionline.org/stories/series/storytelling-tools/">Reynold Journalism Institute</a> fellowship.', 'postscript' ); ?></p>
+    <p class="clear howto"><small>(<?php echo get_num_queries(); ?><?php _e(" queries in ", 'postscript'); ?><?php timer_stop( 1 ); ?><?php _e(" seconds uses ", 'postscript'); ?><?php echo size_format( memory_get_peak_usage(), 2); ?> <?php _e(" peak memory", 'postscript'); ?>.)</small></p>
     <?php
 }
